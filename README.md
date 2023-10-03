@@ -5,6 +5,20 @@ Fediverse on your own terms._
 
 A CMS written in Deno, aiming to be one-click deployable.
 
+## Run locally
+
+~~~
+bin/denizen.tsx
+~~~
+
+I recommend [denon][] for editing code and testing it:
+
+~~~
+denon bin/denizen.tsx
+~~~
+
+[denon]: https://deno.land/x/denon@2.5.0
+
 ## TODO
 
 - Post editor
