@@ -142,7 +142,7 @@ app.post('/.denizen/post/new', requireAdmin, async (c) => {
 	const formdata = await c.req.formData()
 
 	const post = Post.fromFormData(formdata, config.baseUrl)
-	createPost(post)
+	await createPost(post)
 
 	return c.redirect(post.uid.pathname, 307)
 })
