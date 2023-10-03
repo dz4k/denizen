@@ -92,7 +92,7 @@ class PostEditor extends HTMLElement {
 				this.fieldsDiv.append(html`<p>
 					${removeButton}
                     <label for="edit-${name}-${id}">${field.label}</label>
-                    <textarea id="edit-${name}-${id}" name="${name}-${id}"></textarea>
+                    <textarea id="edit-${name}-${id}" name="${name}"></textarea>
                 </p>`)
 				break
 		}

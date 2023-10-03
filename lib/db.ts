@@ -2,8 +2,9 @@ import { monotonicUlid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 
 import { Post } from './model.ts'
 import { asyncIteratorToArray } from './util.ts'
+import { User } from "./auth.ts"
 
-const kv = await Deno.openKv('dev.sqlite')
+export const db = await Deno.openKv('dev.sqlite')
 
 /**
  * Generate an UUIDv7
@@ -20,12 +21,13 @@ export type PaginationOptions = {
 // #region Posts
 
 export const postKey = (post: Post) => ['Post', post.iid!]
+export const urlKey = (url: URL) => ['PostURL', url.href]
 
 export const getPosts = async (
 	{ limit = 20, cursor }: PaginationOptions = {},
 ): Promise<Page<Post>> => {
 	// TODO: pagination options
-	const list = kv.list({ prefix: ['Post'] }, { limit, cursor, reverse: true })
+	const list = db.list({ prefix: ['Post'] }, { limit, cursor, reverse: true })
 	const res = await asyncIteratorToArray(list)
 	const posts = res.map((kvEntry) => {
 		const post = Post.fromMF2Json(kvEntry.value)
@@ -36,43 +38,62 @@ export const getPosts = async (
 }
 
 export const getPost = async (iid: string): Promise<Post | null> => {
-	const kvEntry = await kv.get(['Post', iid])
+	const kvEntry = await db.get(['Post', iid])
 	if (kvEntry.value === null) return null
 	const post = Post.fromMF2Json(kvEntry.value)
 	post.iid = iid
 	return post
 }
 
-export const savePost = async (post: Post): Promise<string> => {
+export const createPost = async (post: Post): Promise<string> => {
 	post.iid ??= genIID()
-	await kv.set(postKey(post), post.toMF2Json())
-	await putPostAtURL(post.uid, post, { permalink: true })
+	const key = postKey(post)
+	await db.atomic()
+		.set(key, post.toMF2Json())
+		.set(urlKey(post.uid), post.iid)
+		.commit()
 	return post.iid
 }
 
-export const deletePost = (post: Post) => kv.delete(postKey(post))
+export const deletePost = (post: Post) => db.delete(postKey(post))
 
-// #endregion
-
-// #region Post URLs
-
-export const urlKey = (url: URL) => ['PostURL', url.href]
 
 export const getPostByURL = async (url: URL): Promise<Post | null> => {
-	const kvEntry = await kv.get(urlKey(url))
+	const kvEntry = await db.get(urlKey(url))
 	if (kvEntry.value === null) return null
 	return getPost(kvEntry.value as string)
 }
 
-export const putPostAtURL = async (
-	url: URL,
-	post: Post,
-	{ permalink = true },
-) => {
-	await kv.set(urlKey(url), post.iid)
-	if (permalink) post.uid = url
-	else post.url.add(url)
-	await savePost(post)
+// #endregion
+
+// #region Users
+
+export const userKey = (username: string) => ["User", username]
+
+export const createUser = async (user: User) => {
+	const key = userKey(user.username)
+	await db.atomic()
+		.check({ key, versionstamp: null })
+		.set(key, user.serialize())
+		.commit()
 }
 
-export const removePostFromURL = (url: URL) => kv.delete(urlKey(url))
+export const getUser = async (username: string) => {
+	const res = await db.get(userKey(username))
+	return User.deserialize(res.value as Record<string, unknown>)
+}
+
+// #endregion
+
+// #region Bookkeeping
+
+export const initialSetupDone = async () => {
+	const res = await db.get(["etc.", "Initial setup done"])
+	return res.value
+}
+
+export const completeInitialSetup = async () => {
+	await db.set(["etc.", "Initial setup done"], true)
+}
+
+// #region
