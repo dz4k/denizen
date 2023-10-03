@@ -2,7 +2,7 @@
 /** @jsxFrag Fragment */
 
 import {
-Context,
+	Context,
 	Fragment,
 	Hono,
 	jsx,
@@ -36,6 +36,7 @@ import {
 	getPost,
 	getPostByURL,
 	getPosts,
+	getUser,
 	initialSetupDone,
 } from './db.ts'
 import { login, signup } from './auth.ts'
@@ -71,6 +72,9 @@ app.use('*', async (c, next) => {
 
 const isAdmin = (c: Context<Env>) => c.get('session').get('user') === 'admin'
 
+const currentUser = (c: Context<Env>) =>
+	getUser(c.get('session').get('user') as string)
+
 const requireAdmin: MiddlewareHandler<Env> = async (c, next) => {
 	if (!isAdmin(c)) return c.status(401)
 	else await next()
@@ -80,7 +84,11 @@ app.use('/public/*', serveStatic({ root: '.' }))
 
 app.get('/', async (c) =>
 	c.html(
-		<HomePage posts={await getPosts()} admin={isAdmin(c)} />,
+		<HomePage
+			posts={await getPosts()}
+			admin={isAdmin(c)}
+			user={await currentUser(c)}
+		/>,
 	))
 
 app.get(
@@ -160,8 +168,8 @@ app.delete('*', requireAdmin, async (c) => {
 	const post = await getPostByURL(uid)
 	if (post === null) return c.notFound()
 	deletePost(post)
-	c.header("HX-Redirect", "/")
-	return c.redirect("/", 303)
+	c.header('HX-Redirect', '/')
+	return c.redirect('/', 303)
 })
 
 app.notFound((c) => c.html(<FourOhFour />))

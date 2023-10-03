@@ -7,6 +7,7 @@ import { Post } from './model.ts'
 
 import * as config from '../config.ts'
 import { Page } from './db.ts'
+import { User } from './auth.ts'
 
 const Layout: FC<{
 	lang?: string
@@ -25,11 +26,12 @@ ${p.children}
 export const HomePage = (p: {
 	posts: Page<Post>
 	admin: boolean
+	user: User
 }) => (
-	<Layout title={config.siteName}>
+	<Layout title={p.user.profile.name}>
 		<header>
 			<h1>
-				<a href='/'>{config.siteName}</a>
+				<a href='/'>{p.user.profile.name}</a>
 			</h1>
 		</header>
 		<main>

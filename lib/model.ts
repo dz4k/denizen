@@ -315,6 +315,8 @@ export class Card {
 		return removeEmptyProperties({
 			type: ['h-card'],
 			properties: {
+				name: [this.name],
+
 				email: this.email.map(String),
 				tel: this.tel,
 				// adr: Address[] = []
