@@ -18,12 +18,13 @@ const Layout: FC<{
 <meta charset=utf-8 name=viewport content=width=device-width>
 <title>${p.title}</title>
 <link rel=stylesheet href="${config.stylesheet}">
+<script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
 ${p.children}
 `
 
 export const HomePage = (p: {
 	posts: Page<Post>
-	canPost: boolean
+	admin: boolean
 }) => (
 	<Layout title={config.siteName}>
 		<header>
@@ -76,7 +77,7 @@ export const HomePage = (p: {
 				: ''}
 		</main>
 		<footer>
-			{p.canPost
+			{p.admin
 				? (
 					<div class='margin-block f-row align-items:center'>
 						<a class="<button>" href='/.denizen/post/new'>New Post</a>
@@ -91,7 +92,8 @@ export const HomePage = (p: {
 )
 
 export const PostPage = (p: {
-	post: Post
+	post: Post,
+	admin: boolean
 }) => (
 	<Layout title={p.post.name ?? config.siteName}>
 		<article class='h-entry'>
@@ -121,6 +123,17 @@ export const PostPage = (p: {
 				dangerouslySetInnerHTML={{ __html: p.post.content }}
 			>
 			</main>
+			<footer>
+				{p.admin
+					? (
+						<div class='margin-block f-row align-items:center'>
+							<form hx-delete={p.post.uid.pathname} class='contents'>
+								<button>Delete</button>
+							</form>
+						</div>
+					)
+					: ''}
+			</footer>
 		</article>
 	</Layout>
 )
@@ -208,6 +221,19 @@ export const InitialSetup = (p: { error?: string }) => (
 					<button type='submit'>Get started</button>
 				</p>
 			</form>
+		</main>
+	</Layout>
+)
+
+export const PostDeleted = () => (
+	<Layout>
+		<main>
+			<p>
+				There's nothing here... but there might have been.
+			</p>
+			<p>
+				<a href="/">&gt; Go back home.</a>
+			</p>
 		</main>
 	</Layout>
 )

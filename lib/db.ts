@@ -33,7 +33,7 @@ export const getPosts = async (
 		const post = Post.fromMF2Json(kvEntry.value)
 		post.iid = kvEntry.key.at(-1) as string
 		return post
-	})
+	}).filter(post => !post.deleted)
 	return { data: posts, cursor: list.cursor }
 }
 
@@ -55,8 +55,16 @@ export const createPost = async (post: Post): Promise<string> => {
 	return post.iid
 }
 
-export const deletePost = (post: Post) => db.delete(postKey(post))
+export const updatePost = async (post: Post): Promise<string> => {
+	const key = postKey(post)
+	await db.set(key, post.toMF2Json())
+	return post.iid!
+}
 
+export const deletePost = (post: Post) => {
+	post.deleted = true
+	updatePost(post)
+}
 
 export const getPostByURL = async (url: URL): Promise<Post | null> => {
 	const kvEntry = await db.get(urlKey(url))

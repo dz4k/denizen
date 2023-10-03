@@ -18,6 +18,7 @@ export class Post {
 	 * Internal ID.
 	 */
 	iid?: string
+	deleted: boolean = false
 
 	name?: string
 	summary?: string
@@ -61,6 +62,7 @@ export class Post {
 		const rv = new Post(url)
 
 		rv.published = mf2Date(p.published[0])
+		if ('x-deleted' in p) rv.deleted = p['x-deleted'][0] === 'true'
 		if ('url' in p) rv.url = new Set(mf2UrlArray(p.url))
 		if ('updated' in p) rv.updated = mf2Date(p.updated[0])
 		if ('name' in p) rv.name = mf2String(p.name[0])
@@ -152,6 +154,7 @@ export class Post {
 				video: this.video.map(String),
 				url: Array.from(this.url, String),
 				uid: [this.uid.toString()],
+				'x-deleted': [String(this.deleted)],
 			},
 		})
 	}

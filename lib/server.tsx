@@ -22,6 +22,7 @@ import {
 	HomePage,
 	InitialSetup,
 	LoginForm,
+	PostDeleted,
 	PostEditor,
 	PostPage,
 } from './ui.tsx'
@@ -31,6 +32,7 @@ import {
 	createPost,
 	createUser,
 	db,
+	deletePost,
 	getPost,
 	getPostByURL,
 	getPosts,
@@ -78,7 +80,7 @@ app.use('/public/*', serveStatic({ root: '.' }))
 
 app.get('/', async (c) =>
 	c.html(
-		<HomePage posts={await getPosts()} canPost={isAdmin(c)} />,
+		<HomePage posts={await getPosts()} admin={isAdmin(c)} />,
 	))
 
 app.get(
@@ -149,7 +151,17 @@ app.get('*', async (c) => {
 	const uid = new URL(c.req.path, config.baseUrl)
 	const post = await getPostByURL(uid)
 	if (post === null) return c.notFound()
-	return c.html(<PostPage post={post} />)
+	if (post.deleted) return c.html(<PostDeleted />, 410) // "Gone"
+	return c.html(<PostPage post={post} admin={isAdmin(c)} />)
+})
+
+app.delete('*', requireAdmin, async (c) => {
+	const uid = new URL(c.req.path, config.baseUrl)
+	const post = await getPostByURL(uid)
+	if (post === null) return c.notFound()
+	deletePost(post)
+	c.header("HX-Redirect", "/")
+	return c.redirect("/", 303)
 })
 
 app.notFound((c) => c.html(<FourOhFour />))
