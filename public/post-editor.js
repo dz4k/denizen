@@ -41,19 +41,21 @@ class PostEditor extends HTMLElement {
 		super()
 		this.append(html`
             <form data-form method=POST>
-				<div data-fields class='table rows'></div>
-				<p><strong><button type="submit">Post</button></strong>
+				<div data-fields class='grid' style="
+					grid-template-columns: auto auto 1fr;
+					align-items: start;"></div>
+				<p>
+					${
+				this.fields.map((field) =>
+					html`
+						<button type="button" data-add-field="${field.queryParam}"
+							${field.default ? 'data-default=1' : ''}>+ ${field.label}</button>
+					`
+				)
+			}
+				</p>
+				<p><strong><button type="submit" class="big">Post</button></strong>
             </form>
-            <p>
-                ${
-			this.fields.map((field) =>
-				html`
-                    <button data-add-field="${field.queryParam}"
-						${field.default ? 'data-default=1' : ''}>+ ${field.label}</button>
-                `
-			)
-		}
-            </p>
         `)
 		this.fieldsDiv = /** @type {HTMLFormElement} */ ($(this, '[data-fields]'))
 		this.addFieldButtons =
@@ -81,15 +83,15 @@ class PostEditor extends HTMLElement {
 
 		switch (field?.inputKind) {
 			case 'text':
-				this.fieldsDiv.append(html`<p>
+				this.fieldsDiv.append(html`<p class="contents">
 					${removeButton}
-                    <label for="edit-${name}-${id}">${field.label}</label>
-                    <input type="text" id="edit-${name}-${id}" name="${name}">
+                    <label data-cols="2" for="edit-${name}-${id}">${field.label}</label>
+                    <input data-cols="3" type="text" id="edit-${name}-${id}" name="${name}">
                 </p>`)
 				break
 
 			case 'html':
-				this.fieldsDiv.append(html`<p>
+				this.fieldsDiv.append(html`<p class="contents">
 					${removeButton}
                     <label for="edit-${name}-${id}">${field.label}</label>
                     <textarea id="edit-${name}-${id}" name="${name}"></textarea>
