@@ -136,7 +136,7 @@ app.post('/.denizen/logout', async (c) => {
 
 app.get('/.denizen/post/new', (c) => c.html(<PostEditor />))
 
-app.post('/.denizen/post/new', async (c) => {
+app.post('/.denizen/post/new', requireAdmin, async (c) => {
 	const formdata = await c.req.formData()
 
 	const post = Post.fromFormData(formdata, config.baseUrl)
