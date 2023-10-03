@@ -1,5 +1,6 @@
 // @ts-check
 /// <reference lib="dom" />
+/// <reference lib="es2021" />
 
 import { $, $$, on } from 'https://unpkg.com/missing.css@1.1.1/dist/js/19.js'
 
@@ -8,6 +9,7 @@ import { $, $$, on } from 'https://unpkg.com/missing.css@1.1.1/dist/js/19.js'
  * @prop {string} label
  * @prop {string} queryParam
  * @prop {boolean} [default]
+ * @prop {boolean} [multiple] Can we have more than one of this field?
  * @prop {'text' | 'html'} inputKind
  */
 
@@ -35,6 +37,7 @@ class PostEditor extends HTMLElement {
 		label: 'Tag',
 		queryParam: 'category',
 		inputKind: 'text',
+		multiple: true,
 	}]
 
 	constructor() {
@@ -46,13 +49,13 @@ class PostEditor extends HTMLElement {
 					align-items: start;"></div>
 				<p>
 					${
-				this.fields.map((field) =>
-					html`
+			this.fields.map((field) =>
+				html`
 						<button type="button" data-add-field="${field.queryParam}"
 							${field.default ? 'data-default=1' : ''}>+ ${field.label}</button>
 					`
-				)
-			}
+			)
+		}
 				</p>
 				<p><strong><button type="submit" class="big">Post</button></strong>
             </form>
@@ -73,17 +76,21 @@ class PostEditor extends HTMLElement {
 	 */
 	addField(name) {
 		const field = this.fields.find((field) => field.queryParam === name)
+		if (!field) return
+		if (!field.multiple) {
+			$(this, `[data-add-field="${field.queryParam}"]`).hidden = true
+		}
 		const id = idCounter++
 		const removeButton = html`
 			<button class="<a> unbutton" aria-labelledby="vh-${name}-${id} edit-${name}-${id}"
-				onclick="this.closest('p').remove()">
+				onclick="this.closest('post-editor').removeField(this.closest('p'))">
 				<span hidden id="vh-${name}-${id}">Remove</span>
 				<span aria-hidden="true">×</span>
 			</button>`
 
 		switch (field?.inputKind) {
 			case 'text':
-				this.fieldsDiv.append(html`<p class="contents">
+				this.fieldsDiv.append(html`<p data-field="${field.queryParam}" class="contents">
 					${removeButton}
                     <label data-cols="2" for="edit-${name}-${id}">${field.label}</label>
                     <input data-cols="3" type="text" id="edit-${name}-${id}" name="${name}">
@@ -91,12 +98,21 @@ class PostEditor extends HTMLElement {
 				break
 
 			case 'html':
-				this.fieldsDiv.append(html`<p class="contents">
+				this.fieldsDiv.append(html`<p data-field="${field.queryParam}" class="contents">
 					${removeButton}
                     <label for="edit-${name}-${id}">${field.label}</label>
                     <textarea id="edit-${name}-${id}" name="${name}"></textarea>
                 </p>`)
 				break
+		}
+	}
+
+	removeField(el) {
+		const fieldName = el.dataset.field
+		const field = this.fields.find((field) => field.queryParam === fieldName)
+		el.remove()
+		if (!field.multiple && !$(this.fieldsDiv, `[data-field="${field.queryParam}"]`)) {
+			$(this, `[data-add-field="${field.queryParam}"]`).hidden = false
 		}
 	}
 }

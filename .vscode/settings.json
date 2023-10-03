@@ -2,7 +2,12 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modificationsIfAvailable",
 
-    "deno.enable": true,
+    "deno.enablePaths": [
+        "lib",
+        "bin",
+        "deps",
+        "config.ts"
+    ],
     "deno.unstable": true,
     "deno.config": "./deno.jsonc",
 
