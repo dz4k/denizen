@@ -23,6 +23,9 @@ denon bin/denizen.tsx
 
 (Incomplete list)
 
+- [X] Posting
+- [X] Deleting posts
+- [ ] Editing posts
 - [ ] Post editor
   - [ ] Markdown and WYSIWYG support
 - [X] Authentication for post editor
