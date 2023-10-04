@@ -47,10 +47,13 @@ export const getPost = async (iid: string): Promise<Post | null> => {
 
 export const createPost = async (post: Post): Promise<string> => {
 	post.iid ??= genIID()
-	const key = postKey(post)
+	const myPostKey = postKey(post)
+	const myUrlKey = urlKey(post.uid)
 	await db.atomic()
-		.set(key, post.toMF2Json())
-		.set(urlKey(post.uid), post.iid)
+		.check({ key: myPostKey, versionstamp: null })
+		.check({ key: myUrlKey, versionstamp: null })
+		.set(myPostKey, post.toMF2Json())
+		.set(myUrlKey, post.iid)
 		.commit()
 	return post.iid
 }
