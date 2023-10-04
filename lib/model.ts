@@ -1,3 +1,4 @@
+import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 import {
 	mf2Date,
 	MF2Object,
@@ -9,6 +10,7 @@ import {
 	removeEmptyProperties,
 } from './mf2.ts'
 import { makeSlug } from './slug.ts'
+import * as config from '../config.ts'
 
 /**
  * @see http://microformats.org/wiki/h-entry
@@ -17,7 +19,7 @@ export class Post {
 	/**
 	 * Internal ID.
 	 */
-	iid?: string
+	iid: string
 	deleted: boolean = false
 
 	name?: string
@@ -39,17 +41,28 @@ export class Post {
 	video: URL[] = []
 	audio: URL[] = []
 
-	uid: URL
+	uid?: URL
 	url = new Set<URL>()
 
 	// TODO: location (.p-location .p-geo) and related props
 	// TODO: RSVP (.p-rsvp)
 	// TODO: some draft properties: u-listen-of u-watch-of p-read-of u-checkin
 
-	constructor(url: URL, props?: Partial<Post>) {
-		this.uid = url
-		this.published = new Date()
+	constructor(props?: Partial<Post>) {
 		Object.assign(this, props)
+		this.published ??= new Date()
+		this.iid ??= ulid()
+	}
+
+	genUrl() {
+		return new URL(
+			`/${this.published.getFullYear()}/${
+				this.name
+					? makeSlug(this.name)
+					: this.published.toISOString().slice(4)
+			}`,
+			config.baseUrl,
+		)
 	}
 
 	static fromMF2Json(it: unknown): Post {
@@ -58,11 +71,11 @@ export class Post {
 		if (!('url' in p) && !('uid' in p)) throw new Error('h-entry has no URL')
 		if (!('published' in p)) throw new Error('h-entry has no publication date')
 
-		const url = new URL(('uid' in p ? p.uid[0] : p.url[0]) as string)
-		const rv = new Post(url)
+		const rv = new Post({})
 
 		rv.published = mf2Date(p.published[0])
 		if ('x-deleted' in p) rv.deleted = p['x-deleted'][0] === 'true'
+		if ('uid' in p) rv.uid = mf2Url(p.uid[0])
 		if ('url' in p) rv.url = new Set(mf2UrlArray(p.url))
 		if ('updated' in p) rv.updated = mf2Date(p.updated[0])
 		if ('name' in p) rv.name = mf2String(p.name[0])
@@ -85,7 +98,7 @@ export class Post {
 		return rv
 	}
 
-	static fromFormData(form: FormData, baseUrl: URL): Post {
+	static fromFormData(form: FormData): Post {
 		// discard empty values
 		for (const [k, v] of form.entries()) {
 			if (v === '') form.delete(k)
@@ -122,17 +135,9 @@ export class Post {
 		}
 
 		// TODO configurable URL pattern
-		const url = new URL(
-			get('url') ??
-				`/${props.published.getFullYear()}/${
-					props.name
-						? makeSlug(props.name)
-						: props.published.toISOString().slice(4)
-				}`,
-			baseUrl,
-		)
+		
 
-		return new Post(url, props)
+		return new Post(props)
 	}
 
 	toMF2Json(): MF2Object {
@@ -153,7 +158,7 @@ export class Post {
 				audio: this.audio.map(String),
 				video: this.video.map(String),
 				url: Array.from(this.url, String),
-				uid: [this.uid.toString()],
+				uid: this.uid ? [this.uid.toString()] : [],
 				'x-deleted': [String(this.deleted)],
 			},
 		})

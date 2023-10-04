@@ -66,10 +66,10 @@ app.get('/post/new', (c) => c.html(<PostEditor />))
 app.post('/post/new', requireAdmin, async (c) => {
 	const formdata = await c.req.formData()
 
-	const post = Post.fromFormData(formdata, config.baseUrl)
+	const post = Post.fromFormData(formdata)
 	await createPost(post)
 
-	return c.redirect(post.uid.pathname, 307)
+	return c.redirect(post.uid!.pathname, 307)
 })
 
 // #endregion

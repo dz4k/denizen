@@ -38,7 +38,7 @@ export const HomePage = (p: {
 			{p.posts.data.map((post) => (
 				<article class='h-entry margin-block padding-block'>
 					<h2>
-						<a class='p-name u-url u-uid' href={post.uid.pathname}>
+						<a class='p-name u-url u-uid' href={post.uid!.pathname}>
 							{post.name}
 						</a>
 					</h2>
@@ -129,7 +129,7 @@ export const PostPage = (p: {
 				{p.admin
 					? (
 						<div class='margin-block f-row align-items:center'>
-							<form hx-delete={p.post.uid.pathname} class='contents'>
+							<form hx-delete={p.post.uid!.pathname} class='contents'>
 								<button>Delete</button>
 							</form>
 						</div>
