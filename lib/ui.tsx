@@ -82,7 +82,7 @@ export const HomePage = (p: {
 			{p.admin
 				? (
 					<div class='margin-block f-row align-items:center'>
-						<a class="<button>" href='/.denizen/post/new'>New Post</a>
+						<a class='<button>' href='/.denizen/post/new'>New Post</a>
 						<form method='POST' action='/.denizen/auth/logout' class='contents'>
 							<button>Logout</button>
 						</form>
@@ -94,10 +94,13 @@ export const HomePage = (p: {
 )
 
 export const PostPage = (p: {
-	post: Post,
+	post: Post
 	admin: boolean
 }) => (
-	<Layout title={p.post.name ?? config.siteName}>
+	<Layout
+		title={p.post.name ?? p.post.summary ??
+			p.post.published.toLocaleTimeString()}
+	>
 		<article class='h-entry'>
 			<header class='container padding-block-start'>
 				{p.post.name ? <h1 class='p-name'>{p.post.name}</h1> : ''}
@@ -156,7 +159,7 @@ export const PostDeleted = () => (
 				There's nothing here... but there might have been.
 			</p>
 			<p>
-				<a href="/">&gt; Go back home.</a>
+				<a href='/'>&gt; Go back home.</a>
 			</p>
 		</main>
 	</Layout>
