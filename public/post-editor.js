@@ -7,7 +7,6 @@ import { $, $$, on } from 'https://unpkg.com/missing.css@1.1.1/dist/js/19.js'
 /**
  * @typedef {object} Field
  * @prop {string} label
- * @prop {string} queryParam
  * @prop {boolean} [default]
  * @prop {boolean} [multiple] Can we have more than one of this field?
  * @prop {'text' | 'html'} inputKind
@@ -17,28 +16,29 @@ let idCounter = 0
 
 class PostEditor extends HTMLElement {
 	/**
-	 * @type {Field[]}
+	 * @type {Record<string, Field>}
 	 */
-	fields = [{
-		label: 'Title',
-		queryParam: 'name',
-		inputKind: 'text',
-		default: true,
-	}, {
-		label: 'Summary',
-		queryParam: 'summary',
-		inputKind: 'text',
-	}, {
-		label: 'Content',
-		queryParam: 'content',
-		inputKind: 'html',
-		default: true,
-	}, {
-		label: 'Tag',
-		queryParam: 'category',
-		inputKind: 'text',
-		multiple: true,
-	}]
+	fields = {
+		name: {
+			label: 'Title',
+			inputKind: 'text',
+			default: true,
+		},
+		summary: {
+			label: 'Summary',
+			inputKind: 'text',
+		},
+		content: {
+			label: 'Content',
+			inputKind: 'html',
+			default: true,
+		},
+		category: {
+			label: 'Tag',
+			inputKind: 'text',
+			multiple: true,
+		}
+	}
 
 	constructor() {
 		super()
@@ -49,9 +49,9 @@ class PostEditor extends HTMLElement {
 					align-items: start;"></div>
 				<p>
 					${
-			this.fields.map((field) =>
+			Object.entries(this.fields).map(([name, field]) =>
 				html`
-						<button type="button" data-add-field="${field.queryParam}"
+						<button type="button" data-add-field="${name}"
 							${field.default ? 'data-default=1' : ''}>+ ${field.label}</button>
 					`
 			)
@@ -75,10 +75,10 @@ class PostEditor extends HTMLElement {
 	 * @param {string} name
 	 */
 	addField(name) {
-		const field = this.fields.find((field) => field.queryParam === name)
+		const field = this.fields[name]
 		if (!field) return
 		if (!field.multiple) {
-			$(this, `[data-add-field="${field.queryParam}"]`).hidden = true
+			$(this, `[data-add-field="${name}"]`).hidden = true
 		}
 		const id = idCounter++
 		const removeButton = html`
@@ -90,7 +90,7 @@ class PostEditor extends HTMLElement {
 
 		switch (field?.inputKind) {
 			case 'text':
-				this.fieldsDiv.append(html`<p data-field="${field.queryParam}" class="contents">
+				this.fieldsDiv.append(html`<p data-field="${name}" class="contents">
 					${removeButton}
                     <label data-cols="2" for="edit-${name}-${id}">${field.label}</label>
                     <input data-cols="3" type="text" id="edit-${name}-${id}" name="${name}">
@@ -98,7 +98,7 @@ class PostEditor extends HTMLElement {
 				break
 
 			case 'html':
-				this.fieldsDiv.append(html`<p data-field="${field.queryParam}" class="contents">
+				this.fieldsDiv.append(html`<p data-field="${name}" class="contents">
 					${removeButton}
                     <label for="edit-${name}-${id}">${field.label}</label>
                     <textarea id="edit-${name}-${id}" name="${name}"></textarea>
@@ -109,10 +109,11 @@ class PostEditor extends HTMLElement {
 
 	removeField(el) {
 		const fieldName = el.dataset.field
-		const field = this.fields.find((field) => field.queryParam === fieldName)
+		const field = this.fields[fieldName]
+		if (!field) return
 		el.remove()
-		if (!field.multiple && !$(this.fieldsDiv, `[data-field="${field.queryParam}"]`)) {
-			$(this, `[data-add-field="${field.queryParam}"]`).hidden = false
+		if (!field.multiple && !$(this.fieldsDiv, `[data-field="${fieldName}"]`)) {
+			$(this, `[data-add-field="${fieldName}"]`).hidden = false
 		}
 	}
 }
