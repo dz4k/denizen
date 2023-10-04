@@ -33,7 +33,10 @@ export const isAdmin = (c: Context<Env>) =>
 	c.get('session').get('user') === 'admin'
 
 export const requireAdmin: MiddlewareHandler<Env> = async (c, next) => {
-	if (!isAdmin(c)) return c.status(401)
+	if (!isAdmin(c)) {
+		if (c.req.method === "GET") return c.redirect("/.denizen/auth/login", 303)
+		else return c.status(401)
+	}
 	else await next()
 }
 
