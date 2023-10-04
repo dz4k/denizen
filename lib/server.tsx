@@ -1,14 +1,7 @@
 /** @jsx jsx */
 /** @jsxFrag Fragment */
 
-import {
-	Context,
-	Fragment,
-	Hono,
-	jsx,
-	MiddlewareHandler,
-	serveStatic,
-} from '../deps/hono.ts'
+import { Context, Fragment, Hono, jsx, serveStatic } from '../deps/hono.ts'
 import {
 	DenoKvStore,
 	Session,
@@ -17,31 +10,18 @@ import {
 
 import * as config from '../config.ts'
 
+import { FourOhFour, HomePage, PostDeleted, PostPage } from './ui.tsx'
 import {
-	FourOhFour,
-	HomePage,
-	InitialSetup,
-	LoginForm,
-	PostDeleted,
-	PostEditor,
-	PostPage,
-} from './ui.tsx'
-import { Card, Post } from './model.ts'
-import {
-	completeInitialSetup,
-	createPost,
-	createUser,
 	db,
 	deletePost,
-	getPost,
 	getPostByURL,
 	getPosts,
-	getUser,
 	initialSetupDone,
 } from './db.ts'
-import { login, signup } from './auth.ts'
+import { currentUser } from './auth.tsx'
+import Admin, { isAdmin, requireAdmin } from './admin.tsx'
 
-type Env = {
+export type Env = {
 	Variables: {
 		session: Session
 		session_key_rotation: boolean
@@ -49,6 +29,8 @@ type Env = {
 }
 
 export const app = new Hono<Env>()
+
+app.route('/.denizen/', Admin)
 
 app.use(
 	'*',
@@ -70,16 +52,6 @@ app.use('*', async (c, next) => {
 	} else await next()
 })
 
-const isAdmin = (c: Context<Env>) => c.get('session').get('user') === 'admin'
-
-const currentUser = (c: Context<Env>) =>
-	getUser(c.get('session').get('user') as string)
-
-const requireAdmin: MiddlewareHandler<Env> = async (c, next) => {
-	if (!isAdmin(c)) return c.status(401)
-	else await next()
-}
-
 app.use('/public/*', serveStatic({ root: '.' }))
 
 app.get('/', async (c) =>
@@ -96,76 +68,18 @@ app.get(
 	(c) => c.redirect('https://youtube.com/watch?v=dQw4w9WgXcQ'),
 )
 
-app.get('/.denizen/initial-setup', (c) => c.html(<InitialSetup />))
-
-app.post('/.denizen/initial-setup', async (c) => {
-	if (await initialSetupDone()) return c.status(403)
-	const form = await c.req.formData()
-	const pw = form.get('pw')
-	if (typeof pw !== 'string') {
-		return c.html(<InitialSetup error='Missing username or password' />, 400)
-	}
-	const displayName = form.get('name')
-	if (typeof displayName !== 'string') {
-		return c.html(<InitialSetup error='Please enter a name' />, 400)
-	}
-	await signup('admin', pw, new Card(displayName))
-	await completeInitialSetup()
-
-	const sesh = c.get('session')
-	sesh.set('user', 'admin')
-	return c.redirect('/', 303)
-})
-
-app.get('/.denizen/login', (c) => c.html(<LoginForm />))
-
-app.post('/.denizen/login', async (c) => {
-	const form = await c.req.formData()
-	const username = form.get('username')
-	const pw = form.get('pw')
-	if (typeof username !== 'string' || typeof pw !== 'string') {
-		return c.html(<LoginForm error='Missing username or password' />, 400)
-	}
-	const user = login(username, pw)
-	if (!user) {
-		return c.html(<LoginForm error='Incorrect username or password' />, 400)
-	}
-
-	// Login successful
-
-	const sesh = c.get('session')
-	sesh.set('user', username)
-	return c.redirect('/')
-})
-
-app.post('/.denizen/logout', async (c) => {
-	const sesh = c.get('session')
-	sesh.deleteSession()
-	return c.redirect('/')
-})
-
-app.get('/.denizen/post/new', (c) => c.html(<PostEditor />))
-
-app.post('/.denizen/post/new', requireAdmin, async (c) => {
-	const formdata = await c.req.formData()
-
-	const post = Post.fromFormData(formdata, config.baseUrl)
-	await createPost(post)
-
-	return c.redirect(post.uid.pathname, 307)
-})
+const accessPost = (c: Context<Env>) =>
+	getPostByURL(new URL(c.req.path, config.baseUrl))
 
 app.get('*', async (c) => {
-	const uid = new URL(c.req.path, config.baseUrl)
-	const post = await getPostByURL(uid)
+	const post = await accessPost(c)
 	if (post === null) return c.notFound()
 	if (post.deleted) return c.html(<PostDeleted />, 410) // "Gone"
 	return c.html(<PostPage post={post} admin={isAdmin(c)} />)
 })
 
 app.delete('*', requireAdmin, async (c) => {
-	const uid = new URL(c.req.path, config.baseUrl)
-	const post = await getPostByURL(uid)
+	const post = await accessPost(c)
 	if (post === null) return c.notFound()
 	deletePost(post)
 	c.header('HX-Redirect', '/')

@@ -2,6 +2,7 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modificationsIfAvailable",
 
+    "deno.enable": true,
     "deno.enablePaths": [
         "lib",
         "bin",

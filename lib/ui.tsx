@@ -7,9 +7,9 @@ import { Post } from './model.ts'
 
 import * as config from '../config.ts'
 import { Page } from './db.ts'
-import { User } from './auth.ts'
+import { User } from './auth.tsx'
 
-const Layout: FC<{
+export const Layout: FC<{
 	lang?: string
 	title: string
 }> = (p) =>
@@ -83,7 +83,7 @@ export const HomePage = (p: {
 				? (
 					<div class='margin-block f-row align-items:center'>
 						<a class="<button>" href='/.denizen/post/new'>New Post</a>
-						<form method='POST' action='/.denizen/logout' class='contents'>
+						<form method='POST' action='/.denizen/auth/logout' class='contents'>
 							<button>Logout</button>
 						</form>
 					</div>
@@ -149,86 +149,8 @@ export const FourOhFour = () => (
 	</Layout>
 )
 
-export const PostEditor = () => (
-	<Layout title='New Post'>
-		<header>
-			<h1>New Post</h1>
-		</header>
-		<main>
-			<script type='module' src='/public/post-editor.js'></script>
-			<post-editor></post-editor>
-		</main>
-	</Layout>
-)
-
-export const LoginForm = (p: { error?: string }) => (
-	<Layout title='Login -- Denizen'>
-		<header>
-			<h1>Log in</h1>
-		</header>
-		<main>
-			{p.error && <div class='bad box'>{p.error}</div>}
-			<form method='post' class='table rows'>
-				{
-					/* <p>
-					<label for='edit-username'>Username</label>
-					<input type='text' name='username' id='edit-username' />
-				</p> */
-				}
-				<input type='hidden' name='username' value='admin' required />
-				<p>
-					<label for='edit-pw'>Password</label>
-					<input type='password' name='pw' id='edit-pw' required />
-				</p>
-				<p>
-					<template />
-					<button type='submit'>Log in</button>
-				</p>
-			</form>
-		</main>
-	</Layout>
-)
-
-export const InitialSetup = (p: { error?: string }) => (
-	<Layout title='Initial Setup -- Denizen'>
-		<header>
-			<h1>Welcome to Denizen</h1>
-			<p class='big'>Choose a password to set up your site</p>
-		</header>
-		<main>
-			{p.error && <div class='bad box'>{p.error}</div>}
-			<form method='POST' class='table rows'>
-				<p>
-					<label for='edit-name'>Name</label>
-					<span class='f-col'>
-						<input
-							type='text'
-							name='name'
-							id='edit-name'
-							required
-							aria-describedby='desc-edit-name'
-						/>
-						<span id='desc-edit-name' class='<small> italic'>
-							Not a login username -- the name that will be displayed on your
-							homepage.
-						</span>
-					</span>
-				</p>
-				<p>
-					<label htmlFor='edit-pw'>Password</label>
-					<input type='password' name='pw' id='edit-pw' required />
-				</p>
-				<p>
-					<template />
-					<button type='submit'>Get started</button>
-				</p>
-			</form>
-		</main>
-	</Layout>
-)
-
 export const PostDeleted = () => (
-	<Layout>
+	<Layout title='Deleted post'>
 		<main>
 			<p>
 				There's nothing here... but there might have been.
