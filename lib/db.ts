@@ -1,8 +1,6 @@
-import { monotonicUlid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
-
 import { Post } from './model.ts'
 import { asyncIteratorToArray } from './util.ts'
-import { User } from "./auth.ts"
+import { User } from "./auth.tsx"
 
 export const db = await Deno.openKv('dev.sqlite')
 
@@ -10,7 +8,6 @@ export const db = await Deno.openKv('dev.sqlite')
  * Generate an UUIDv7
  * TODO: is this good? should I use a different format?
  */
-const genIID = monotonicUlid
 
 export type Page<T> = { data: T[]; cursor: string }
 export type PaginationOptions = {
@@ -46,15 +43,14 @@ export const getPost = async (iid: string): Promise<Post | null> => {
 }
 
 export const createPost = async (post: Post): Promise<string> => {
-	post.iid ??= genIID()
 	const myPostKey = postKey(post)
-	const myUrlKey = urlKey(post.uid)
-	await db.atomic()
-		.check({ key: myPostKey, versionstamp: null })
-		.check({ key: myUrlKey, versionstamp: null })
-		.set(myPostKey, post.toMF2Json())
-		.set(myUrlKey, post.iid)
-		.commit()
+	const myUrlKey = post.uid && urlKey(post.uid)
+	const tx = db.atomic()
+	tx.check({ key: myPostKey, versionstamp: null })
+	myUrlKey && tx.check({ key: myUrlKey, versionstamp: null })
+	tx.set(myPostKey, post.toMF2Json())
+	myUrlKey && tx.set(myUrlKey, post.iid)
+	await tx.commit()
 	return post.iid
 }
 
