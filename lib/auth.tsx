@@ -62,8 +62,11 @@ export const login = async (
 
 export const app = new Hono<Env>()
 
-export const currentUser = (c: Context<Env>) =>
-	getUser(c.get('session').get('user') as string)
+export const currentUser = (c: Context<Env>) => {
+	const username = c.get('session').get('user') as string
+	if (!username) return null
+	return getUser(username)
+}
 
 app.get('/login', (c) => c.html(<LoginForm />))
 

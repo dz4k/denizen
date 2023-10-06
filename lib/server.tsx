@@ -16,6 +16,7 @@ import {
 	deletePost,
 	getPostByURL,
 	getPosts,
+	getUser,
 	initialSetupDone,
 } from './db.ts'
 import { currentUser } from './auth.tsx'
@@ -56,7 +57,7 @@ app.get('/', async (c) =>
 		<HomePage
 			posts={await getPosts()}
 			admin={isAdmin(c)}
-			user={await currentUser(c)}
+			siteOwner={await getUser('admin')}
 		/>,
 	))
 

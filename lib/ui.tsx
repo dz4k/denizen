@@ -26,12 +26,12 @@ ${p.children}
 export const HomePage = (p: {
 	posts: Page<Post>
 	admin: boolean
-	user: User
+	siteOwner: User
 }) => (
-	<Layout title={p.user.profile.name}>
+	<Layout title={p.siteOwner.profile.name}>
 		<header>
 			<h1>
-				<a href='/'>{p.user.profile.name}</a>
+				<a href='/'>{p.siteOwner.profile.name}</a>
 			</h1>
 		</header>
 		<main>
