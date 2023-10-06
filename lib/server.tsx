@@ -32,16 +32,13 @@ export const app = new Hono<Env>()
 
 app.route('/.denizen/', Admin)
 
-app.use(
-	'*',
-	sessionMiddleware({
-		store: new DenoKvStore(db, 'Sessions'),
-		expireAfterSeconds: 60 * 60 * 24 * 7, // 1 week
-		cookieOptions: {
-			sameSite: 'Lax',
-		},
-	}),
-)
+app.use(sessionMiddleware({
+	store: new DenoKvStore(db, 'Sessions'),
+	expireAfterSeconds: 60 * 60 * 24 * 7, // 1 week
+	cookieOptions: {
+		sameSite: 'Lax',
+	},
+}))
 
 app.use('*', async (c, next) => {
 	if (
