@@ -52,6 +52,7 @@ app.use(
 	}),
 )
 
+// Do not serve any pages until initial setup is done
 app.use(async (c, next) => {
 	if (
 		c.req.path !== '/.denizen/initial-setup' &&
@@ -72,11 +73,13 @@ app.get('/', async (c) =>
 		/>,
 	))
 
+const internals = app.basePath('/.denizen')
+
 // #region Auth
 
-app.get('/.denizen/login', (c) => c.html(<LoginForm />))
+internals.get('/login', (c) => c.html(<LoginForm />))
 
-app.post('/.denizen/login', async (c) => {
+internals.post('/login', async (c) => {
 	const form = await c.req.formData()
 	const username = form.get('username')
 	const pw = form.get('pw')
@@ -95,7 +98,7 @@ app.post('/.denizen/login', async (c) => {
 	return c.redirect('/')
 })
 
-app.post('/.denizen/logout', (c) => {
+internals.post('/logout', (c) => {
 	const sesh = c.get('session')
 	sesh.deleteSession()
 	return c.redirect('/')
@@ -152,9 +155,9 @@ app.get(
 	(c) => c.redirect('https://youtube.com/watch?v=dQw4w9WgXcQ'),
 )
 
-app.get('/.denizen/initial-setup', (c) => c.html(<InitialSetup />))
+internals.get('/initial-setup', (c) => c.html(<InitialSetup />))
 
-app.post('/.denizen/initial-setup', async (c) => {
+internals.post('/initial-setup', async (c) => {
 	if (await initialSetupDone()) return c.status(403)
 	const form = await c.req.formData()
 	const pw = form.get('pw')
@@ -173,9 +176,9 @@ app.post('/.denizen/initial-setup', async (c) => {
 	return c.redirect('/', 303)
 })
 
-app.get('/.denizen/post/new', (c) => c.html(<PostEditor />))
+internals.get('/post/new', (c) => c.html(<PostEditor />))
 
-app.post('/.denizen/post/new', requireAdmin, async (c) => {
+internals.post('/post/new', requireAdmin, async (c) => {
 	const formdata = await c.req.formData()
 
 	const post = Post.fromFormData(formdata)
@@ -248,7 +251,7 @@ export const InitialSetup = (p: { error?: string }) => (
 
 // #region Files
 
-app.get('/.denizen/storage/:filename{.+}', async (c) => {
+internals.get('/storage/:filename{.+}', async (c) => {
 	const filename = c.req.param('filename')
 	if (!filename) return c.body('', 400)
 	try {
@@ -262,7 +265,7 @@ app.get('/.denizen/storage/:filename{.+}', async (c) => {
 	}
 })
 
-app.delete('/.denizen/storage/:filename{.+}', async (c) => {
+internals.delete('/storage/:filename{.+}', async (c) => {
 	const filename = c.req.param('filename')
 	if (!filename) return c.body('', 400)
 	try {
@@ -273,14 +276,14 @@ app.delete('/.denizen/storage/:filename{.+}', async (c) => {
 	}
 })
 
-app.post('/.denizen/storage/:filename{.+}', requireAdmin, async (c) => {
+internals.post('/storage/:filename{.+}', requireAdmin, async (c) => {
 	const filename = c.req.param('filename')
 
 	await storage.write(filename, await c.req.blob())
 	return c.redirect('/.denizen/files')
 })
 
-app.post('/.denizen/storage', requireAdmin, async (c) => {
+internals.post('/storage', requireAdmin, async (c) => {
 	const formdata = await c.req.formData()
 
 	const file = formdata.get('file')
@@ -289,13 +292,13 @@ app.post('/.denizen/storage', requireAdmin, async (c) => {
 	return c.redirect('/.denizen/files')
 })
 
-app.all('/.denizen/storage', (c) => {
+internals.all('/storage', (c) => {
 	const filename = c.req.query('filename')
 	if (!filename) return c.body('', 400)
 	return c.redirect("/.denizen/storage/" + encodeURIComponent(filename), 308)
 })
 
-app.get('/.denizen/files', async (c) => {
+internals.get('/files', async (c) => {
 	const files = await asyncIteratorToArray(storage.list())
 	return c.html(
 		<Layout title='Files -- Denizen'>
