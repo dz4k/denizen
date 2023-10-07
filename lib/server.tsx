@@ -1,7 +1,14 @@
 /** @jsx jsx */
 /** @jsxFrag Fragment */
 
-import { Context, Fragment, Hono, jsx, serveStatic } from '../deps/hono.ts'
+import {
+	Context,
+	Fragment,
+	Hono,
+	jsx,
+	MiddlewareHandler,
+	serveStatic,
+} from '../deps/hono.ts'
 import {
 	DenoKvStore,
 	Session,
@@ -10,8 +17,10 @@ import {
 
 import * as config from '../config.ts'
 
-import { FourOhFour, HomePage, PostDeleted, PostPage } from './ui.tsx'
+import { FourOhFour, HomePage, Layout, PostDeleted, PostPage } from './ui.tsx'
 import {
+	completeInitialSetup,
+	createPost,
 	db,
 	deletePost,
 	getPostByURL,
@@ -19,8 +28,9 @@ import {
 	getUser,
 	initialSetupDone,
 } from './db.ts'
-import { currentUser } from './auth.tsx'
-import Admin, { isAdmin, requireAdmin } from './admin.tsx'
+import { Card, Post } from './model.ts'
+import { login, signup } from './auth.ts'
+import { makeSlug } from './slug.ts'
 
 export type Env = {
 	Variables: {
@@ -31,17 +41,16 @@ export type Env = {
 
 export const app = new Hono<Env>()
 
-app.route('/.denizen/', Admin)
+app.use(
+	'*',
+	sessionMiddleware({
+		store: new DenoKvStore(db, 'Sessions'),
+		expireAfterSeconds: 60 * 60 * 24 * 7, // 1 week
+		cookieOptions: { sameSite: 'Lax' },
+	}),
+)
 
-app.use(sessionMiddleware({
-	store: new DenoKvStore(db, 'Sessions'),
-	expireAfterSeconds: 60 * 60 * 24 * 7, // 1 week
-	cookieOptions: {
-		sameSite: 'Lax',
-	},
-}))
-
-app.use('*', async (c, next) => {
+app.use(async (c, next) => {
 	if (
 		c.req.path !== '/.denizen/initial-setup' &&
 		!c.req.path.startsWith('/public/') && !await initialSetupDone()
@@ -61,10 +70,179 @@ app.get('/', async (c) =>
 		/>,
 	))
 
+// #region Auth
+
+app.get('/.denizen/login', (c) => c.html(<LoginForm />))
+
+app.post('/.denizen/login', async (c) => {
+	const form = await c.req.formData()
+	const username = form.get('username')
+	const pw = form.get('pw')
+	if (typeof username !== 'string' || typeof pw !== 'string') {
+		return c.html(<LoginForm error='Missing username or password' />, 400)
+	}
+	const user = login(username, pw)
+	if (!user) {
+		return c.html(<LoginForm error='Incorrect username or password' />, 400)
+	}
+
+	// Login successful
+
+	const sesh = c.get('session')
+	sesh.set('user', username)
+	return c.redirect('/')
+})
+
+app.post('/.denizen/logout', (c) => {
+	const sesh = c.get('session')
+	sesh.deleteSession()
+	return c.redirect('/')
+})
+
+// #region UI
+
+export const LoginForm = (p: { error?: string }) => (
+	<Layout title='Login -- Denizen'>
+		<header>
+			<h1>Log in</h1>
+		</header>
+		<main>
+			{p.error && <div class='bad box'>{p.error}</div>}
+			<form method='post' class='table rows'>
+				{
+					/* <p>
+					<label for='edit-username'>Username</label>
+					<input type='text' name='username' id='edit-username' />
+				</p> */
+				}
+				<input type='hidden' name='username' value='admin' required />
+				<p>
+					<label for='edit-pw'>Password</label>
+					<input type='password' name='pw' id='edit-pw' required />
+				</p>
+				<p>
+					<template />
+					<button type='submit'>Log in</button>
+				</p>
+			</form>
+		</main>
+	</Layout>
+)
+
+// #endregion
+
+// #endregion
+
+// #region Admin
+
+export const isAdmin = (c: Context<Env>) =>
+	c.var.session.get('user') === 'admin'
+
+export const requireAdmin: MiddlewareHandler<Env> = async (c, next) => {
+	if (!isAdmin(c)) {
+		if (c.req.method === 'GET') return c.redirect('/.denizen/login', 303)
+		else return c.status(401)
+	} else await next()
+}
+
 app.get(
 	'/wp-admin/',
 	(c) => c.redirect('https://youtube.com/watch?v=dQw4w9WgXcQ'),
 )
+
+app.get('/.denizen/initial-setup', (c) => c.html(<InitialSetup />))
+
+app.post('/.denizen/initial-setup', async (c) => {
+	if (await initialSetupDone()) return c.status(403)
+	const form = await c.req.formData()
+	const pw = form.get('pw')
+	if (typeof pw !== 'string') {
+		return c.html(<InitialSetup error='Missing username or password' />, 400)
+	}
+	const displayName = form.get('name')
+	if (typeof displayName !== 'string') {
+		return c.html(<InitialSetup error='Please enter a name' />, 400)
+	}
+	await signup('admin', pw, new Card(displayName))
+	await completeInitialSetup()
+
+	const sesh = c.get('session')
+	sesh.set('user', 'admin')
+	return c.redirect('/', 303)
+})
+
+app.get('/.denizen/post/new', (c) => c.html(<PostEditor />))
+
+app.post('/.denizen/post/new', requireAdmin, async (c) => {
+	const formdata = await c.req.formData()
+
+	const post = Post.fromFormData(formdata)
+	post.uid = new URL(
+		`${post.published.getFullYear()}/${
+			post.name ? makeSlug(post.name) : post.published.toISOString()
+		}`,
+		config.baseUrl // TODO derive this somehow
+	)
+	await createPost(post)
+
+	return c.redirect(post.uid!.pathname, 307)
+})
+
+// #region UI
+
+export const PostEditor = () => (
+	<Layout title='New Post'>
+		<header>
+			<h1>New Post</h1>
+		</header>
+		<main>
+			<script type='module' src='/public/post-editor.js'></script>
+			<post-editor></post-editor>
+		</main>
+	</Layout>
+)
+
+export const InitialSetup = (p: { error?: string }) => (
+	<Layout title='Initial Setup -- Denizen'>
+		<header>
+			<h1>Welcome to Denizen</h1>
+			<p class='big'>Choose a password to set up your site</p>
+		</header>
+		<main>
+			{p.error && <div class='bad box'>{p.error}</div>}
+			<form method='POST' class='table rows'>
+				<p>
+					<label for='edit-name'>Name</label>
+					<span class='f-col'>
+						<input
+							type='text'
+							name='name'
+							id='edit-name'
+							required
+							aria-describedby='desc-edit-name'
+						/>
+						<span id='desc-edit-name' class='<small> italic'>
+							Not a login username -- the name that will be displayed on your
+							homepage.
+						</span>
+					</span>
+				</p>
+				<p>
+					<label htmlFor='edit-pw'>Password</label>
+					<input type='password' name='pw' id='edit-pw' required />
+				</p>
+				<p>
+					<template />
+					<button type='submit'>Get started</button>
+				</p>
+			</form>
+		</main>
+	</Layout>
+)
+
+// #endregion
+
+// #endregion
 
 const accessPost = (c: Context<Env>) =>
 	getPostByURL(new URL(c.req.path, config.baseUrl))

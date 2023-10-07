@@ -135,7 +135,6 @@ export class Post {
 		}
 
 		// TODO configurable URL pattern
-		
 
 		return new Post(props)
 	}

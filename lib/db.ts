@@ -1,6 +1,6 @@
 import { Post } from './model.ts'
 import { asyncIteratorToArray } from './util.ts'
-import { User } from "./auth.tsx"
+import { User } from "./auth.ts"
 
 export const db = await Deno.openKv('dev.sqlite')
 

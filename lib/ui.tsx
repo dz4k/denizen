@@ -7,7 +7,7 @@ import { Post } from './model.ts'
 
 import * as config from '../config.ts'
 import { Page } from './db.ts'
-import { User } from './auth.tsx'
+import { User } from './auth.ts'
 
 export const Layout: FC<{
 	lang?: string
@@ -83,7 +83,7 @@ export const HomePage = (p: {
 				? (
 					<div class='margin-block f-row align-items:center'>
 						<a class='<button>' href='/.denizen/post/new'>New Post</a>
-						<form method='POST' action='/.denizen/auth/logout' class='contents'>
+						<form method='POST' action='/.denizen/logout' class='contents'>
 							<button>Logout</button>
 						</form>
 					</div>
