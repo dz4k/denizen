@@ -31,6 +31,8 @@ import {
 import { Card, Post } from './model.ts'
 import { login, signup } from './auth.ts'
 import { makeSlug } from './slug.ts'
+import * as storage from './storage.ts'
+import { asyncIteratorToArray } from './util.ts'
 
 export type Env = {
 	Variables: {
@@ -181,7 +183,7 @@ app.post('/.denizen/post/new', requireAdmin, async (c) => {
 		`${post.published.getFullYear()}/${
 			post.name ? makeSlug(post.name) : post.published.toISOString()
 		}`,
-		config.baseUrl // TODO derive this somehow
+		config.baseUrl, // TODO derive this somehow
 	)
 	await createPost(post)
 
@@ -241,6 +243,114 @@ export const InitialSetup = (p: { error?: string }) => (
 )
 
 // #endregion
+
+// #endregion
+
+// #region Files
+
+app.get('/.denizen/storage/:filename{.+}', async (c) => {
+	const filename = c.req.param('filename')
+	if (!filename) return c.body('', 400)
+	try {
+		const blob = await storage.read(filename)
+		console.log(blob)
+		return c.body(blob.stream(), 200, {
+			'Content-Type': blob.type,
+		})
+	} catch {
+		return c.body('', 404)
+	}
+})
+
+app.delete('/.denizen/storage/:filename{.+}', async (c) => {
+	const filename = c.req.param('filename')
+	if (!filename) return c.body('', 400)
+	try {
+		await storage.del(filename)
+		return c.body('', 200)
+	} catch {
+		return c.body('', 404)
+	}
+})
+
+app.post('/.denizen/storage/:filename{.+}', requireAdmin, async (c) => {
+	const filename = c.req.param('filename')
+
+	await storage.write(filename, await c.req.blob())
+	return c.redirect('/.denizen/files')
+})
+
+app.post('/.denizen/storage', requireAdmin, async (c) => {
+	const formdata = await c.req.formData()
+
+	const file = formdata.get('file')
+	if (!file || !(file instanceof File)) return c.body('No file!', 400)
+	await storage.write(file.name, file)
+	return c.redirect('/.denizen/files')
+})
+
+app.all('/.denizen/storage', (c) => {
+	const filename = c.req.query('filename')
+	if (!filename) return c.body('', 400)
+	return c.redirect("/.denizen/storage/" + encodeURIComponent(filename), 308)
+})
+
+app.get('/.denizen/files', async (c) => {
+	const files = await asyncIteratorToArray(storage.list())
+	return c.html(
+		<Layout title='Files -- Denizen'>
+			<header>
+				<h1>Files</h1>
+			</header>
+			<main>
+				{files.length
+					? (
+						<table>
+							<thead>
+								<tr>
+									<th>Filename</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							{files.map((file) => (
+								<tr>
+									<td>{file}</td>
+									<td>
+										<a
+											download={file}
+											href={`/.denizen/storage?filename=${file}`}
+											class='<button>'
+										>
+											Download
+										</a>{" "}
+										<button hx-delete={`/.denizen/storage?filename=${file}`}
+											hx-target='closest tr'>
+											Delete
+										</button>
+									</td>
+								</tr>
+							))}
+						</table>
+					)
+					: <p class='center big'>No files</p>}
+
+				<h2>Add file</h2>
+				<form
+					action='/.denizen/storage'
+					method='POST'
+					enctype='multipart/form-data'
+					class='table rows'
+				>
+					<label>
+						<span>File</span>
+						<input type='file' name='file' />
+					</label>
+					<button type='submit'>Upload</button>
+				</form>
+			</main>
+		</Layout>,
+	)
+})
 
 // #endregion
 
