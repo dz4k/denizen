@@ -1,2 +1,3 @@
-*.sqlite*
+dev.sqlite*
 _blobs
+build

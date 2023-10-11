@@ -7,7 +7,6 @@ import {
 	Hono,
 	jsx,
 	MiddlewareHandler,
-	serveStatic,
 } from '../deps/hono.ts'
 import {
 	DenoKvStore,
@@ -33,6 +32,9 @@ import { login, signup } from './auth.ts'
 import { makeSlug } from './slug.ts'
 import * as storage from './storage.ts'
 import { asyncIteratorToArray } from './util.ts'
+import { decodeBase64 } from 'https://deno.land/std@0.203.0/encoding/base64.ts'
+import { contentType } from "https://deno.land/std@0.203.0/media_types/content_type.ts";
+import * as path from 'https://deno.land/std@0.203.0/path/extname.ts'
 
 export type Env = {
 	Variables: {
@@ -61,8 +63,6 @@ app.use(async (c, next) => {
 		return c.redirect('/.denizen/initial-setup', 303)
 	} else await next()
 })
-
-app.use('/public/*', serveStatic({ root: '.' }))
 
 app.get('/', async (c) =>
 	c.html(
@@ -157,8 +157,28 @@ app.get(
 
 internals.get('/initial-setup', (c) => c.html(<InitialSetup />))
 
+const ilog = (a) => (console.log(a), a)
+
 internals.post('/initial-setup', async (c) => {
 	if (await initialSetupDone()) return c.status(403)
+
+	// Bootstrap static assets
+	const assets = (await import(
+		'../build/assets.json',
+		{ assert: { type: 'json' } }
+	)).default
+	await Promise.all(
+		Object.entries(assets).map(([name, b64]) =>
+			storage.write(
+				name,
+				new Blob([decodeBase64(ilog(b64) as string)], {
+					type: contentType(path.extname(name))
+				})
+			)
+		),
+	)
+
+	// Create admin account
 	const form = await c.req.formData()
 	const pw = form.get('pw')
 	if (typeof pw !== 'string') {
@@ -169,8 +189,11 @@ internals.post('/initial-setup', async (c) => {
 		return c.html(<InitialSetup error='Please enter a name' />, 400)
 	}
 	await signup('admin', pw, new Card(displayName))
+
+	// Mark setup as completed
 	await completeInitialSetup()
 
+	// Sign in to admin account
 	const sesh = c.get('session')
 	sesh.set('user', 'admin')
 	return c.redirect('/', 303)
@@ -201,7 +224,7 @@ export const PostEditor = () => (
 			<h1>New Post</h1>
 		</header>
 		<main>
-			<script type='module' src='/public/post-editor.js'></script>
+			<script type='module' src='/.denizen/storage/post-editor.js'></script>
 			<post-editor></post-editor>
 		</main>
 	</Layout>
@@ -295,7 +318,7 @@ internals.post('/storage', requireAdmin, async (c) => {
 internals.all('/storage', (c) => {
 	const filename = c.req.query('filename')
 	if (!filename) return c.body('', 400)
-	return c.redirect("/.denizen/storage/" + encodeURIComponent(filename), 308)
+	return c.redirect('/.denizen/storage/' + encodeURIComponent(filename), 308)
 })
 
 internals.get('/files', async (c) => {
@@ -325,9 +348,11 @@ internals.get('/files', async (c) => {
 											class='<button>'
 										>
 											Download
-										</a>{" "}
-										<button hx-delete={`/.denizen/storage?filename=${file}`}
-											hx-target='closest tr'>
+										</a>{' '}
+										<button
+											hx-delete={`/.denizen/storage?filename=${file}`}
+											hx-target='closest tr'
+										>
 											Delete
 										</button>
 									</td>

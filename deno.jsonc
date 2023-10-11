@@ -1,4 +1,8 @@
 {
+    "tasks": {
+        "run": "deno task bundle-assets && bin/denizen.ts",
+        "bundle-assets": "tool/assets_to_module.ts"
+    },
     "fmt": {
         "semiColons": false,
         "useTabs": true,

@@ -18,7 +18,7 @@ export const Layout: FC<{
 <html lang="${p.lang ?? config.locales[0]}">
 <meta charset=utf-8 name=viewport content=width=device-width>
 <title>${p.title}</title>
-<link rel=stylesheet href="${config.stylesheet}">
+<link rel=stylesheet href="/.denizen/storage/style.css">
 <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
 ${p.children}
 `
