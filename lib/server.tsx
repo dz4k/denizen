@@ -331,7 +331,9 @@ internals.get('/files', async (c) => {
 			<main>
 				{files.length
 					? (
-						<table>
+						<table style="width: 100%">
+							<col />
+							<col width="0.1%" />
 							<thead>
 								<tr>
 									<th>Filename</th>
@@ -341,7 +343,7 @@ internals.get('/files', async (c) => {
 							{files.map((file) => (
 								<tr>
 									<td>{file}</td>
-									<td>
+									<td style="white-space: nowrap">
 										<a
 											download={file}
 											href={`/.denizen/storage?filename=${file}`}

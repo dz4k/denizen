@@ -1,0 +1,44 @@
+:root {
+    font-family: Inter, sans-serif;
+
+    max-width: 90ch;
+    margin: auto;
+
+    --accent: seagreen;
+    --bg2: #dee;
+}
+
+button,
+.\<button\>,
+input[type=submit],
+input[type=reset],
+::file-selector-button {
+    font: inherit;
+    font-size: .9em;
+    font-weight: bold;
+    text-decoration: none;
+
+    display: inline-block;
+    padding: 0;
+    vertical-align: middle;
+
+    border: 1px solid var(--bg2);
+    background-color: var(--bg2);
+    color: var(--accent);
+}
+
+a,
+.\<a\> {
+    all: inherit;
+    color: var(--accent);
+    text-decoration: 1px dashed underline;
+}
+
+a:any-link {
+    cursor: pointer;
+}
+
+td,
+th {
+    border-block-end: 1px solid var(--bg2);
+}
