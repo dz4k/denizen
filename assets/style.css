@@ -6,6 +6,7 @@
 
     --accent: seagreen;
     --bg2: #dee;
+    --fg2: #355;
 }
 
 button,
@@ -34,10 +35,27 @@ a,
     text-decoration: 1px dashed underline;
 }
 
+.\<small\> {
+    font-size: .8em;
+    color: var(--fg2);
+}
 a:any-link {
     cursor: pointer;
 }
 
+.table {
+    display: table;
+    border-spacing: 0 .5em;
+}
+
+.row,
+.rows > * {
+    display: table-row;
+
+    > * {
+        display: table-cell;
+    }
+}
 td,
 th {
     border-block-end: 1px solid var(--bg2);

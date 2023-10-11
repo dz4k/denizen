@@ -241,7 +241,7 @@ export const InitialSetup = (p: { error?: string }) => (
 			<form method='POST' class='table rows'>
 				<p>
 					<label for='edit-name'>Name</label>
-					<span class='f-col'>
+					<span class='table rows'>
 						<input
 							type='text'
 							name='name'
@@ -256,7 +256,7 @@ export const InitialSetup = (p: { error?: string }) => (
 					</span>
 				</p>
 				<p>
-					<label htmlFor='edit-pw'>Password</label>
+					<label for='edit-pw'>Password</label>
 					<input type='password' name='pw' id='edit-pw' required />
 				</p>
 				<p>
