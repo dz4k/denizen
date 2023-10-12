@@ -1,6 +1,7 @@
 {
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "css.format.enable": false,
 
     "deno.enable": true,
     "deno.enablePaths": [

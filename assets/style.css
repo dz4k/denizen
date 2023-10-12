@@ -31,7 +31,11 @@ input[type=reset],
 
 a,
 .\<a\> {
-    all: inherit;
+    border: none;
+    border-radius: 0;
+    background: none;
+    display: inline;
+
     color: var(--accent);
     text-decoration: 1px dashed underline;
 }
@@ -42,20 +46,6 @@ a,
 }
 a:any-link {
     cursor: pointer;
-}
-
-.table {
-    display: table;
-    border-spacing: 0 .5em;
-}
-
-.row,
-.rows > * {
-    display: table-row;
-    & > * {
-        display: table-cell;
-        vertical-align: baseline;
-    }
 }
 
 td,
@@ -86,4 +76,17 @@ select {
     border-radius: 0;
     font: inherit;
     padding: .4em;
+}
+
+.grid {
+    display: grid;
+    gap: .5em;
+    align-items: first baseline;
+}
+
+.grid-row {
+    display: contents;
+    >:first-child {
+        grid-column-start: 1;
+    }
 }

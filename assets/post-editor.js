@@ -44,9 +44,7 @@ class PostEditor extends HTMLElement {
 		super()
 		this.append(html`
             <form data-form method=POST>
-				<div data-fields class='grid' style="
-					grid-template-columns: auto auto 1fr;
-					align-items: start;"></div>
+				<div data-fields class='grid' style='grid: auto-flow / auto auto 1fr'></div>
 				<p>
 					${
 			Object.entries(this.fields).map(([name, field]) =>
@@ -90,7 +88,7 @@ class PostEditor extends HTMLElement {
 
 		switch (field?.inputKind) {
 			case 'text':
-				this.fieldsDiv.append(html`<p data-field="${name}" class="contents">
+				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
 					${removeButton}
                     <label data-cols="2" for="edit-${name}-${id}">${field.label}</label>
                     <input data-cols="3" type="text" id="edit-${name}-${id}" name="${name}">
@@ -98,7 +96,7 @@ class PostEditor extends HTMLElement {
 				break
 
 			case 'html':
-				this.fieldsDiv.append(html`<p data-field="${name}" class="contents">
+				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
 					${removeButton}
                     <label for="edit-${name}-${id}">${field.label}</label>
                     <textarea id="edit-${name}-${id}" name="${name}"></textarea>
