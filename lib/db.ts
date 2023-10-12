@@ -1,6 +1,6 @@
 import { Post } from './model.ts'
 import { asyncIteratorToArray } from './util.ts'
-import { User } from "./auth.ts"
+import { User } from "./auth.tsx"
 
 export const db = await Deno.openKv('dev.sqlite')
 
@@ -60,9 +60,9 @@ export const updatePost = async (post: Post): Promise<string> => {
 	return post.iid!
 }
 
-export const deletePost = (post: Post) => {
+export const deletePost = async (post: Post) => {
 	post.deleted = true
-	updatePost(post)
+	await updatePost(post)
 }
 
 export const getPostByURL = async (url: URL): Promise<Post | null> => {
