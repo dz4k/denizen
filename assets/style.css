@@ -11,6 +11,7 @@
 
 button,
 .\<button\>,
+input[type=button],
 input[type=submit],
 input[type=reset],
 ::file-selector-button {
@@ -20,7 +21,7 @@ input[type=reset],
     text-decoration: none;
 
     display: inline-block;
-    padding: 0;
+    padding: 0 .4em;
     vertical-align: middle;
 
     border: 1px solid var(--bg2);
@@ -51,12 +52,38 @@ a:any-link {
 .row,
 .rows > * {
     display: table-row;
-
-    > * {
+    & > * {
         display: table-cell;
+        vertical-align: baseline;
     }
 }
+
 td,
 th {
+    vertical-align: baseline;
+    text-align: start;
     border-block-end: 1px solid var(--bg2);
+}
+
+input:is([type="text" i],
+    [type="text" i],
+    [type="date" i],
+    [type="datetime-local" i],
+    [type="email" i],
+    [type="month" i],
+    [type="number" i],
+    [type="password" i],
+    [type="search" i],
+    [type="tel" i],
+    [type="time" i],
+    [type="url" i],
+    [type="week" i],
+),
+textarea,
+select {
+    background-color: var(--bg2);
+    border: none;
+    border-radius: 0;
+    font: inherit;
+    padding: .4em;
 }

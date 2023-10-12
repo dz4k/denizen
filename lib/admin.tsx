@@ -7,14 +7,20 @@ import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
 
 import { Context, Hono, jsx, MiddlewareHandler } from '../deps/hono.ts'
 
-import { completeInitialSetup, createPost, initialSetupDone } from './db.ts'
-import { Env } from './server.tsx'
+import {
+	completeInitialSetup,
+	createPost,
+	getUser,
+	initialSetupDone,
+updateUser,
+} from './db.ts'
+import type { Env } from './server.tsx'
 import * as storage from './storage.tsx'
 import * as config from '../config.ts'
 import { Card, Post } from './model.ts'
 import { makeSlug } from './slug.ts'
-import { Layout } from "./ui.tsx"
-import { signup } from "./auth.tsx"
+import { Layout } from './ui.tsx'
+import { signup } from './auth.tsx'
 
 export const isAdmin = (c: Context<Env>) =>
 	c.var.session.get('user') === 'admin'
@@ -31,22 +37,6 @@ export default function installAdmin(app: Hono<Env>) {
 
 	app.post('/initial-setup', async (c) => {
 		if (await initialSetupDone()) return c.status(403)
-
-		// Bootstrap static assets
-		const assets = (await import(
-			'../build/assets.json',
-			{ assert: { type: 'json' } }
-		)).default
-		await Promise.all(
-			Object.entries(assets).map(([name, b64]) =>
-				storage.write(
-					name,
-					new Blob([decodeBase64(b64 as string)], {
-						type: contentType(path.extname(name)),
-					}),
-				)
-			),
-		)
 
 		// Create admin account
 		const form = await c.req.formData()
@@ -84,6 +74,60 @@ export default function installAdmin(app: Hono<Env>) {
 		await createPost(post)
 
 		return c.redirect(post.uid!.pathname, 307)
+	})
+
+	app.get('/console', requireAdmin, async (c) => {
+		const user = await getUser(c.var.session.get('user'))
+
+		return c.html(
+			<Layout title='Console'>
+				<header>
+					<h1>Console</h1>
+				</header>
+				<main>
+					<section>
+						<h2>Profile</h2>
+						<form
+							action='/.denizen/profile'
+							method='POST'
+							class='table rows'
+						>
+							<p>
+								<label for='profile.name'>Name</label>
+								<input
+									type='text'
+									id='profile.name'
+									name='name'
+									value={user.profile.name}
+								/>
+							</p>
+							<p>
+								<label for='profile.bio'>Bio</label>
+								<textarea name='note' id='profile.bio'>
+									{user.profile.note}
+								</textarea>
+							</p>
+                            <p>
+                                <template />
+                                <button>Save</button>
+                            </p>
+						</form>
+					</section>
+				</main>
+			</Layout>,
+		)
+	})
+
+	app.post('/profile', requireAdmin, async (c) => {
+		const formdata = await c.req.formData()
+
+		const user = await getUser('admin')
+		user.profile.name = formdata.get('name') as string
+		user.profile.note = [formdata.get('note') as string]
+
+        await updateUser(user)
+
+		return c.redirect('/.denizen/settings', 303)
 	})
 }
 

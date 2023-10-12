@@ -90,6 +90,11 @@ export const getUser = async (username: string) => {
 	return User.deserialize(res.value as Record<string, unknown>)
 }
 
+export const updateUser = async (user: User) => {
+	const key = userKey(user.username)
+	await db.set(key, user.serialize())
+}
+
 // #endregion
 
 // #region Bookkeeping

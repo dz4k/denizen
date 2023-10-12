@@ -1,14 +1,16 @@
 /** @jsx jsx */
 /** @jsxFrag Fragment */
 
-import { Context, Hono, jsx, Fragment } from '../deps/hono.ts'
+import { decodeBase64 } from 'https://deno.land/std@0.203.0/encoding/base64.ts'
+import { contentType } from 'https://deno.land/std@0.203.0/media_types/content_type.ts'
+import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
+
+import { Context, Fragment, Hono, jsx } from '../deps/hono.ts'
 import {
 	DenoKvStore,
 	Session,
 	sessionMiddleware,
 } from '../deps/hono_sessions.ts'
-
-import * as config from '../config.ts'
 
 import { Layout } from './ui.tsx'
 import {
@@ -22,6 +24,10 @@ import {
 import { installAuth } from './auth.tsx'
 import installAdmin, { isAdmin, requireAdmin } from './admin.tsx'
 import installStorage from './storage.tsx'
+
+import * as config from '../config.ts'
+
+import assets from '../build/assets.json' assert { type: 'json' }
 
 export type Env = {
 	Variables: {
@@ -45,7 +51,7 @@ app.use(
 app.use(async (c, next) => {
 	if (
 		c.req.path !== '/.denizen/initial-setup' &&
-		!c.req.path.startsWith('/public/') && !await initialSetupDone()
+		!c.req.path.startsWith('/.denizen/public/') && !await initialSetupDone()
 	) {
 		return c.redirect('/.denizen/initial-setup', 303)
 	} else await next()
@@ -56,9 +62,18 @@ installAuth(internals)
 installAdmin(internals)
 installStorage(internals)
 
+// Public Denizen assets
+for (const [name, data] of Object.entries(assets)) {
+	console.log(name)
+	internals.get(`/public/${name}`, (c) => {
+		c.header('Content-Type', contentType(path.extname(name)))
+		return c.body(decodeBase64(data))
+	})
+}
+
 app.get('/', async (c) => {
 	const { cursor } = c.req.query()
-	const siteOwner = await getUser("admin")
+	const siteOwner = await getUser('admin')
 	const posts = await getPosts({ cursor })
 	const admin = isAdmin(c)
 	return c.html(
@@ -67,6 +82,7 @@ app.get('/', async (c) => {
 				<h1>
 					<a href='/'>{siteOwner.profile.name}</a>
 				</h1>
+				{siteOwner.profile.note.length && <p>{siteOwner.profile.note}</p>}
 			</header>
 			<main>
 				{posts.data.map((post) => (
@@ -115,8 +131,9 @@ app.get('/', async (c) => {
 			<footer>
 				{admin
 					? (
-						<div class='margin-block f-row align-items:center'>
-							<a class='<button>' href='/.denizen/post/new'>New Post</a>
+						<div style="display: flex; flex-flow: row wrap; gap: 1em">
+							<a class='<button>' href='/.denizen/post/new'>+ New Post</a>
+							<a class='<button>' href='/.denizen/console'>Console</a>
 							<form method='POST' action='/.denizen/logout' class='contents'>
 								<button>Logout</button>
 							</form>
