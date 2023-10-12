@@ -9,6 +9,24 @@
     --fg2: #355;
 }
 
+header:has(+ main)::after,
+main + footer::before {
+    content: '';
+    display: block;
+    width: 2em;
+    margin: 2em 0;
+
+    border-block-start: 2px solid var(--accent);
+}
+
+main + footer::before {
+    border-block-start: 1px solid var(--fg2);
+}
+
+main {
+    min-height: 100%;
+}
+
 button,
 .\<button\>,
 input[type=button],
