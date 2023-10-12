@@ -139,7 +139,7 @@ export const PostEditor = () => (
 			<h1>New Post</h1>
 		</header>
 		<main>
-			<script type='module' src='/.denizen/storage/post-editor.js'></script>
+			<script type='module' src='/.denizen/public/post-editor.js'></script>
 			<post-editor></post-editor>
 		</main>
 	</Layout>
