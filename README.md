@@ -11,8 +11,6 @@ A CMS written in Deno, aiming to be one-click deployable.
 bin/denizen.tsx
 ~~~
 
-[denon]: https://deno.land/x/denon@2.5.0
-
 ## TODO
 
 (Incomplete list)
@@ -31,6 +29,7 @@ bin/denizen.tsx
   - [ ] Wait for Deno KV blob storage
 - [ ] Webmention sending
 - [ ] Webmention receiving
+- [X] IndieAuth
 - [ ] Micropub
   - [ ] Posting
   - [ ] Media endpoint

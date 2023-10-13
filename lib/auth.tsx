@@ -8,6 +8,8 @@ import type { Env } from './server.tsx'
 import { type Hono, jsx } from '../deps/hono.ts'
 import { Layout } from './ui.tsx'
 
+import * as config from '../config.ts'
+
 // #region User model
 
 export class User {
@@ -82,6 +84,23 @@ export function installAuth(app: Hono<Env>) {
 		return c.redirect('/')
 	})
 
+	app.post('/indieauth-cb', async (c) => {
+		const validate = await fetch('https://indieauth.com/auth', {
+			body: new URLSearchParams({
+				code: c.req.query('code')!,
+				redirect_uri: new URL('/indieauth-cb', config.baseUrl).href,
+				client_id: config.baseUrl.href,
+			}),
+		}).then((res) => res.json())
+		if (validate.me === config.baseUrl) {
+			const sesh = c.get('session')
+			sesh.set('user', 'admin')
+			return c.redirect('/')
+		} else {
+			return c.html(<LoginForm error='IndieAuth login failed' />, 401)
+		}
+	})
+
 	app.post('/logout', (c) => {
 		const sesh = c.get('session')
 		sesh.deleteSession()
@@ -114,6 +133,17 @@ export const LoginForm = (p: { error?: string }) => (
 					<template />
 					<button type='submit'>Log in</button>
 				</p>
+			</form>
+			<h2>Log in with IndieAuth</h2>
+			<form action='https://indieauth.com/auth' method='get'>
+				<input type='hidden' name='me' placeholder={config.baseUrl} />
+				<button type='submit'>Sign In</button>
+				<input type='hidden' name='client_id' value={config.baseUrl} />
+				<input
+					type='hidden'
+					name='redirect_uri'
+					value={new URL('/indieauth-cb', config.baseUrl)}
+				/>
 			</form>
 		</main>
 	</Layout>
