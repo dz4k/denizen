@@ -37,9 +37,9 @@ export class User {
 
 // #region Password handling
 
-const genSalt = bcrypt.genSalt
-const hashPW = (pw: string, salt: string) => bcrypt.hash(pw, salt)
-const checkPW = (pw: string, hash: string) => bcrypt.compare(pw, hash)
+const genSalt = bcrypt.genSaltSync
+const hashPW = (pw: string, salt: string) => bcrypt.hashSync(pw, salt)
+const checkPW = (pw: string, hash: string) => bcrypt.compareSync(pw, hash)
 
 export const signup = async (username: string, pw: string, card: Card) => {
 	const salt = await genSalt()
