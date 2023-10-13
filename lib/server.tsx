@@ -28,6 +28,7 @@ import installStorage from './storage.tsx'
 import * as config from '../config.ts'
 
 import assets from '../build/assets.json' assert { type: 'json' }
+import installFeeds from './feed.ts'
 
 export type Env = {
 	Variables: {
@@ -56,6 +57,8 @@ app.use(async (c, next) => {
 		return c.redirect('/.denizen/initial-setup', 303)
 	} else await next()
 })
+
+installFeeds(app)
 
 const internals = app.basePath('/.denizen')
 installAuth(internals)
