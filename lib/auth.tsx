@@ -4,9 +4,9 @@
 import { Card } from './model.ts'
 import * as bcrypt from '../deps/bcrypt.ts'
 import { createUser, getUser } from './db.ts'
-import type { Env } from "./server.tsx"
-import { type Hono, jsx } from "../deps/hono.ts"
-import { Layout } from "./ui.tsx"
+import type { Env } from './server.tsx'
+import { type Hono, jsx } from '../deps/hono.ts'
+import { Layout } from './ui.tsx'
 
 // #region User model
 
@@ -62,7 +62,7 @@ export const login = async (
 
 export function installAuth(app: Hono<Env>) {
 	app.get('/login', (c) => c.html(<LoginForm />))
-	
+
 	app.post('/login', async (c) => {
 		const form = await c.req.formData()
 		const username = form.get('username')
@@ -74,21 +74,20 @@ export function installAuth(app: Hono<Env>) {
 		if (!user) {
 			return c.html(<LoginForm error='Incorrect username or password' />, 400)
 		}
-	
+
 		// Login successful
-	
+
 		const sesh = c.get('session')
 		sesh.set('user', username)
 		return c.redirect('/')
 	})
-	
+
 	app.post('/logout', (c) => {
 		const sesh = c.get('session')
 		sesh.deleteSession()
 		return c.redirect('/')
 	})
 }
-
 
 // #region UI
 

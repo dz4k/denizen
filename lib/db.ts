@@ -1,11 +1,10 @@
 import { Post } from './model.ts'
 import { asyncIteratorToArray } from './util.ts'
-import { User } from "./auth.tsx"
+import { User } from './auth.tsx'
 
-export const db = 
-	Deno.env.get('LOCAL_DEV')
-		? await Deno.openKv('dev.sqlite')
-		: await Deno.openKv();
+export const db = Deno.env.get('LOCAL_DEV')
+	? await Deno.openKv('dev.sqlite')
+	: await Deno.openKv()
 
 /**
  * Generate an UUIDv7
@@ -31,7 +30,6 @@ export const bump = (tx: Deno.AtomicOperation) => tx.set(lastmodKey, Date.now())
 
 // #region Posts
 
-
 export const getPosts = async (
 	{ limit = 20, cursor }: PaginationOptions = {},
 ): Promise<Page<Post>> => {
@@ -42,7 +40,7 @@ export const getPosts = async (
 		const post = Post.fromMF2Json(kvEntry.value)
 		post.iid = kvEntry.key.at(-1) as string
 		return post
-	}).filter(post => !post.deleted)
+	}).filter((post) => !post.deleted)
 	return { data: posts, cursor: list.cursor }
 }
 
@@ -91,7 +89,7 @@ export const getPostByURL = async (url: URL): Promise<Post | null> => {
 
 // #region Users
 
-export const userKey = (username: string) => ["User", username]
+export const userKey = (username: string) => ['User', username]
 
 export const createUser = async (user: User) => {
 	const key = userKey(user.username)
@@ -116,12 +114,12 @@ export const updateUser = async (user: User) => {
 // #region Bookkeeping
 
 export const initialSetupDone = async () => {
-	const res = await db.get(["etc.", "Initial setup done"])
+	const res = await db.get(['etc.', 'Initial setup done'])
 	return res.value
 }
 
 export const completeInitialSetup = async () => {
-	await db.set(["etc.", "Initial setup done"], true)
+	await db.set(['etc.', 'Initial setup done'], true)
 }
 
 // #region

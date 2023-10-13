@@ -1,21 +1,24 @@
 {
-    "tasks": {
-        "dev": "LOCAL_DEV=1 deno task run",
-        "run": "deno task bundle-assets && bin/denizen.ts",
-        "deploy": "deno task bundle-assets && deployctl --project=denizen-test bin/denizen.ts --prod",
-        "bundle-assets": "tool/assets_to_module.ts"
-    },
-    "fmt": {
-        "semiColons": false,
-        "useTabs": true,
-        "indentWidth": 2,
-        "singleQuote": true
-    },
-    "lint": {
-        "rules": {
-            "exclude": [
-                "no-inferrable-types"
-            ]
-        }
-    }
+	"tasks": {
+		"dev": "LOCAL_DEV=1 deno task run",
+		"run": "deno task bundle-assets && bin/denizen.ts",
+		"deploy": "deno task bundle-assets && deployctl --project=denizen-test bin/denizen.ts --prod",
+		"bundle-assets": "tool/assets_to_module.ts"
+	},
+	"fmt": {
+		"semiColons": false,
+		"useTabs": true,
+		"indentWidth": 2,
+		"singleQuote": true,
+		"exclude": [
+			"**/*.md"
+		]
+	},
+	"lint": {
+		"rules": {
+			"exclude": [
+				"no-inferrable-types"
+			]
+		}
+	}
 }

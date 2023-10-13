@@ -57,9 +57,7 @@ export class Post {
 	genUrl() {
 		return new URL(
 			`/${this.published.getFullYear()}/${
-				this.name
-					? makeSlug(this.name)
-					: this.published.toISOString().slice(4)
+				this.name ? makeSlug(this.name) : this.published.toISOString().slice(4)
 			}`,
 			config.baseUrl,
 		)
@@ -316,7 +314,8 @@ export class Card {
 		if ('x-me-key' in p) {
 			const values = mf2StringArray(p['x-me-value'])
 			mf2StringArray(p['x-me-key']).forEach((name, i) =>
-				rv.me[name] = values[i])
+				rv.me[name] = values[i]
+			)
 		}
 
 		return rv

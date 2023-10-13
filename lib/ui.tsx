@@ -24,4 +24,3 @@ export const Layout: FC<{
 <link rel=alternate type=application/feed+json href=/feed.json>
 ${p.children}
 `
-

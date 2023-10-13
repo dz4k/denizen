@@ -35,7 +35,7 @@ class PostEditor extends HTMLElement {
 			label: 'Tag',
 			inputKind: 'text',
 			multiple: true,
-		}
+		},
 	}
 
 	constructor() {
@@ -56,9 +56,11 @@ class PostEditor extends HTMLElement {
 				<p><strong><button type="submit" class="big">Post</button></strong>
             </form>
         `)
-		this.fieldsDiv = /** @type {HTMLFormElement} */ (this.querySelector('[data-fields]'))
-		this.addFieldButtons =
-			/** @type {HTMLElement[]} */ (Array.from(this.querySelectorAll('[data-add-field]')))
+		this.fieldsDiv =
+			/** @type {HTMLFormElement} */ (this.querySelector('[data-fields]'))
+		this.addFieldButtons = /** @type {HTMLElement[]} */ (Array.from(
+			this.querySelectorAll('[data-add-field]'),
+		))
 		this.addFieldButtons.forEach((btn) => {
 			btn.addEventListener('click', () => {
 				this.addField(/** @type {string} */ (btn.dataset.addField))
@@ -75,7 +77,7 @@ class PostEditor extends HTMLElement {
 		if (!field) return
 		if (!field.multiple) {
 			const $field = this.querySelector(`[data-add-field="${name}"]`)
-			if ($field) $field.setAttribute("hidden", "")
+			if ($field) $field.setAttribute('hidden', '')
 		}
 		const id = idCounter++
 		const removeButton = html`
@@ -109,9 +111,12 @@ class PostEditor extends HTMLElement {
 		const field = this.fields[fieldName]
 		if (!field) return
 		el.remove()
-		if (!field.multiple && !this.fieldsDiv.querySelector(`[data-field="${fieldName}"]`)) {
+		if (
+			!field.multiple &&
+			!this.fieldsDiv.querySelector(`[data-field="${fieldName}"]`)
+		) {
 			const $field = this.querySelector(`[data-add-field="${fieldName}"]`)
-			if ($field) $field.setAttribute("hidden", "")
+			if ($field) $field.setAttribute('hidden', '')
 		}
 	}
 }

@@ -1,18 +1,18 @@
 {
-    "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modificationsIfAvailable",
-    "css.format.enable": false,
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "modificationsIfAvailable",
+	"css.format.enable": false,
 
-    "deno.enable": true,
-    "deno.enablePaths": [
-        "lib",
-        "bin",
-        "deps",
-        "tool",
-        "config.ts"
-    ],
-    "deno.unstable": true,
-    "deno.config": "./deno.jsonc",
+	"deno.enable": true,
+	"deno.enablePaths": [
+		"lib",
+		"bin",
+		"deps",
+		"tool",
+		"config.ts"
+	],
+	"deno.unstable": true,
+	"deno.config": "./deno.jsonc",
 
-    "editor.detectIndentation": true,
+	"editor.detectIndentation": true
 }
