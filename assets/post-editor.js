@@ -2,8 +2,6 @@
 /// <reference lib="dom" />
 /// <reference lib="es2021" />
 
-import { $, $$, on } from 'https://unpkg.com/missing.css@1.1.1/dist/js/19.js'
-
 /**
  * @typedef {object} Field
  * @prop {string} label
@@ -58,11 +56,11 @@ class PostEditor extends HTMLElement {
 				<p><strong><button type="submit" class="big">Post</button></strong>
             </form>
         `)
-		this.fieldsDiv = /** @type {HTMLFormElement} */ ($(this, '[data-fields]'))
+		this.fieldsDiv = /** @type {HTMLFormElement} */ (this.querySelector('[data-fields]'))
 		this.addFieldButtons =
-			/** @type {HTMLElement[]} */ ($$(this, '[data-add-field]'))
+			/** @type {HTMLElement[]} */ (Array.from(this.querySelectorAll('[data-add-field]')))
 		this.addFieldButtons.forEach((btn) => {
-			on(btn, 'click', () => {
+			btn.addEventListener('click', () => {
 				this.addField(/** @type {string} */ (btn.dataset.addField))
 			})
 			if (btn.dataset.default) btn.click()
@@ -76,7 +74,8 @@ class PostEditor extends HTMLElement {
 		const field = this.fields[name]
 		if (!field) return
 		if (!field.multiple) {
-			$(this, `[data-add-field="${name}"]`).hidden = true
+			const $field = this.querySelector(`[data-add-field="${name}"]`)
+			if ($field) $field.setAttribute("hidden", "")
 		}
 		const id = idCounter++
 		const removeButton = html`
@@ -110,8 +109,9 @@ class PostEditor extends HTMLElement {
 		const field = this.fields[fieldName]
 		if (!field) return
 		el.remove()
-		if (!field.multiple && !$(this.fieldsDiv, `[data-field="${fieldName}"]`)) {
-			$(this, `[data-add-field="${fieldName}"]`).hidden = false
+		if (!field.multiple && !this.fieldsDiv.querySelector(`[data-field="${fieldName}"]`)) {
+			const $field = this.querySelector(`[data-add-field="${fieldName}"]`)
+			if ($field) $field.setAttribute("hidden", "")
 		}
 	}
 }

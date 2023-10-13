@@ -77,7 +77,7 @@ export default function installAdmin(app: Hono<Env>) {
 	})
 
 	app.get('/console', requireAdmin, async (c) => {
-		const user = await getUser(c.var.session.get('user'))
+		const user = await getUser(c.var.session.get('user') as string)
 
 		return c.html(
 			<Layout title='Console'>
