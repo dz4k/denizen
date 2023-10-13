@@ -1,5 +1,6 @@
 {
     "tasks": {
+        "dev": "LOCAL_DEV=1 deno task run",
         "run": "deno task bundle-assets && bin/denizen.ts",
         "bundle-assets": "tool/assets_to_module.ts"
     },
