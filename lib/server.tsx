@@ -83,17 +83,27 @@ app.get('/', async (c) => {
 	const socials = Object.entries(siteOwner.profile.me)
 	return c.html(
 		<Layout title={siteOwner.profile.name}>
-			<header>
+			<header class='h-card'>
 				<h1>
-					<a href='/'>{siteOwner.profile.name}</a>
+					<a href='/' class='u-url u-uid p-name'>{siteOwner.profile.name}</a>
 				</h1>
-				{siteOwner.profile.note.length ? <p>{siteOwner.profile.note}</p> : ''}
+				{siteOwner.profile.note.length
+					? <p class='p-note'>{siteOwner.profile.note}</p>
+					: ''}
 				{socials.length
 					? (
 						<p>
 							{socials.map(([name, value]) => (
 								<>
-									<a rel='me' href={value}>{name}</a>&emsp;
+									<a
+										rel='me'
+										{...(value.startsWith('mailto')
+											? { class: 'u-email' }
+											: {})}
+										href={value}
+									>
+										{name}
+									</a>&emsp;
 								</>
 							))}
 						</p>
