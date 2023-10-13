@@ -46,7 +46,7 @@ input[type=reset],
     background-color: var(--bg2);
     color: var(--accent);
 
-    &:hover {
+    &:hover, &:focus {
         text-decoration: none;
         background: var(--accent);
         color: var(--bg2);
@@ -63,7 +63,7 @@ a,
     color: currentColor;
     text-decoration: 1px dashed var(--accent) underline;
 
-    &:hover {
+    &:hover, &:focus {
         color: var(--accent);
         text-decoration: 2px solid var(--fg2) underline;
     }
