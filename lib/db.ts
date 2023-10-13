@@ -24,7 +24,7 @@ export const lastmodKey = ['Last modified']
 
 export const lastMod = async () => {
 	const res = await db.get(lastmodKey)
-	return res.value ?? 0
+	return res.value as number ?? 0
 }
 
 export const bump = (tx: Deno.AtomicOperation) => tx.set(lastmodKey, Date.now())
