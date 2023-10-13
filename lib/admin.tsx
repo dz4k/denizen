@@ -12,7 +12,7 @@ import {
 	createPost,
 	getUser,
 	initialSetupDone,
-updateUser,
+	updateUser,
 } from './db.ts'
 import type { Env } from './server.tsx'
 import * as storage from './storage.tsx'
@@ -81,6 +81,7 @@ export default function installAdmin(app: Hono<Env>) {
 
 		return c.html(
 			<Layout title='Console'>
+				<script type='module' src='/.denizen/public/key-value-input.js' />
 				<header>
 					<h1>Console</h1>
 				</header>
@@ -90,9 +91,10 @@ export default function installAdmin(app: Hono<Env>) {
 						<form
 							action='/.denizen/profile'
 							method='POST'
-							class='table rows'
+							class='grid'
+							style='grid: auto-flow / auto 1fr'
 						>
-							<p>
+							<p class='grid-row'>
 								<label for='profile.name'>Name</label>
 								<input
 									type='text'
@@ -101,16 +103,27 @@ export default function installAdmin(app: Hono<Env>) {
 									value={user.profile.name}
 								/>
 							</p>
-							<p>
+							<p class='grid-row'>
 								<label for='profile.bio'>Bio</label>
 								<textarea name='note' id='profile.bio'>
 									{user.profile.note}
 								</textarea>
 							</p>
-                            <p>
-                                <template />
-                                <button>Save</button>
-                            </p>
+							<p class='grid-row'>
+								<label for='profile.socials'>Social links</label>
+								<kv-input
+									id='profile.socials'
+									name='me'
+									valuetype='url'
+									value={JSON.stringify(user.profile.me)}
+								/>
+							</p>
+							<p class='grid-row'>
+								<span />
+								<span>
+									<button>Save</button>
+								</span>
+							</p>
 						</form>
 					</section>
 				</main>
@@ -125,9 +138,18 @@ export default function installAdmin(app: Hono<Env>) {
 		user.profile.name = formdata.get('name') as string
 		user.profile.note = [formdata.get('note') as string]
 
-        await updateUser(user)
+		const socials = formdata.getAll('me[value]')
+		if (socials) {
+			formdata.getAll('me[key]').forEach((name, i) => {
+				name = (name as string).trim()
+				const value = (socials[i] as string).trim()
+				if (name !== '' && value != '') user.profile.me[name] = value
+			})
+		}
 
-		return c.redirect('/.denizen/settings', 303)
+		await updateUser(user)
+
+		return c.redirect('/.denizen/console', 303)
 	})
 }
 

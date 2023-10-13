@@ -274,6 +274,8 @@ export class Card {
 	// u-pronoun and p-x-pronoun-* are both nonstandard and not great, but they'll do
 	pronoun: (string | URL)[] = []
 
+	me: Record<string, string> = {}
+
 	// TODO: handle multiple names
 	// TODO: what is p-label?
 	// TODO: what to do with name parts?
@@ -311,6 +313,11 @@ export class Card {
 		if ('note' in p) rv.note = mf2StringArray(p.note)
 		if ('gender' in p) rv.gender = mf2StringArray(p.gender)
 		if ('pronoun' in p) rv.pronoun = mf2StringArray(p.pronoun) // TODO handle URL pronoun
+		if ('x-me-key' in p) {
+			const values = mf2StringArray(p['x-me-value'])
+			mf2StringArray(p['x-me-key']).forEach((name, i) =>
+				rv.me[name] = values[i])
+		}
 
 		return rv
 	}
@@ -348,6 +355,9 @@ export class Card {
 				gender: this.gender,
 				// u-pronoun and p-x-pronoun-* are both nonstandard and not great, but they'll do
 				pronoun: this.pronoun.map(String),
+
+				'x-me-key': Object.keys(this.me),
+				'x-me-value': Object.values(this.me),
 			},
 		})
 	}

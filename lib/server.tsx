@@ -76,13 +76,27 @@ app.get('/', async (c) => {
 	const siteOwner = await getUser('admin')
 	const posts = await getPosts({ cursor })
 	const admin = isAdmin(c)
+
+	const socials = Object.entries(siteOwner.profile.me)
 	return c.html(
 		<Layout title={siteOwner.profile.name}>
 			<header>
 				<h1>
 					<a href='/'>{siteOwner.profile.name}</a>
 				</h1>
-				{siteOwner.profile.note.length && <p>{siteOwner.profile.note}</p>}
+				{siteOwner.profile.note.length ? <p>{siteOwner.profile.note}</p> : ''}
+				{socials.length
+					? (
+						<p>
+							{socials.map(([name, value]) => (
+								<>
+									<a rel='me' href={value}>{name}</a>
+									{' '}
+								</>
+							))}
+						</p>
+					)
+					: ''}
 			</header>
 			<main>
 				{posts.data.map((post) => (
@@ -131,7 +145,7 @@ app.get('/', async (c) => {
 			<footer>
 				{admin
 					? (
-						<div style="display: flex; flex-flow: row wrap; gap: 1em">
+						<div style='display: flex; flex-flow: row wrap; gap: 1em'>
 							<a class='<button>' href='/.denizen/post/new'>+ New Post</a>
 							<a class='<button>' href='/.denizen/console'>Console</a>
 							<form method='POST' action='/.denizen/logout' class='contents'>
@@ -174,16 +188,18 @@ app.get('*', async (c) => {
 							/>
 						)
 						: ''}
-					<p>
-						<a href={post.uid} class='u-url u-uid'>
-							<time class='dt-published'>
-								{post.published.toLocaleString(config.locales)}
-							</time>
-						</a>
-					</p>
-					{post.updated
-						? <p>Updated on {post.updated.toLocaleString(config.locales)}</p>
-						: ''}
+					<div class='<small>'>
+						<p>
+							<a href={post.uid} class='u-url u-uid'>
+								<time class='dt-published'>
+									{post.published.toLocaleString(config.locales)}
+								</time>
+							</a>
+						</p>
+						{post.updated
+							? <p>Updated on {post.updated.toLocaleString(config.locales)}</p>
+							: ''}
+					</div>
 				</header>
 				<main
 					class='e-content'

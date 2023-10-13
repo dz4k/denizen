@@ -42,9 +42,15 @@ input[type=reset],
     padding: 0 .4em;
     vertical-align: middle;
 
-    border: 1px solid var(--bg2);
+    border: 1px solid var(--accent);
     background-color: var(--bg2);
     color: var(--accent);
+
+    &:hover {
+        text-decoration: none;
+        background: var(--accent);
+        color: var(--bg2);
+    }
 }
 
 a,
@@ -54,8 +60,13 @@ a,
     background: none;
     display: inline;
 
-    color: var(--accent);
-    text-decoration: 1px dashed underline;
+    color: currentColor;
+    text-decoration: 1px dashed var(--accent) underline;
+
+    &:hover {
+        color: var(--accent);
+        text-decoration: 2px solid var(--fg2) underline;
+    }
 }
 
 .\<small\> {
@@ -106,5 +117,17 @@ select {
     display: contents;
     >:first-child {
         grid-column-start: 1;
+    }
+}
+
+kv-input {
+    display: inline-block;
+    ul {
+        list-style: none;
+        margin: 0;
+        padding-inline-start: 0;
+        li + li {
+            margin-block-start: .25em;
+        }
     }
 }
