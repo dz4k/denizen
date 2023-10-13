@@ -1,3 +1,5 @@
+import { stringify } from '../deps/xml.ts'
+
 import { Hono } from '../deps/hono.ts'
 import { getPosts, getUser, lastMod } from './db.ts'
 import { Env } from './server.tsx'
@@ -53,7 +55,52 @@ export default function installFeeds(app: Hono<Env>) {
 			200,
 			{
 				'Content-Type': 'application/feed+json',
-                'Last-Modified': new Date(lastModified).toString(),
+				'Last-Modified': new Date(lastModified).toString(),
+			},
+		)
+	})
+
+	app.get('/feed.xml', async (c) => {
+		const lastModified = await lastMod()
+		const ifModSince = c.req.header('If-Modified-Since')
+		if (ifModSince) {
+			const ifModSinceDate = new Date(ifModSince).getTime()
+			if (lastModified < ifModSinceDate) return c.body('', 304)
+		}
+
+		const siteOwner = await getUser('admin')
+		const posts = await getPosts({
+			limit: 20,
+			cursor: c.req.query('cursor'),
+		})
+		return c.body(
+			stringify({
+				feed: {
+					'@xmlns': 'http://www.w3.org/2005/Atom',
+					title: siteOwner.profile.name,
+					link: { '@href': config.baseUrl.href },
+					updated: new Date(lastModified).toISOString(),
+					generator: {
+						'@uri': 'https://codeberg.org/dz4k/denizen',
+						'#text': 'Denizen',
+					},
+					entry: posts.data.map((post) => ({
+						id: post.uid,
+						title: post.name,
+						updated: post.updated ?? post.published,
+						content: {
+							'@type': 'html',
+							'#text': post.content,
+						},
+						summary: post.summary,
+						published: post.published,
+						category: post.category.map((cat) => ({ '@term': cat })),
+					})),
+				},
+			}),
+			200,
+			{
+				'Content-Type': 'application/atom+xml',
 			},
 		)
 	})
