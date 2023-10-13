@@ -93,8 +93,7 @@ app.get('/', async (c) => {
 						<p>
 							{socials.map(([name, value]) => (
 								<>
-									<a rel='me' href={value}>{name}</a>
-									{' '}
+									<a rel='me' href={value}>{name}</a>&emsp;
 								</>
 							))}
 						</p>
