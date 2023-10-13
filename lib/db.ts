@@ -18,10 +18,19 @@ export type PaginationOptions = {
 	cursor?: string
 }
 
-// #region Posts
-
 export const postKey = (post: Post) => ['Post', post.iid!]
 export const urlKey = (url: URL) => ['PostURL', url.href]
+export const lastmodKey = ['Last modified']
+
+export const lastMod = async () => {
+	const res = await db.get(lastmodKey)
+	return res.value ?? 0
+}
+
+export const bump = (tx: Deno.AtomicOperation) => tx.set(lastmodKey, Date.now())
+
+// #region Posts
+
 
 export const getPosts = async (
 	{ limit = 20, cursor }: PaginationOptions = {},
@@ -53,13 +62,17 @@ export const createPost = async (post: Post): Promise<string> => {
 	myUrlKey && tx.check({ key: myUrlKey, versionstamp: null })
 	tx.set(myPostKey, post.toMF2Json())
 	myUrlKey && tx.set(myUrlKey, post.iid)
+	bump(tx)
 	await tx.commit()
 	return post.iid
 }
 
 export const updatePost = async (post: Post): Promise<string> => {
 	const key = postKey(post)
-	await db.set(key, post.toMF2Json())
+	const tx = db.atomic()
+	tx.set(key, post.toMF2Json())
+	bump(tx)
+	await tx.commit()
 	return post.iid!
 }
 
