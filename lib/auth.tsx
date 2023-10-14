@@ -134,9 +134,9 @@ export const LoginForm = (p: { error?: string }) => (
 				</p>
 			</form>
 			<h2>Log in with IndieAuth</h2>
-			<form action='https://indieauth.com/auth' method='get'>
-				<input type='hidden' name='me' placeholder={config.baseUrl} />
+			<form action='https://indieauth.com/auth' method='GET'>
 				<button type='submit'>Sign In</button>
+				<input type='hidden' name='me' value={config.baseUrl} />
 				<input type='hidden' name='client_id' value={config.baseUrl} />
 				<input
 					type='hidden'

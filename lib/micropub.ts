@@ -6,7 +6,7 @@ import * as config from './config.ts'
 import * as storage from './storage.tsx'
 import { createPost, deletePost, getPostByURL, updatePost } from './db.ts'
 import { Post } from './model.ts'
-import { write } from './storage.tsx'
+import { isAdmin } from './admin.tsx'
 
 /*
     A conforming Micropub server:
@@ -21,13 +21,49 @@ import { write } from './storage.tsx'
  */
 
 export const installMicropub = (app: Hono<Env>) => {
+	app.use('*', async (c, next) => {
+		if (isAdmin(c)) {
+			// Authorized via session.
+			return next()
+		}
+
+		// Authorize via IndieAuth
+		let token
+		try {
+			const formdata = await c.req.formData()
+			token = formdata.get('access_token')
+		} catch {
+			// no formdata
+		}
+		if (!token) {
+			const auth = c.req.header('Authorization')
+			if (!(auth && auth.startsWith('Bearer'))) {
+				return unauthorized(c)
+			}
+			token = auth.slice(7)
+		}
+		const auth = await fetch('https://tokens.indieauth.com/token', {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Authorization': `Bearer ${token}`,
+			},
+		}).then((res) => res.json())
+
+		if (auth.me !== config.baseUrl.href) return forbidden(c)
+
+		c.set('authScopes', (auth.scopes as string).split(/\s+/g))
+
+		return next()
+	})
+
 	app.get('/', async (c) => {
 		const q = c.req.query('q')
 		if (q === 'config') {
-			return {
+			return c.json({
 				'media-endpoint':
 					new URL('/.denizen/micropub/media', config.baseUrl).href,
-			}
+			})
 		}
 		if (q === 'source') {
 			let url
@@ -39,9 +75,11 @@ export const installMicropub = (app: Hono<Env>) => {
 			const post = await getPostByURL(new URL(url))
 			return c.json(post?.toMF2Json())
 		}
-        return c.json({ error: 'query_not_implemented' }, 400)
+		return c.json({ error: 'query_not_implemented' }, 400)
 	})
 	app.post('/', async (c) => {
+		if (!c.var.authScopes.includes('create')) return forbidden(c)
+
 		const formdata = await c.req.formData()
 		// Remove array brackets
 		for (const [key, value] of formdata) {
@@ -103,3 +141,6 @@ export const installMicropub = (app: Hono<Env>) => {
 }
 
 const badRequest = (c: Context) => c.json({ error: 'invalid_request' }, 400)
+const unauthorized = (c: Context) => c.json({ error: 'unauthorized' }, 401)
+const forbidden = (c: Context) => c.json({ error: 'forbidden' }, 403)
+const insufficientScope = (c: Context) => c.json({ error: 'insufficient_scope' }, 403)

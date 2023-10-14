@@ -33,6 +33,7 @@ export type Env = {
 	Variables: {
 		session: Session
 		session_key_rotation: boolean
+		authScopes: string[]
 	}
 }
 
