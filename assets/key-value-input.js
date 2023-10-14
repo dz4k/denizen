@@ -15,10 +15,20 @@ export class KeyValueInput extends HTMLElement {
 
 		this.append(
 			this.$items = h('ul'),
-			this.$addItem = h('button', { type: 'button' }, '+'),
+			// this.$addItem = h('button', { type: 'button' }, '+ Add item'),
 		)
 
-		this.$addItem.addEventListener('click', () => this.addItem())
+		// this.$addItem.addEventListener('click', () => this.addItem())
+
+        this.addEventListener('input', (e) => {
+            const $item = e.target.closest('li')
+            const isLast = $item.nextElementSibling === null
+            if (!isLast) return
+
+            const inputs = Array.from($item.querySelectorAll('input'))
+            const isEmpty = !inputs.some((input) => input.value)
+            if (!isEmpty) this.addItem()
+        })
 
 		if (this.hasAttribute('value')) {
 			for (
@@ -28,7 +38,8 @@ export class KeyValueInput extends HTMLElement {
 			) {
 				this.addItem(name, value)
 			}
-		} else this.addItem()
+		}
+        this.addItem()
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -51,7 +62,6 @@ export class KeyValueInput extends HTMLElement {
 				name: this.name + '[key]',
 				'@aria-labelledby': `${this.labelId} ${keyLabelId}`,
 			}),
-			' ',
 			h('input', {
 				type: this.valueType,
 				name: this.name + '[value]',
@@ -61,6 +71,7 @@ export class KeyValueInput extends HTMLElement {
 			h('button', {
 				type: 'button',
 				onclick: () => this.removeItem($item),
+                className: '<a>',
 				title: 'Remove',
 				ariaLabel: 'Remove',
 			}, '×'),

@@ -121,7 +121,7 @@ export default function installAdmin(app: Hono<Env>) {
 							<p class='grid-row'>
 								<span />
 								<span>
-									<button>Save</button>
+									<button class="big">Save</button>
 								</span>
 							</p>
 						</form>

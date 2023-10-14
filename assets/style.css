@@ -6,6 +6,7 @@
 
     --accent: seagreen;
     --bg2: #dee;
+    --bg3: #ddd;
     --fg2: #355;
 }
 
@@ -42,14 +43,24 @@ input[type=reset],
     padding: 0 .4em;
     vertical-align: middle;
 
-    border: 1px solid var(--accent);
-    background-color: var(--bg2);
-    color: var(--accent);
+    background-color: var(--accent);
+    color: var(--bg2);
+    border: none;
 
     &:hover, &:focus {
         text-decoration: none;
-        background: var(--accent);
-        color: var(--bg2);
+        background: var(--bg2);
+        color: var(--accent);
+    }
+
+    &:active {
+        background-color: var(--accent);
+        color: var(--bg2);    
+    }
+
+    &.big {
+        font-size: 1em;
+        padding: .3em .5em;
     }
 }
 
@@ -84,7 +95,9 @@ th {
     border-block-end: 1px solid var(--bg2);
 }
 
-input:is([type="text" i],
+input:is(
+    :not([type]),
+    [type="text" i],
     [type="text" i],
     [type="date" i],
     [type="datetime-local" i],
@@ -102,15 +115,20 @@ textarea,
 select {
     background-color: var(--bg2);
     border: none;
+    border-block-end: 1px solid var(--accent);
     border-radius: 0;
     font: inherit;
+    padding: .4em;
+}
+
+label {
+    background-color: var(--bg3);
     padding: .4em;
 }
 
 .grid {
     display: grid;
     gap: .5em;
-    align-items: first baseline;
 }
 
 .grid-row {
@@ -127,7 +145,13 @@ kv-input {
         margin: 0;
         padding-inline-start: 0;
         li + li {
-            margin-block-start: .25em;
+            margin-block-start: .5em;
         }
+        input {
+            margin-inline-end: .5em;
+        }
+    }
+    button {
+        display: block;
     }
 }
