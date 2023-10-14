@@ -3,8 +3,7 @@ import { stringify } from '../deps/xml.ts'
 import { Hono } from '../deps/hono.ts'
 import { getPosts, getUser, lastMod } from './db.ts'
 import { Env } from './server.tsx'
-
-import * as config from '../config.ts'
+import * as config from './config.ts'
 
 export default function installFeeds(app: Hono<Env>) {
 	app.get('/feed.json', async (c) => {

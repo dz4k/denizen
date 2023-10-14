@@ -12,15 +12,16 @@ import {
 	createPost,
 	getUser,
 	initialSetupDone,
+	setConfig,
 	updateUser,
 } from './db.ts'
 import type { Env } from './server.tsx'
 import * as storage from './storage.tsx'
-import * as config from '../config.ts'
+import * as config from './config.ts'
 import { Card, Post } from './model.ts'
 import { makeSlug } from './slug.ts'
 import { Layout } from './ui.tsx'
-import { signup } from './auth.tsx'
+import { signup, User } from './auth.tsx'
 
 export const isAdmin = (c: Context<Env>) =>
 	c.var.session.get('user') === 'admin'
@@ -79,56 +80,7 @@ export default function installAdmin(app: Hono<Env>) {
 	app.get('/console', requireAdmin, async (c) => {
 		const user = await getUser(c.var.session.get('user') as string)
 
-		return c.html(
-			<Layout title='Console'>
-				<script type='module' src='/.denizen/public/key-value-input.js' />
-				<header>
-					<h1>Console</h1>
-				</header>
-				<main>
-					<section>
-						<h2>Profile</h2>
-						<form
-							action='/.denizen/profile'
-							method='POST'
-							class='grid'
-							style='grid: auto-flow / auto 1fr'
-						>
-							<p class='grid-row'>
-								<label for='profile.name'>Name</label>
-								<input
-									type='text'
-									id='profile.name'
-									name='name'
-									value={user.profile.name}
-								/>
-							</p>
-							<p class='grid-row'>
-								<label for='profile.bio'>Bio</label>
-								<textarea name='note' id='profile.bio'>
-									{user.profile.note}
-								</textarea>
-							</p>
-							<p class='grid-row'>
-								<label for='profile.socials'>Social links</label>
-								<kv-input
-									id='profile.socials'
-									name='me'
-									valuetype='url'
-									value={JSON.stringify(user.profile.me)}
-								/>
-							</p>
-							<p class='grid-row'>
-								<span />
-								<span>
-									<button class="big">Save</button>
-								</span>
-							</p>
-						</form>
-					</section>
-				</main>
-			</Layout>,
-		)
+		return c.html(<Console user={user} />)
 	})
 
 	app.post('/profile', requireAdmin, async (c) => {
@@ -149,6 +101,13 @@ export default function installAdmin(app: Hono<Env>) {
 
 		await updateUser(user)
 
+		return c.redirect('/.denizen/console', 303)
+	})
+
+	app.post('/site-settings', requireAdmin, async (c) => {
+		const formdata = await c.req.formData()
+		const siteUrl = formdata.get('site-url')
+		if (siteUrl) await setConfig('base url', siteUrl)
 		return c.redirect('/.denizen/console', 303)
 	})
 }
@@ -193,6 +152,10 @@ export const InitialSetup = (p: { error?: string }) => (
 					</span>
 				</p>
 				<p>
+					<label for='edit-site-url'>Site URL</label>
+					<input type='url' name='site-url' id='edit-site-url' />
+				</p>
+				<p>
 					<label for='edit-pw'>Password</label>
 					<input type='password' name='pw' id='edit-pw' required />
 				</p>
@@ -201,6 +164,77 @@ export const InitialSetup = (p: { error?: string }) => (
 					<button type='submit'>Get started</button>
 				</p>
 			</form>
+		</main>
+	</Layout>
+)
+
+export const Console = ({ user }: { user: User }) => (
+	<Layout title='Console'>
+		<script type='module' src='/.denizen/public/key-value-input.js' />
+		<header>
+			<h1>Console</h1>
+		</header>
+		<main>
+			<section>
+				<h2>Profile</h2>
+				<form
+					action='/.denizen/profile'
+					method='POST'
+					class='grid'
+					style='grid: auto-flow / auto 1fr'
+				>
+					<p class='grid-row'>
+						<label for='profile.name'>Name</label>
+						<input
+							type='text'
+							id='profile.name'
+							name='name'
+							value={user.profile.name}
+						/>
+					</p>
+					<p class='grid-row'>
+						<label for='profile.bio'>Bio</label>
+						<textarea name='note' id='profile.bio'>
+							{user.profile.note}
+						</textarea>
+					</p>
+					<p class='grid-row'>
+						<label for='profile.socials'>Social links</label>
+						<kv-input
+							id='profile.socials'
+							name='me'
+							valuetype='url'
+							value={JSON.stringify(user.profile.me)}
+						/>
+					</p>
+					<p class='grid-row'>
+						<span />
+						<span>
+							<button class='big'>Save</button>
+						</span>
+					</p>
+				</form>
+			</section>
+			<section>
+				<h2>Site</h2>
+				<form
+					action='/.denizen/site-settings'
+					method='POST'
+					class='grid'
+					style='grid: auto 1fr / auto-flow'
+				>
+					<p class='grid-row'>
+						<label for='edit-site-url'>Site URL</label>
+						<input type='url' name='site-url' id='edit-site-url' value={config.baseUrl} />
+					</p>
+					<p class='grid-row'>
+						<span />
+						<span>
+							<button class='big'>Save</button>
+						</span>
+					</p>
+				</form>
+			</section>
 		</main>
 	</Layout>
 )

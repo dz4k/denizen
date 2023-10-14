@@ -5,7 +5,7 @@ import { FC, Fragment, html, jsx } from '../deps/hono.ts'
 
 import { Post } from './model.ts'
 
-import * as config from '../config.ts'
+import * as config from './config.ts'
 import { Page } from './db.ts'
 import { type User } from './auth.tsx'
 

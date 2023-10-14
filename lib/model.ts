@@ -10,7 +10,7 @@ import {
 	removeEmptyProperties,
 } from './mf2.ts'
 import { makeSlug } from './slug.ts'
-import * as config from '../config.ts'
+import * as config from './config.ts'
 
 /**
  * @see http://microformats.org/wiki/h-entry

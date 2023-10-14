@@ -123,3 +123,15 @@ export const completeInitialSetup = async () => {
 }
 
 // #region
+
+// #region Config
+
+export const getConfig = async (name: string) => {
+	const res = await db.get(['Cfg', name])
+	return res.value
+}
+
+export const setConfig = (name: string, value: unknown) =>
+	db.set(['Cfg', name], value)
+
+// #endregion

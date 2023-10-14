@@ -7,8 +7,7 @@ import { createUser, getUser } from './db.ts'
 import type { Env } from './server.tsx'
 import { type Hono, jsx } from '../deps/hono.ts'
 import { Layout } from './ui.tsx'
-
-import * as config from '../config.ts'
+import * as config from './config.ts'
 
 // #region User model
 

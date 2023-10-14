@@ -24,11 +24,10 @@ import {
 import { installAuth } from './auth.tsx'
 import installAdmin, { isAdmin, requireAdmin } from './admin.tsx'
 import installStorage from './storage.tsx'
-
-import * as config from '../config.ts'
+import * as config from './config.ts'
+import installFeeds from './feed.ts'
 
 import assets from '../build/assets.json' assert { type: 'json' }
-import installFeeds from './feed.ts'
 
 export type Env = {
 	Variables: {
