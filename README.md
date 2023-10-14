@@ -25,7 +25,7 @@ bin/denizen.tsx
   - [X] Upload files
   - [X] Delete files
   - [ ] Edit code files (CSS, JS etc.) in the web UI
-  - [ ] File metadata (MIME type, date created/changed)
+  - [X] File metadata (MIME type, date created/changed)
   - [ ] Wait for Deno KV blob storage
 - [ ] Webmention sending
 - [ ] Webmention receiving
