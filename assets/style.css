@@ -126,6 +126,10 @@ label {
     padding: .4em;
 }
 
+.contents {
+    display: contents;
+}
+
 .grid {
     display: grid;
     gap: .5em;
