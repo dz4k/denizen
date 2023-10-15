@@ -121,6 +121,10 @@ select {
     padding: .4em;
 }
 
+::placeholder {
+    font-style: italic;
+}
+
 label {
     background-color: var(--bg3);
     padding: .4em;
@@ -142,7 +146,7 @@ label {
     }
 }
 
-kv-input {
+list-input {
     display: inline-block;
     ul {
         list-style: none;

@@ -170,7 +170,7 @@ export const InitialSetup = (p: { error?: string }) => (
 
 export const Console = ({ user }: { user: User }) => (
 	<Layout title='Console'>
-		<script type='module' src='/.denizen/public/key-value-input.js' />
+		<script type='module' src='/.denizen/public/list-input.js' />
 		<header>
 			<h1>Console</h1>
 		</header>
@@ -200,11 +200,11 @@ export const Console = ({ user }: { user: User }) => (
 					</p>
 					<p class='grid-row'>
 						<label for='profile.socials'>Social links</label>
-						<kv-input
+						<list-input
 							id='profile.socials'
 							name='me'
-							valuetype='url'
-							value={JSON.stringify(user.profile.me)}
+							fields='key=text;Link text&value=url;URL'
+							value={JSON.stringify(Object.entries(user.profile.me))}
 						/>
 					</p>
 					<p class='grid-row'>
@@ -221,7 +221,7 @@ export const Console = ({ user }: { user: User }) => (
 					action='/.denizen/site-settings'
 					method='POST'
 					class='grid'
-					style='grid: auto 1fr / auto-flow'
+					style='grid: auto-flow / auto 1fr'
 				>
 					<p class='grid-row'>
 						<label for='edit-site-url'>Site URL</label>
