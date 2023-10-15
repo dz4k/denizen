@@ -182,6 +182,12 @@ const accessPost = (c: Context<Env>) =>
 app.get('*', async (c) => {
 	const post = await accessPost(c)
 	if (post === null) return c.notFound()
+
+	if (/application\/(mf2\+)json/i.test(c.req.header('Expect')!)) {
+		if (post.deleted) return c.json({ deleted: true }, 410)
+		return c.json(post.toMF2Json())
+	}
+
 	if (post.deleted) return c.html(<PostDeleted />, 410) // "Gone"
 	const admin = isAdmin(c)
 	return c.html(
@@ -258,8 +264,11 @@ app.delete('*', requireAdmin, async (c) => {
 	return c.redirect('/', 303)
 })
 
-app.notFound((c) =>
-	c.html(
+app.notFound((c) => {
+	if (/application\/(.*\+)?json/i.test(c.req.header('Expect')!)) {
+		return c.json({ error: 'not_found', http: 404 })
+	}
+	return c.html(
 		<Layout title='="Not found'>
 			<main>
 				<h1>Page not found</h1>
@@ -267,4 +276,4 @@ app.notFound((c) =>
 			</main>
 		</Layout>,
 	)
-)
+})
