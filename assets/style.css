@@ -4,7 +4,10 @@
     max-width: 90ch;
     margin: auto;
 
+    background: var(--bg1);
+
     --accent: seagreen;
+    --bg1: white;
     --bg2: #dee;
     --bg3: #ddd;
     --fg2: #355;
@@ -44,7 +47,7 @@ input[type=reset],
     vertical-align: middle;
 
     background-color: var(--accent);
-    color: var(--bg2);
+    color: var(--bg1);
     border: none;
 
     &:hover, &:focus {

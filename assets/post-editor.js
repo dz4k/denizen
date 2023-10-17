@@ -7,8 +7,10 @@
  * @prop {string} label
  * @prop {boolean} [default]
  * @prop {boolean} [multiple] Can we have more than one of this field?
- * @prop {'text' | 'html'} inputKind
+ * @prop {'text' | 'html' | 'list'} inputKind
  */
+
+import './list-input.js'
 
 let idCounter = 0
 
@@ -32,9 +34,8 @@ class PostEditor extends HTMLElement {
 			default: true,
 		},
 		category: {
-			label: 'Tag',
-			inputKind: 'text',
-			multiple: true,
+			label: 'Tags',
+			inputKind: 'list',
 		},
 	}
 
@@ -102,6 +103,14 @@ class PostEditor extends HTMLElement {
                     <label for="edit-${name}-${id}">${field.label}</label>
                     <textarea id="edit-${name}-${id}" name="${name}"></textarea>
                 </p>`)
+				break
+			
+			case 'list':
+				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
+					${removeButton}
+					<label for="edit-${name}-${id}">${field.label}</label>
+					<list-input id="edit-${name}-${id}" name="${name}" fields='=text;' values='[[""]]'></list-input>
+				</p>`)
 				break
 		}
 	}
