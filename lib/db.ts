@@ -18,7 +18,7 @@ export type PaginationOptions = {
 }
 
 export const postKey = (post: Post) => ['Post', post.iid!]
-export const urlKey = (url: URL) => ['PostURL', url.href]
+export const urlKey = (url: URL) => ['PostURL', url.pathname]
 export const lastmodKey = ['Last modified']
 
 export const lastMod = async () => {

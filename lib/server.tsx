@@ -269,7 +269,7 @@ app.notFound((c) => {
 		return c.json({ error: 'not_found', http: 404 })
 	}
 	return c.html(
-		<Layout title='="Not found'>
+		<Layout title='Not found'>
 			<main>
 				<h1>Page not found</h1>
 				<p>HTTP 404</p>

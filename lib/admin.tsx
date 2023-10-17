@@ -134,10 +134,10 @@ export const InitialSetup = (p: { error?: string }) => (
 		</header>
 		<main>
 			{p.error && <div class='bad box'>{p.error}</div>}
-			<form method='POST' class='table rows'>
-				<p>
+			<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
+				<p class='grid-row'>
 					<label for='edit-name'>Name</label>
-					<span class='table rows'>
+					<span class='grid'>
 						<input
 							type='text'
 							name='name'
@@ -151,17 +151,22 @@ export const InitialSetup = (p: { error?: string }) => (
 						</span>
 					</span>
 				</p>
-				<p>
+				<p class='grid-row'>
 					<label for='edit-site-url'>Site URL</label>
 					<input type='url' name='site-url' id='edit-site-url' />
 				</p>
-				<p>
+				<p class='grid-row'>
 					<label for='edit-pw'>Password</label>
 					<input type='password' name='pw' id='edit-pw' required />
 				</p>
-				<p>
-					<template />
-					<button type='submit'>Get started</button>
+				<p class='grid-row'>
+					<button
+						type='submit'
+						class='big'
+						style='grid-column: 2; justify-self: start'
+					>
+						Get started
+					</button>
 				</p>
 			</form>
 		</main>
@@ -225,7 +230,12 @@ export const Console = ({ user }: { user: User }) => (
 				>
 					<p class='grid-row'>
 						<label for='edit-site-url'>Site URL</label>
-						<input type='url' name='site-url' id='edit-site-url' value={config.baseUrl} />
+						<input
+							type='url'
+							name='site-url'
+							id='edit-site-url'
+							value={config.baseUrl}
+						/>
 					</p>
 					<p class='grid-row'>
 						<span />
