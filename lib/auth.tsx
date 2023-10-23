@@ -88,10 +88,11 @@ export function installAuth(app: Hono<Env>) {
 			method: 'POST',
 			body: new URLSearchParams({
 				code: c.req.query('code')!,
-				redirect_uri: new URL('/indieauth-cb', config.baseUrl).href,
+				redirect_uri: new URL('/.denizen/indieauth-cb', config.baseUrl).href,
 				client_id: config.baseUrl.href,
 			}),
 		}).then((res) => res.json())
+		console.log(validate)
 		if (validate.me === config.baseUrl.href) {
 			const sesh = c.get('session')
 			sesh.set('user', 'admin')
