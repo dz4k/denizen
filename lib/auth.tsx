@@ -92,7 +92,7 @@ export function installAuth(app: Hono<Env>) {
 				client_id: config.baseUrl.href,
 			}),
 		}).then((res) => res.json())
-		if (validate.me === config.baseUrl) {
+		if (validate.me === config.baseUrl.href) {
 			const sesh = c.get('session')
 			sesh.set('user', 'admin')
 			return c.redirect('/')
