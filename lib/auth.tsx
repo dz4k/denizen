@@ -83,7 +83,7 @@ export function installAuth(app: Hono<Env>) {
 		return c.redirect('/')
 	})
 
-	app.post('/indieauth-cb', async (c) => {
+	app.get('/indieauth-cb', async (c) => {
 		const validate = await fetch('https://indieauth.com/auth', {
 			body: new URLSearchParams({
 				code: c.req.query('code')!,
