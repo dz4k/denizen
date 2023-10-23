@@ -141,7 +141,7 @@ export const LoginForm = (p: { error?: string }) => (
 				<input
 					type='hidden'
 					name='redirect_uri'
-					value={new URL('/indieauth-cb', config.baseUrl)}
+					value={new URL('/.denizen/indieauth-cb', config.baseUrl)}
 				/>
 			</form>
 		</main>
