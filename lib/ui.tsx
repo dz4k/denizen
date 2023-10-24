@@ -1,13 +1,9 @@
 /** @jsx jsx */
 /** @jsxFrag Fragment */
 
-import { FC, Fragment, html, jsx } from '../deps/hono.ts'
-
-import { Post } from './model.ts'
+import { FC, html } from '../deps/hono.ts'
 
 import * as config from './config.ts'
-import { Page } from './db.ts'
-import { type User } from './auth.tsx'
 
 export const Layout: FC<{
 	lang?: string

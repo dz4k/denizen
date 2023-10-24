@@ -1,10 +1,6 @@
 /** @jsx jsx */
 /** @jsxFrag Fragment */
 
-import { decodeBase64 } from 'https://deno.land/std@0.203.0/encoding/base64.ts'
-import { contentType } from 'https://deno.land/std@0.203.0/media_types/content_type.ts'
-import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
-
 import { Context, Hono, jsx, MiddlewareHandler } from '../deps/hono.ts'
 
 import {
@@ -16,7 +12,6 @@ import {
 	updateUser,
 } from './db.ts'
 import type { Env } from './server.tsx'
-import * as storage from './storage.tsx'
 import * as config from './config.ts'
 import { Card, Post } from './model.ts'
 import { makeSlug } from './slug.ts'

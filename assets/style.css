@@ -166,3 +166,7 @@ list-input {
         display: block;
     }
 }
+
+.h-entry {
+    margin: 2em;
+}
