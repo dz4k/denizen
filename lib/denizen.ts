@@ -6,6 +6,7 @@ import {
 	sessionMiddleware,
 } from '../deps/hono_sessions.ts'
 
+import './config.ts'
 import { db } from './db.ts'
 
 import * as fourOhFour from './routes/404.tsx'

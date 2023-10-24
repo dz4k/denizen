@@ -1,4 +1,4 @@
-/** @jsx hono.h */
+/** @jsx hono.jsx */
 /** @jsxFrag hono.fragment */
 
 import * as hono from '../../../deps/hono.ts'
