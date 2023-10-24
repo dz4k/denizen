@@ -75,7 +75,7 @@ export const get = async (c: hono.Context<Env>) => {
 				<footer>
 					{admin
 						? (
-							<div class='margin-block f-row align-items:center'>
+							<div style='display: flex; flex-flow: row wrap; gap: 1em'>
 								<form action='/.denizen/post/edit' class='contents'>
 									<input type='hidden' name='post' value={post.uid?.pathname} />
 									<button>Edit</button>
