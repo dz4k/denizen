@@ -1,11 +1,12 @@
 <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100">
+    <view id="no-padding" viewBox="7 7 93 93" />
     <path
         id="whale-body"
-        fill="#dee"
+        fill="#287"
         stroke="#287"
-        stroke-width="2"
+        stroke-width="6"
         d="
         M 60 30
         v 50  a 10 10 90 0 1 -10  10
@@ -16,44 +17,31 @@
     <path
         id="whale-mouth"
         fill="none"
-        stroke="#287"
-        stroke-width="2"
+        stroke="#dee"
+        stroke-width="6"
         d="
-        M 10 80
-        h 30  a 5 5 90 0 0  5 -5
+        M 12 75
+        h 28
+        a 4 4 90 0 0  4 -4
+        v -2
         " />
     <path
         id="whale-tail"
-        fill="#ddd"
+        fill="none"
         stroke="#287"
-        stroke-width="2"
+        stroke-width="6"
         d="
-        M 60 40
-        v -20 a 10 10 90 0 1  10 -10
+        M 60 20
+              a 10 10 90 0 1  10 -10
         h 10  a 10 10 90 0 1  10  10
-        v 20  a 10 10 90 0 1 -10  10
+        v 10  a 10 10 90 0 1 -10  10
         h -10 a 10 10 90 0 0 -10  10
         z
         " />
     <circle
         id="whale-eye"
-        fill="#287"
+        fill="#dee"
         cx="20"
-        cy="60"
+        cy="55"
         r="3" />
-    <path
-        id="whale-spray"
-        fill="none"
-        stroke="#287"
-        stroke-width="2"
-        d="
-        M 40 30
-        v -10
-        a 5 5 90 0 1 5 -5
-        M 35 25
-        v -15
-        M 30 30
-        v -10
-        a 5 5 90 0 0 -5 -5
-        " />
 </svg>
