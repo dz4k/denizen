@@ -6,7 +6,7 @@
 
     background: var(--bg1);
 
-    --accent: seagreen;
+    --accent: #287;
     --bg1: white;
     --bg2: #dee;
     --bg3: #ddd;
@@ -168,5 +168,5 @@ list-input {
 }
 
 .h-entry {
-    margin: 2em;
+    margin-block: 2em;
 }
