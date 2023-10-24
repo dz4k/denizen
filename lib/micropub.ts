@@ -143,4 +143,5 @@ export const installMicropub = (app: Hono<Env>) => {
 const badRequest = (c: Context) => c.json({ error: 'invalid_request' }, 400)
 const unauthorized = (c: Context) => c.json({ error: 'unauthorized' }, 401)
 const forbidden = (c: Context) => c.json({ error: 'forbidden' }, 403)
-const insufficientScope = (c: Context) => c.json({ error: 'insufficient_scope' }, 403)
+const insufficientScope = (c: Context) =>
+	c.json({ error: 'insufficient_scope' }, 403)

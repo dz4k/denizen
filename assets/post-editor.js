@@ -104,7 +104,7 @@ class PostEditor extends HTMLElement {
                     <textarea id="edit-${name}-${id}" name="${name}"></textarea>
                 </p>`)
 				break
-			
+
 			case 'list':
 				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
 					${removeButton}
