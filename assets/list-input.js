@@ -49,8 +49,10 @@ export class ListInput extends HTMLElement {
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		this.querySelectorAll(`[name^=${JSON.stringify(oldValue)}]`)
-			.forEach(($node) => $node.name = $node.name.replace(oldValue, newValue))
+		if (name === 'name') {
+			this.querySelectorAll(`[name^=${JSON.stringify(oldValue)}]`)
+				.forEach(($node) => $node.name = $node.name.replace(oldValue, newValue))
+		}
 	}
 
 	get name() {
