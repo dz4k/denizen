@@ -22,37 +22,38 @@
         margin-block: 2em;
     }
 
+    img {
+        display: block;
+    }
+
     a {
         color: #287;
+    }
+
+    .unlink:not(:hover, :focus-visible) {
+        text-decoration: none;
     }
 </style>
 
 <title>Denizen</title>
-
-<header>
-    <nav>
-        Denizen&emsp;
-        <a href="/get-started/">Get started</a>&emsp;
-        <a href="https://codeberg.org/dz4k/denizen">Source</a>
-    </nav>
-</header>
-<main>
-    <img src="denizen-logo.svg#no-padding" alt="Denizen logo" width="150">
-    <h1>Become a citizen of the world wide web</h1>
-    <p> Denizen is a personal website engine that connects you
-        to the IndieWeb and Fediverse on your own terms.
-        Find it on
-        <a href=https://codeberg.org/dz4k/denizen>Codeberg</a>.
-    <p> Denizen is written in JavaScript for Deno,
-        and can be deployed on Deno Deploy &mdash;
-        lowering the barrier of having a personal website
-        without the limitations of static blog generators.
-    <ul>
-        <li>It comes with a post editor, so you can post from anywhere.
-        <li>It supports Webmention (both receiving and sending)
-            and ActivityPub, as well as on-site comments.
-    </ul>
-</main>
+<h1>
+    <img src="denizen-logo.svg#no-padding" alt="Denizen logo" width="150" />
+    Become a citizen of the world wide web
+</h1>
+<p> Denizen is a personal website engine that connects you
+    to the IndieWeb and Fediverse on your own terms.
+    Find it on
+    <a href=https://codeberg.org/dz4k/denizen>Codeberg</a>.
+<p> <strong><a href="/get-started/" class="unlink">&gt; Get started</a></strong>
+<p> Denizen is written in JavaScript for Deno,
+    and can be deployed on Deno Deploy &mdash;
+    lowering the barrier of having a personal website
+    without the limitations of static blog generators.
+<ul>
+    <li>It comes with a post editor, so you can post from anywhere.
+    <li>It supports Webmention (both receiving and sending)
+        and ActivityPub, as well as on-site comments.
+</ul>
 <footer>
     Made with hate by <a href=https://denizaksimsek.com>Deniz</a>
 </footer>
