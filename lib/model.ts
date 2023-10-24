@@ -100,6 +100,9 @@ export class Post {
 		// discard empty values
 		for (const [k, v] of form.entries()) {
 			if (v === '') form.delete(k)
+			if (k.endsWith('[]')) {
+				form.append(k.slice(0, -2), v)
+			}
 		}
 
 		const props: Partial<Post> = {}

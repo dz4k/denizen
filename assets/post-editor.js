@@ -36,13 +36,13 @@ class PostEditor extends HTMLElement {
 		category: {
 			label: 'Tags',
 			inputKind: 'list',
+			default: true,
 		},
 	}
 
 	constructor() {
 		super()
 		this.append(html`
-            <form data-form method=POST>
 				<div data-fields class='grid' style='grid: auto-flow / auto auto 1fr'></div>
 				<p>
 					${
@@ -55,7 +55,6 @@ class PostEditor extends HTMLElement {
 		}
 				</p>
 				<p><strong><button type="submit" class="big">Post</button></strong>
-            </form>
         `)
 		this.fieldsDiv =
 			/** @type {HTMLFormElement} */ (this.querySelector('[data-fields]'))
@@ -66,14 +65,29 @@ class PostEditor extends HTMLElement {
 			btn.addEventListener('click', () => {
 				this.addField(/** @type {string} */ (btn.dataset.addField))
 			})
-			if (btn.dataset.default) btn.click()
+			if (btn.dataset.default && !this.hasAttribute('values')) btn.click()
 		})
+
+		// Initial value
+		if (this.hasAttribute('values')) {
+			const properties = JSON.parse(this.getAttribute('values'))
+			for (const [name, values] of Object.entries(properties)) {
+				console.log(name, this.fields[name], values)
+				if (this.fields[name]?.inputKind === 'list') {
+					this.addField(name, values.map((v) => [v]))
+				} else {
+					for (const value of values) {
+						this.addField(name, value)
+					}
+				}
+			}
+		}
 	}
 
 	/**
 	 * @param {string} name
 	 */
-	addField(name) {
+	addField(name, value) {
 		const field = this.fields[name]
 		if (!field) return
 		if (!field.multiple) {
@@ -93,7 +107,7 @@ class PostEditor extends HTMLElement {
 				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
 					${removeButton}
                     <label data-cols="2" for="edit-${name}-${id}">${field.label}</label>
-                    <input data-cols="3" type="text" id="edit-${name}-${id}" name="${name}">
+                    <input data-cols="3" type="text" id="edit-${name}-${id}" name="${name}" value="${value}">
                 </p>`)
 				break
 
@@ -101,7 +115,7 @@ class PostEditor extends HTMLElement {
 				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
 					${removeButton}
                     <label for="edit-${name}-${id}">${field.label}</label>
-                    <textarea id="edit-${name}-${id}" name="${name}"></textarea>
+                    <textarea id="edit-${name}-${id}" name="${name}">${value}</textarea>
                 </p>`)
 				break
 
@@ -109,7 +123,9 @@ class PostEditor extends HTMLElement {
 				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
 					${removeButton}
 					<label for="edit-${name}-${id}">${field.label}</label>
-					<list-input id="edit-${name}-${id}" name="${name}" fields='=text;' values='[[""]]'></list-input>
+					<list-input id="edit-${name}-${id}" name="${name}" fields='=text;' value='${
+					JSON.stringify(value)
+				}'></list-input>
 				</p>`)
 				break
 		}

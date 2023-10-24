@@ -8,9 +8,25 @@ import { Layout } from '../../layout.ts'
 import { Post } from '../../model.ts'
 import { makeSlug } from '../../common/slug.ts'
 import * as config from '../../config.ts'
-import { createPost } from '../../db.ts'
+import { createPost, getPost, getPostByURL } from '../../db.ts'
 
 export const get = (c: hono.Context<Env>) => c.html(<PostEditor />)
+
+export const getEdit = async (c: hono.Context<Env>) => {
+	let post
+	try {
+		const postPath = c.req.query('post')
+		post = await getPostByURL(new URL(postPath!, config.baseUrl))
+	} catch {
+		// invalid URL given
+	}
+	if (!post) return c.notFound()
+	return c.html(
+		<PostEditor
+			post={post}
+		/>,
+	)
+}
 
 export const post = async (c: hono.Context<Env>) => {
 	const formdata = await c.req.formData()
@@ -27,14 +43,26 @@ export const post = async (c: hono.Context<Env>) => {
 	return c.redirect(post.uid!.pathname, 307)
 }
 
-const PostEditor = () => (
+export const PostEditor = (p: { post?: Post }) => (
 	<Layout title='New Post'>
 		<header>
 			<h1>New Post</h1>
 		</header>
 		<main>
 			<script type='module' src='/.denizen/public/post-editor.js'></script>
-			<post-editor></post-editor>
+			{p.post
+				? (
+					<form hx-put={p.post.uid?.pathname} hx-target="main" hx-select="main">
+						<post-editor
+							values={p.post && JSON.stringify(p.post.toMF2Json().properties)}
+						/>
+					</form>
+				)
+				: (
+					<form method='POST'>
+						<post-editor />
+					</form>
+				)}
 		</main>
 	</Layout>
 )

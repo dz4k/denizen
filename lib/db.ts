@@ -115,7 +115,7 @@ export const updateUser = async (user: User) => {
 
 export const initialSetupDone = async () => {
 	const res = await db.get(['etc.', 'Initial setup done'])
-	return res.value
+	return res ? res.value : false
 }
 
 export const completeInitialSetup = async () => {

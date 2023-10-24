@@ -6,8 +6,10 @@ import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
-import { deletePost, getPostByURL } from '../../db.ts'
+import { deletePost, getPostByURL, updatePost } from '../../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
+import { Post } from '../../model.ts'
+import { PostEditor } from '../admin/posting.tsx'
 
 const accessPost = (c: hono.Context<Env>) =>
 	getPostByURL(new URL(c.req.path, config.baseUrl))
@@ -48,8 +50,21 @@ export const get = async (c: hono.Context<Env>) => {
 							</a>
 						</p>
 						{post.updated
-							? <p>Updated on {post.updated.toLocaleString(config.locales)}</p>
+							? (
+								<p>
+									Updated on
+									<time class='dt-updated'>
+										{post.updated.toLocaleString(config.locales)}
+									</time>
+								</p>
+							)
 							: ''}
+						{post.category.map((cat) => (
+							<>
+								#<span class='p-category'>{cat}</span>
+								{' '}
+							</>
+						))}
 					</div>
 				</header>
 				<main
@@ -61,6 +76,10 @@ export const get = async (c: hono.Context<Env>) => {
 					{admin
 						? (
 							<div class='margin-block f-row align-items:center'>
+								<form action='/.denizen/post/edit' class='contents'>
+									<input type='hidden' name='post' value={post.uid?.pathname} />
+									<button>Edit</button>
+								</form>
 								<form hx-delete={post.uid!.pathname} class='contents'>
 									<button>Delete</button>
 								</form>
@@ -71,6 +90,20 @@ export const get = async (c: hono.Context<Env>) => {
 			</article>
 		</Layout>,
 	)
+}
+
+export const put = async (c: hono.Context<Env>) => {
+  const oldPost = await getPostByURL(new URL(c.req.url))
+  if (!oldPost) return c.notFound()
+
+  const formdata = await c.req.formData()
+  
+  const newPost = Post.fromFormData(formdata)
+  newPost.iid = oldPost.iid
+  newPost.uid = oldPost.uid
+  await updatePost(newPost)
+  
+  return c.html(<PostEditor post={newPost} />)
 }
 
 export const del = async (c: hono.Context<Env>) => {
