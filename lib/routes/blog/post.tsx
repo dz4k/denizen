@@ -104,7 +104,8 @@ export const put = async (c: hono.Context<Env>) => {
   await updatePost(newPost)
   
   c.header('HX-Redirect', newPost.uid?.pathname)
-  return c.body("", 204)
+  c.status(204)
+  return c.res
 }
 
 export const del = async (c: hono.Context<Env>) => {
