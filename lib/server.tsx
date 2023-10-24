@@ -34,7 +34,6 @@ export type Env = {
 }
 export const app = new Hono<Env>()
 
-// @ts-ignore session middleware weird type bug
 app
 	.use(
 		'*',
