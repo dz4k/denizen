@@ -118,8 +118,8 @@ app.get('/', async (c) => {
 								{post.name}
 							</a>
 						</h2>
-						<p>
-							<time className='dt-published <small>'>
+						<p class='<small>'>
+							<time className='dt-published'>
 								{post.published.toLocaleString(config.locales)}
 							</time>
 							{post.updated && (
