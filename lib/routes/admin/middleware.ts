@@ -1,5 +1,5 @@
 import { Context, MiddlewareHandler } from '../../../deps/hono.ts'
-import { Env } from '../../server.tsx'
+import type { Env } from '../../denizen.ts'
 
 export const isAdmin = (c: Context<Env>) =>
 	c.var.session.get('user') === 'admin'

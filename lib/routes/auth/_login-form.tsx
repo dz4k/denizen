@@ -2,7 +2,7 @@
 /** @jsxFrag hono.fragment */
 
 import * as hono from '../../../deps/hono.ts'
-import { Layout } from '../../ui.tsx'
+import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
 

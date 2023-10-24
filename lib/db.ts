@@ -1,5 +1,5 @@
 import { Post } from './model.ts'
-import { asyncIteratorToArray } from './util.ts'
+import { asyncIteratorToArray } from './common/util.ts'
 import { User } from './model.ts'
 
 export const db = Deno.env.get('LOCAL_DEV')

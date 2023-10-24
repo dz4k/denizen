@@ -1,4 +1,4 @@
-import { z } from '../deps/zod.ts'
+import { z } from '../../deps/zod.ts'
 
 export const MF2Html = z.object({
 	html: z.string(),

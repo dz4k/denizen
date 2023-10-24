@@ -1,5 +1,5 @@
 import * as hono from '../../../deps/hono.ts'
-import { Env } from '../../server.tsx'
+import type { Env } from '../../denizen.ts'
 
 import { decodeBase64 } from 'https://deno.land/std@0.203.0/encoding/base64.ts'
 import { contentType } from 'https://deno.land/std@0.203.0/media_types/content_type.ts'

@@ -2,11 +2,11 @@
 /** @jsxFrag hono.fragment */
 
 import * as hono from '../../../deps/hono.ts'
-import { Env } from '../../server.tsx'
-import { Layout } from '../../ui.tsx'
+import type { Env } from '../../denizen.ts'
+import { Layout } from '../../layout.ts'
 
 import { Post } from '../../model.ts'
-import { makeSlug } from '../../slug.ts'
+import { makeSlug } from '../../common/slug.ts'
 import * as config from '../../config.ts'
 import { createPost } from '../../db.ts'
 

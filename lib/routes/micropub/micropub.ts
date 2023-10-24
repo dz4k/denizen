@@ -1,7 +1,7 @@
 import * as path from 'https://deno.land/std@0.203.0/path/extname.ts'
 
 import * as hono from '../../../deps/hono.ts'
-import { Env } from '../../server.tsx'
+import type { Env } from '../../denizen.ts'
 import * as config from '../../config.ts'
 import * as storage from '../../storage.ts'
 import { createPost, deletePost, getPostByURL, updatePost } from '../../db.ts'

@@ -1,5 +1,3 @@
-/** @jsx jsx */
-/** @jsxFrag Fragment */
 
 import { Hono } from '../deps/hono.ts'
 import {

@@ -8,8 +8,8 @@ import {
 	mf2Url,
 	mf2UrlArray,
 	removeEmptyProperties,
-} from './mf2.ts'
-import { makeSlug } from './slug.ts'
+} from './common/mf2.ts'
+import { makeSlug } from './common/slug.ts'
 import * as config from './config.ts'
 
 /**

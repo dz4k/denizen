@@ -2,8 +2,8 @@
 /** @jsxFrag hono.fragment */
 
 import * as hono from '../../../deps/hono.ts'
-import { Env } from '../../server.tsx'
-import { Layout } from '../../ui.tsx'
+import type { Env } from '../../denizen.ts'
+import { Layout } from '../../layout.ts'
 
 import * as bcrypt from '../../../deps/bcrypt.ts'
 

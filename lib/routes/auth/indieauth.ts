@@ -1,5 +1,5 @@
 import * as hono from '../../../deps/hono.ts'
-import { Env } from '../../server.tsx'
+import type { Env } from '../../denizen.ts'
 
 import * as config from '../../config.ts'
 import { LoginForm } from './_login-form.tsx'
