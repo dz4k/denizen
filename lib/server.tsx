@@ -138,7 +138,14 @@ app.get('/', async (c) => {
 									dangerouslySetInnerHTML={{ __html: post.summary }}
 								/>
 							)
-							: ''}
+							: post.name
+							? ''
+							: (
+								<div
+									class='e-content'
+									dangerouslySetInnerHTML={{ __html: post.content }}
+								/>
+							)}
 					</article>
 				))}
 				{posts.cursor
