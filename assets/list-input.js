@@ -38,7 +38,7 @@ export class ListInput extends HTMLElement {
 			if (!isEmpty) this.addItem()
 		})
 
-		if (this.hasAttribute('value')) {
+		if (this.getAttribute('value')) {
 			for (
 				const values of JSON.parse(this.getAttribute('value'))
 			) {
