@@ -92,6 +92,8 @@ export const get = async (c: hono.Context<Env>) => {
 							href={'/?cursor=' + encodeURIComponent(posts.cursor)}
 							hx-boost
 							hx-select='main :is(.h-entry, [rel=next])'
+							hx-target='this'
+							hx-swap='outerHTML'
 						>
 							Load more
 						</a>
