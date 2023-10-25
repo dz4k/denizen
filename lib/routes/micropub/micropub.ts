@@ -101,17 +101,12 @@ export const post = async (c: hono.Context<Env>) => {
 	} else {
 		// Assume formdata
 		const data = await c.req.parseBody()
-		for (const [name, value] of Object.entries(data)) {
+		for (let [name, value] of Object.entries(data)) {
+			if (name.endsWith('[]')) name = name.slice(0, -2)
 			if (Array.isArray(value)) {
 				for (const val of value) formdata.append(name, val)
 			} else {
 				formdata.append(name, value)
-			}
-		}
-		// Remove array brackets
-		for (const [key, value] of formdata) {
-			if (key.endsWith('[]')) {
-				formdata.set(key.slice(0, -2), value)
 			}
 		}
 	}
