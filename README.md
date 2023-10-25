@@ -17,7 +17,7 @@ bin/denizen.tsx
 
 - [X] Posting
 - [X] Deleting posts
-- [ ] Editing posts
+- [X] Editing posts
 - [ ] Post editor
   - [ ] Markdown and WYSIWYG support
 - [X] Authentication for post editor
@@ -27,6 +27,7 @@ bin/denizen.tsx
   - [ ] Edit code files (CSS, JS etc.) in the web UI
   - [X] File metadata (MIME type, date created/changed)
   - [ ] Wait for Deno KV blob storage
+- [ ] Import from RSS feed
 - [ ] Webmention sending
 - [ ] Webmention receiving
 - [X] IndieAuth
@@ -36,6 +37,10 @@ bin/denizen.tsx
   - [ ] Updating and deleting
   - [ ] Undeleting?
 - [ ] Fetching link embeds
+- [ ] Syndication to social media silos
 - [ ] ActivityPub maybe?
-- [ ] Settings UI (instead of config.ts)
+- [X] Settings UI (instead of config.ts)
+- [ ] Intl
+  - [ ] Translating the Denizen UI
+  - [ ] Multilingual sites
 - [ ] Plugin system

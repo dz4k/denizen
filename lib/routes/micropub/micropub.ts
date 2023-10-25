@@ -126,6 +126,7 @@ export const post = async (c: hono.Context<Env>) => {
 }
 
 export const postMedia = async (c: hono.Context<Env>) => {
+	if (!c.var.authScopes.includes('create')) return forbidden(c)
 	const formdata = await c.req.formData()
 	const file = formdata.get('file')
 	if (!file || !(file instanceof File)) return badRequest(c)
