@@ -10,7 +10,8 @@ import { makeSlug } from '../../common/slug.ts'
 import * as config from '../../config.ts'
 import { createPost, getPost, getPostByURL } from '../../db.ts'
 
-export const get = (c: hono.Context<Env>) => c.html(<PostEditor />)
+export const get = (c: hono.Context<Env>) =>
+	c.html(<PostEditor title='New post' />)
 
 export const getEdit = async (c: hono.Context<Env>) => {
 	let post
@@ -23,6 +24,7 @@ export const getEdit = async (c: hono.Context<Env>) => {
 	if (!post) return c.notFound()
 	return c.html(
 		<PostEditor
+			title='Edit'
 			post={post}
 		/>,
 	)
@@ -43,10 +45,10 @@ export const post = async (c: hono.Context<Env>) => {
 	return c.redirect(post.uid!.pathname, 307)
 }
 
-export const PostEditor = (p: { post?: Post }) => (
-	<Layout title='New Post'>
+export const PostEditor = (p: { title: string; post?: Post }) => (
+	<Layout title={p.title}>
 		<header>
-			<h1>New Post</h1>
+			<h1>{p.title}</h1>
 		</header>
 		<main>
 			<script type='module' src='/.denizen/public/post-editor.js'></script>
