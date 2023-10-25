@@ -5,7 +5,13 @@ import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 import * as config from '../../config.ts'
 import * as storage from '../../storage.ts'
-import { createPost, deletePost, getPostByURL, updatePost } from '../../db.ts'
+import {
+	createPost,
+	deletePost,
+	getPostByURL,
+	undeletePost,
+	updatePost,
+} from '../../db.ts'
 import { Post } from '../../model.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { makeSlug } from '../../common/slug.ts'
@@ -91,9 +97,10 @@ export const post = async (c: hono.Context<Env>) => {
 		: await c.req.parseBody()
 
 	if (reqBody.action === 'delete') {
+		if (!c.var.authScopes.includes('update')) return insufficientScope(c)
 		let url
 		try {
-			url = new URL(c.req.query('url')!)
+			url = new URL(reqBody.url)
 		} catch {
 			return badRequest(c)
 		}
@@ -102,19 +109,20 @@ export const post = async (c: hono.Context<Env>) => {
 		await deletePost(post)
 		return c.body('', 200)
 	} else if (reqBody.action === 'undelete') {
+		if (!c.var.authScopes.includes('update')) return insufficientScope(c)
 		let url
 		try {
-			url = new URL(c.req.query('url')!)
+			url = new URL(reqBody.url)
 		} catch {
 			return badRequest(c)
 		}
 		const post = await getPostByURL(url)
 		if (!post) return c.json({ error: 'not_found' }, 404)
-		post.deleted = false
-		await updatePost(post)
+		await undeletePost(post)
 		return c.body('', 200)
 	} else {
 		// Create post
+		if (!c.var.authScopes.includes('create')) return insufficientScope(c)
 		const createdPost = mime === 'application/json'
 			? Post.fromMF2Json(await c.req.json())
 			: Post.fromFormData(await c.req.formData())
@@ -138,7 +146,7 @@ export const post = async (c: hono.Context<Env>) => {
 }
 
 export const postMedia = async (c: hono.Context<Env>) => {
-	if (!c.var.authScopes.includes('create')) return forbidden(c)
+	if (!c.var.authScopes.includes('media')) return forbidden(c)
 	const formdata = await c.req.formData()
 	const file = formdata.get('file')
 	if (!file || !(file instanceof File)) return badRequest(c)
@@ -155,5 +163,5 @@ const badRequest = (c: hono.Context) =>
 	c.json({ error: 'invalid_request' }, 400)
 const unauthorized = (c: hono.Context) => c.json({ error: 'unauthorized' }, 401)
 const forbidden = (c: hono.Context) => c.json({ error: 'forbidden' }, 403)
-// const insufficientScope = (c: hono.Context) =>
-// 	c.json({ error: 'insufficient_scope' }, 403)
+const insufficientScope = (c: hono.Context) =>
+	c.json({ error: 'insufficient_scope' }, 401)

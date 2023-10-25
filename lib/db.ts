@@ -79,6 +79,11 @@ export const deletePost = async (post: Post) => {
 	await updatePost(post)
 }
 
+export const undeletePost = async (post: Post) => {
+	post.deleted = false
+	await updatePost(post)
+}
+
 export const getPostByURL = async (url: URL): Promise<Post | null> => {
 	const kvEntry = await db.get(urlKey(url))
 	if (kvEntry.value === null) return null
