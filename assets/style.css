@@ -170,3 +170,21 @@ list-input {
 .h-entry {
     margin-block: 2em;
 }
+
+.link-card {
+    position: relative;
+
+    /* TODO: add all interactive elements */
+    a, button, input, textarea, details {
+        position: relative;
+        z-index: 1;
+    }
+    .card-link {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+    }
+}

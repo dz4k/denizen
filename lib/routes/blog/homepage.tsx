@@ -47,16 +47,19 @@ export const get = async (c: hono.Context<Env>) => {
 			</header>
 			<main>
 				{posts.data.map((post) => (
-					<article class='h-entry margin-block padding-block'>
+					<article class='h-entry link-card'>
 						<h2>
 							<a class='p-name u-url u-uid' href={post.uid!.pathname}>
 								{post.name}
 							</a>
 						</h2>
 						<p class='<small>'>
-							<time className='dt-published'>
-								{post.published.toLocaleString(config.locales)}
-							</time>
+              <a href={post.uid?.pathname}>
+                <time className='dt-published'>
+                  {post.published.toLocaleString(config.locales)}
+                </time>
+                <span class="card-link"></span>
+              </a>
 							{post.updated && (
 								<>
 									{' '}&middot; Updated on{' '}
