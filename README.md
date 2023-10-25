@@ -31,10 +31,11 @@ bin/denizen.tsx
 - [ ] Webmention sending
 - [ ] Webmention receiving
 - [X] IndieAuth
-- [ ] Micropub
-  - [ ] Posting
-  - [ ] Media endpoint
-  - [ ] Updating and deleting
+- [X] Micropub
+  - [X] Posting
+  - [ ] Media endpoint (waiting on blob storage)
+  - [ ] Updating
+  - [X] Deleting
   - [ ] Undeleting?
 - [ ] Fetching link embeds
 - [ ] Syndication to social media silos
