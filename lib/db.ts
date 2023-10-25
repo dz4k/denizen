@@ -31,7 +31,7 @@ export const bump = (tx: Deno.AtomicOperation) => tx.set(lastmodKey, Date.now())
 // #region Posts
 
 export const getPosts = async (
-	{ limit = 20, cursor }: PaginationOptions = {},
+	{ limit = 100, cursor }: PaginationOptions = {},
 ): Promise<Page<Post>> => {
 	// TODO: pagination options
 	const list = db.list({ prefix: ['Post'] }, { limit, cursor, reverse: true })
