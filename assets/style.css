@@ -177,7 +177,7 @@ list-input {
     /* TODO: add all interactive elements */
     a, button, input, textarea, details {
         position: relative;
-        z-index: 1;
+        z-index: 2;
     }
     .card-link {
         position: absolute;
@@ -185,6 +185,6 @@ list-input {
         right: 0;
         bottom: 0;
         left: 0;
-        z-index: 0;
+        z-index: 1;
     }
 }

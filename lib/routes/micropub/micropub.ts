@@ -1,4 +1,5 @@
 import * as path from 'https://deno.land/std@0.203.0/path/extname.ts'
+import * as mediaType from 'https://deno.land/std@0.203.0/media_types/mod.ts'
 
 import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
@@ -7,7 +8,7 @@ import * as storage from '../../storage.ts'
 import { createPost, deletePost, getPostByURL, updatePost } from '../../db.ts'
 import { Post } from '../../model.ts'
 import { isAdmin } from '../admin/middleware.ts'
-import { makeSlug } from "../../common/slug.ts"
+import { makeSlug } from '../../common/slug.ts'
 
 /*
     A conforming Micropub server:
@@ -84,21 +85,38 @@ export const get = async (c: hono.Context<Env>) => {
 export const post = async (c: hono.Context<Env>) => {
 	if (!c.var.authScopes.includes('create')) return forbidden(c)
 
-	const data = await c.req.parseBody()
 	const formdata = new FormData()
-	for (const [name, value] of Object.entries(data)) {
-		if (Array.isArray(value)) {
-			for (const val of value) formdata.append(name, val)
-		} else {
-			formdata.append(name, value)
+	const [mime] = mediaType.parseMediaType(c.req.header('Content-Type')!)
+	if (mime === 'application/json') {
+		// JSON body
+		// Example: {"type":["h-entry"],"properties":{"name":[""],"content":[{"html":"<p>postingposting<\/p>"}]}}
+		const body = await c.req.json()
+		// slice(2) to remove leading `h-`
+		for (const h of body.type) formdata.append('h', h.slice(2))
+		for (const [name, values] of Object.entries(body.properties)) {
+			for (const value of values as string[]) {
+				formdata.append(name, value)
+			}
+		}
+	} else {
+		// Assume formdata
+		const data = await c.req.parseBody()
+		for (const [name, value] of Object.entries(data)) {
+			if (Array.isArray(value)) {
+				for (const val of value) formdata.append(name, val)
+			} else {
+				formdata.append(name, value)
+			}
+		}
+		// Remove array brackets
+		for (const [key, value] of formdata) {
+			if (key.endsWith('[]')) {
+				formdata.set(key.slice(0, -2), value)
+			}
 		}
 	}
-	// Remove array brackets
-	for (const [key, value] of formdata) {
-		if (key.endsWith('[]')) {
-			formdata.set(key.slice(0, -2), value)
-		}
-	}
+
+	console.log("formdata", [...formdata.entries()])
 
 	if (formdata.has('h') && formdata.get('h') !== 'entry') return badRequest(c)
 
