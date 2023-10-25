@@ -54,11 +54,11 @@ export const get = async (c: hono.Context<Env>) => {
 							</a>
 						</h2>
 						<p class='<small>'>
-              <a href={post.uid?.pathname} class='card-link'>
-                <time className='dt-published'>
-                  {post.published.toLocaleString(config.locales)}
-                </time>
-              </a>
+							<a href={post.uid?.pathname} class='card-link'>
+								<time className='dt-published'>
+									{post.published.toLocaleString(config.locales)}
+								</time>
+							</a>
 							{post.updated && (
 								<>
 									{' '}&middot; Updated on{' '}

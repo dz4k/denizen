@@ -93,19 +93,19 @@ export const get = async (c: hono.Context<Env>) => {
 }
 
 export const put = async (c: hono.Context<Env>) => {
-  const oldPost = await getPostByURL(new URL(c.req.url))
-  if (!oldPost) return c.notFound()
+	const oldPost = await getPostByURL(new URL(c.req.url))
+	if (!oldPost) return c.notFound()
 
-  const formdata = await c.req.formData()
-  
-  const newPost = Post.fromFormData(formdata)
-  newPost.iid = oldPost.iid
-  newPost.uid = oldPost.uid
-  await updatePost(newPost)
-  
-  c.header('HX-Redirect', newPost.uid?.pathname)
-  c.status(204)
-  return c.res
+	const formdata = await c.req.formData()
+
+	const newPost = Post.fromFormData(formdata)
+	newPost.iid = oldPost.iid
+	newPost.uid = oldPost.uid
+	await updatePost(newPost)
+
+	c.header('HX-Redirect', newPost.uid?.pathname)
+	c.status(204)
+	return c.res
 }
 
 export const del = async (c: hono.Context<Env>) => {

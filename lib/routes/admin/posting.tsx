@@ -52,7 +52,7 @@ export const PostEditor = (p: { post?: Post }) => (
 			<script type='module' src='/.denizen/public/post-editor.js'></script>
 			{p.post
 				? (
-					<form hx-put={p.post.uid?.pathname} hx-target="main" hx-select="main">
+					<form hx-put={p.post.uid?.pathname} hx-target='main' hx-select='main'>
 						<post-editor
 							values={p.post && JSON.stringify(p.post.toMF2Json().properties)}
 						/>

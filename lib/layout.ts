@@ -1,4 +1,3 @@
-
 import { FC, html } from '../deps/hono.ts'
 
 import * as config from './config.ts'

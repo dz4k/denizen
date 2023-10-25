@@ -21,7 +21,7 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 		c.req.path !== '/.denizen/initial-setup' &&
 		!c.req.path.startsWith('/.denizen/public/') && !await initialSetupDone()
 	) {
-    console.log(c.req.path, await initialSetupDone())
+		console.log(c.req.path, await initialSetupDone())
 		return c.redirect('/.denizen/initial-setup', 303)
 	} else await next()
 }

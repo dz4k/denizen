@@ -116,7 +116,7 @@ export const post = async (c: hono.Context<Env>) => {
 		}
 	}
 
-	console.log("formdata", [...formdata.entries()])
+	console.log('formdata', [...formdata.entries()])
 
 	if (formdata.has('h') && formdata.get('h') !== 'entry') return badRequest(c)
 
