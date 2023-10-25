@@ -85,37 +85,12 @@ export const get = async (c: hono.Context<Env>) => {
 export const post = async (c: hono.Context<Env>) => {
 	if (!c.var.authScopes.includes('create')) return forbidden(c)
 
-	const formdata = new FormData()
 	const [mime] = mediaType.parseMediaType(c.req.header('Content-Type')!)
-	if (mime === 'application/json') {
-		// JSON body
-		// Example: {"type":["h-entry"],"properties":{"name":[""],"content":[{"html":"<p>postingposting<\/p>"}]}}
-		const body = await c.req.json()
-		// slice(2) to remove leading `h-`
-		for (const h of body.type) formdata.append('h', h.slice(2))
-		for (const [name, values] of Object.entries(body.properties)) {
-			for (const value of values as string[]) {
-				formdata.append(name, value)
-			}
-		}
-	} else {
-		// Assume formdata
-		const data = await c.req.parseBody()
-		for (let [name, value] of Object.entries(data)) {
-			if (name.endsWith('[]')) name = name.slice(0, -2)
-			if (Array.isArray(value)) {
-				for (const val of value) formdata.append(name, val)
-			} else {
-				formdata.append(name, value)
-			}
-		}
-	}
+	const reqBody = mime === 'application/json'
+		? await c.req.json()
+		: await c.req.parseBody()
 
-	console.log('formdata', [...formdata.entries()])
-
-	if (formdata.has('h') && formdata.get('h') !== 'entry') return badRequest(c)
-
-	if (formdata.get('action') === 'delete') {
+	if (reqBody.action === 'delete') {
 		let url
 		try {
 			url = new URL(c.req.query('url')!)
@@ -126,9 +101,7 @@ export const post = async (c: hono.Context<Env>) => {
 		if (!post) return c.json({ error: 'not_found' }, 404)
 		await deletePost(post)
 		return c.body('', 200)
-	}
-
-	if (formdata.get('action') === 'undelete') {
+	} else if (reqBody.action === 'undelete') {
 		let url
 		try {
 			url = new URL(c.req.query('url')!)
@@ -140,23 +113,28 @@ export const post = async (c: hono.Context<Env>) => {
 		post.deleted = false
 		await updatePost(post)
 		return c.body('', 200)
+	} else {
+		// Create post
+		const createdPost = mime === 'application/json'
+			? Post.fromMF2Json(await c.req.json())
+			: Post.fromFormData(await c.req.formData())
+		// TODO: This is duplicated from routes/admin/posting.tsx#post.
+		// Factor out and move somewhere sensible.
+		// also make customizable.
+		createdPost.uid ??= new URL(
+			`${createdPost.published.getFullYear()}/${
+				createdPost.name
+					? makeSlug(createdPost.name)
+					: createdPost.published.toISOString()
+			}`,
+			config.baseUrl, // TODO derive this somehow
+		)
+		await createPost(createdPost)
+
+		return c.body('', 201, {
+			'Location': createdPost.uid!.href,
+		})
 	}
-
-	// Create post
-	const post = Post.fromFormData(formdata)
-	// TODO: This is duplicated from routes/admin/posting.tsx#post.
-	// Factor out and move somewhere sensible.
-	post.uid ??= new URL(
-		`${post.published.getFullYear()}/${
-			post.name ? makeSlug(post.name) : post.published.toISOString()
-		}`,
-		config.baseUrl, // TODO derive this somehow
-	)
-	await createPost(post)
-
-	return c.body('', 201, {
-		'Location': post.uid!.href,
-	})
 }
 
 export const postMedia = async (c: hono.Context<Env>) => {

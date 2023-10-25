@@ -1,4 +1,5 @@
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
+import { unescape } from 'https://deno.land/std@0.203.0/html/mod.ts'
 import {
 	mf2Date,
 	MF2Object,
@@ -66,19 +67,21 @@ export class Post {
 	static fromMF2Json(it: unknown): Post {
 		const { properties: p } = MF2Object.parse(it)
 
-		if (!('url' in p) && !('uid' in p)) throw new Error('h-entry has no URL')
-		if (!('published' in p)) throw new Error('h-entry has no publication date')
-
 		const rv = new Post({})
 
-		rv.published = mf2Date(p.published[0])
+		if ('published' in p) rv.published = mf2Date(p.published[0])
 		if ('x-deleted' in p) rv.deleted = p['x-deleted'][0] === 'true'
 		if ('uid' in p) rv.uid = mf2Url(p.uid[0])
 		if ('url' in p) rv.url = new Set(mf2UrlArray(p.url))
 		if ('updated' in p) rv.updated = mf2Date(p.updated[0])
 		if ('name' in p) rv.name = mf2String(p.name[0])
 		if ('summary' in p) rv.summary = mf2String(p.summary[0])
-		if ('content' in p) rv.content = mf2String(p.content[0])
+		if ('content' in p) {
+			const content = p.content[0]
+			if (typeof content === 'string') rv.content = unescape(content)
+			else if ('html' in content) rv.content = content.html
+			else if (content.value) rv.content = unescape(content.value)
+		}
 		if ('category' in p) rv.category = mf2StringArray(p.category)
 		if ('syndication' in p) rv.syndication = mf2UrlArray(p.syndication)
 		if ('photo' in p) rv.photo = mf2UrlArray(p.photo)
@@ -99,7 +102,6 @@ export class Post {
 	static fromFormData(form: FormData): Post {
 		// discard empty values
 		for (const [k, v] of form.entries()) {
-			if (v === '') form.delete(k)
 			if (k.endsWith('[]')) {
 				form.append(k.slice(0, -2), v)
 			}

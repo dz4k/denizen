@@ -2,7 +2,7 @@ import { z } from '../../deps/zod.ts'
 
 export const MF2Html = z.object({
 	html: z.string(),
-	value: z.string(),
+	value: z.string().optional(),
 })
 export type MF2Html = z.infer<typeof MF2Html>
 
@@ -34,6 +34,7 @@ export type MF2Object = {
 
 export const mf2String = (value: MF2PropertyValue): string => {
 	if (typeof value === 'string') return value
+	if ('html' in value) return value.html
 	if ('value' in value && typeof value.value === 'string') return value.value
 	return ''
 }
