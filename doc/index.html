@@ -33,6 +33,24 @@
     .unlink:not(:hover, :focus-visible) {
         text-decoration: none;
     }
+
+    .warn {
+        color: #a81;
+        padding: 1em 2em;
+
+        position: relative;
+
+        background-color: #fea;
+        border-radius: 2em;
+        box-shadow: 0 0 2em 2em white inset;
+        
+        &::before {
+            content: '⚠';
+            position: absolute;
+            left: .5em;
+            padding-block: inherit;
+        }
+    }
 </style>
 
 <title>Denizen</title>
@@ -40,7 +58,12 @@
     <img src="denizen-logo.svg#no-padding" alt="Denizen logo" width="150" />
     Become a citizen of the world wide web
 </h1>
-<p> Denizen is a personal website engine that connects you
+<div class="warn">
+    <p> Denizen is a <strong>pre-alpha work in progress</strong>.
+        You can see this progress on my
+        <a href="https://codeberg.org/dz4k/denizen#todo">to-do list</a>.
+</div>
+<p> <strong>Denizen</strong> is a personal website engine that connects you
     to the IndieWeb and Fediverse on your own terms.
     Find it on
     <a href=https://codeberg.org/dz4k/denizen>Codeberg</a>.
