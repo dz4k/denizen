@@ -1,7 +1,7 @@
 :root {
     font-family: Inter, sans-serif;
 
-    max-width: 90ch;
+    max-width: 70ch;
     margin: auto;
 
     background: var(--bg1);
