@@ -67,10 +67,17 @@ export const get = async (c: hono.Context<Env>) => {
 						))}
 					</div>
 				</header>
-				<main
-					class='e-content'
-					dangerouslySetInnerHTML={{ __html: post.content }}
-				>
+				<main>
+					{post.photo.map((photo) => (
+						<figure>
+							{/* TODO alt text for u-photo */}
+							<img class='u-photo' src={photo} alt='' />
+						</figure>
+					))}
+					<div
+						class='e-content'
+						dangerouslySetInnerHTML={{ __html: post.content }}
+					/>
 				</main>
 				<footer>
 					{admin
