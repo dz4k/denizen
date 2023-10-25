@@ -16,5 +16,6 @@ export const get = (c: hono.Context<Env>) => {
 				<p>HTTP 404</p>
 			</main>
 		</Layout>,
+		404,
 	)
 }
