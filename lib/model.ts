@@ -111,7 +111,7 @@ export class Post {
 
 		// Form data will not have any files
 		const get = (k: string) => form.get(k) as string
-		const getAll = (k: string) => form.getAll(k) as string[]
+		const getAll = (k: string) => form.getAll(k).filter(Boolean) as string[]
 		const getUrls = (k: string) =>
 			form.getAll(k).map((v) => new URL(v as string))
 
