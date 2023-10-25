@@ -7,6 +7,7 @@ import * as storage from '../../storage.ts'
 import { createPost, deletePost, getPostByURL, updatePost } from '../../db.ts'
 import { Post } from '../../model.ts'
 import { isAdmin } from '../admin/middleware.ts'
+import { makeSlug } from "../../common/slug.ts"
 
 /*
     A conforming Micropub server:
@@ -20,6 +21,9 @@ import { isAdmin } from '../admin/middleware.ts'
         Servers that specify a Media Endpoint MUST support the configuration query, other servers SHOULD support the configuration query
  */
 
+/**
+ * Authorize Micropub requests.
+ */
 export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	if (isAdmin(c)) {
 		// Authorized via session.
@@ -29,8 +33,8 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	// Authorize via IndieAuth
 	let token
 	try {
-		const formdata = await c.req.formData()
-		token = formdata.get('access_token')
+		const formdata = await c.req.parseBody()
+		token = formdata['access_token']
 	} catch {
 		// no formdata
 	}
@@ -48,10 +52,11 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 			'Authorization': `Bearer ${token}`,
 		},
 	}).then((res) => res.json())
+	const { me, scope } = auth
 
-	if (auth.me !== config.baseUrl.href) return forbidden(c)
+	if (me !== config.baseUrl.href) return forbidden(c)
 
-	c.set('authScopes', (auth.scopes as string).split(/\s+/g))
+	c.set('authScopes', (scope as string).split(/\s+/g))
 
 	return next()
 }
@@ -79,7 +84,15 @@ export const get = async (c: hono.Context<Env>) => {
 export const post = async (c: hono.Context<Env>) => {
 	if (!c.var.authScopes.includes('create')) return forbidden(c)
 
-	const formdata = await c.req.formData()
+	const data = await c.req.parseBody()
+	const formdata = new FormData()
+	for (const [name, value] of Object.entries(data)) {
+		if (Array.isArray(value)) {
+			for (const val of value) formdata.append(name, val)
+		} else {
+			formdata.append(name, value)
+		}
+	}
 	// Remove array brackets
 	for (const [key, value] of formdata) {
 		if (key.endsWith('[]')) {
@@ -118,6 +131,14 @@ export const post = async (c: hono.Context<Env>) => {
 
 	// Create post
 	const post = Post.fromFormData(formdata)
+	// TODO: This is duplicated from routes/admin/posting.tsx#post.
+	// Factor out and move somewhere sensible.
+	post.uid ??= new URL(
+		`${post.published.getFullYear()}/${
+			post.name ? makeSlug(post.name) : post.published.toISOString()
+		}`,
+		config.baseUrl, // TODO derive this somehow
+	)
 	await createPost(post)
 
 	return c.body('', 201, {
