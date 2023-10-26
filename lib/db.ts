@@ -62,6 +62,12 @@ export const createPost = async (post: Post): Promise<string> => {
 	myUrlKey && tx.set(myUrlKey, post.iid)
 	bump(tx)
 	await tx.commit()
+
+	// TODO: this doesn't feel like it belongs here
+	await db.enqueue({
+		type: 'send_webmentions',
+		post: post.toMF2Json(),
+	})
 	return post.iid
 }
 
@@ -71,6 +77,12 @@ export const updatePost = async (post: Post): Promise<string> => {
 	tx.set(key, post.toMF2Json())
 	bump(tx)
 	await tx.commit()
+
+	// TODO: this doesn't feel like it belongs here
+	await db.enqueue({
+		type: 'send_webmentions',
+		post: post.toMF2Json(),
+	})
 	return post.iid!
 }
 

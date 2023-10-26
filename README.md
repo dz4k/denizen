@@ -28,7 +28,12 @@ bin/denizen.tsx
   - [X] File metadata (MIME type, date created/changed)
   - [ ] Wait for Deno KV blob storage
 - [ ] Import from RSS feed
-- [ ] Webmention sending
+- [X] Webmention sending
+  - [X] https://webmention.rocks/ Pass all discovery tests
+  - [X] https://webmention.rocks/update/1
+  - [ ] https://webmention.rocks/update/2 notify URLs that have been removed
+        from a post
+  - [X] https://webmention.rocks/delete/1
 - [ ] Webmention receiving
 - [X] IndieAuth
 - [X] Micropub

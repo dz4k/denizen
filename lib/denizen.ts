@@ -6,6 +6,8 @@ import {
 } from '../deps/hono_sessions.ts'
 
 import './config.ts'
+import './webmention-send.ts'
+
 import { db } from './db.ts'
 
 import * as fourOhFour from './routes/404.tsx'
