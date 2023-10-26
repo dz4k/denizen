@@ -95,7 +95,7 @@ export async function sendWebmention(source: string, target: string) {
 	})
 }
 
-async function discoverWebmentionEndpoint(target: URL) {
+async function discoverWebmentionEndpoint(target: string | Request | URL) {
 	const res = await fetch(target)
 	for (const [header, value] of res.headers.entries()) {
 		if (header === 'link') {
