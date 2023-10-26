@@ -52,6 +52,9 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 		}
 		token = auth.slice(7)
 	}
+	if (token) {
+		if(c.req.header('Authorization')) return badRequest(c)
+	}
 	const auth = await fetch('https://tokens.indieauth.com/token', {
 		method: 'GET',
 		headers: {
