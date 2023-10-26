@@ -60,10 +60,10 @@ pre {
   position: relative;
 
   filter:
-    drop-shadow(0 0 0.5em #fea)
-    drop-shadow(0 0 1.0em #fea)
-    drop-shadow(0 0 1.5em #fea)
-    drop-shadow(0 0 1.5em #fea);
+    drop-shadow(0 0 0.5em #feaa)
+    drop-shadow(0 0 1.0em #feaa)
+    drop-shadow(0 0 1.5em #feaa)
+    drop-shadow(0 0 1.5em #feaa);
 
   &::before {
       content: '⚠';
