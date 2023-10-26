@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang=en>
+<meta charset=utf-8 name=viewport content=width=device-width>
+<link rel="stylesheet" href="/style.css">
+
+<title>Get Started&mdash;Denizen</title>
+
+<a href="/" class="unlink">&larr; Denizen</a>
+<h1>Get started</h1>
+
+<h2>Install</h2>
+
+<h3>Run on Deno Deploy</h3>
+<p>
+  On <a href="https://deno.com/deploy">Deno Deploy</a>,
+  create a <a href="https://docs.deno.com/deploy/manual/playgrounds">playground</a>
+  and enter the following code:
+<pre>
+import 'https://codeberg.org/dz4k/denizen/raw/branch/main/bin/denizen.ts'
+</pre>
+
+<h3>Run with Deno CLI</h3>
+<p>
+  You can run Denizen locally on your computer or on a server you own
+  with the following command:
+<pre>
+deno run -A --unstable https://codeberg.org/dz4k/denizen/raw/branch/main/bin/denizen.ts
+</pre>
+
+<h2>Setup</h2>
+<p>
+  Opening your Denizen site
+  (e.g. <code>clean-fox-95.deno.dev</code>
+  or <code>http://localhost:8000</code>)
+  will show the initial setup interface.
+  Fill out your name (or the name of your site),
+  the site URL if you own a domain
+  (e.g. <code>https://my-cool-site.example</code>),
+  and set a password for the admin interface.
+  After you click <q>Get started</q>, you will be redirected to your site's homepage.
+</p>
+
+<h2>Login</h2>
+<p>
+  If you are logged out of the admin account, go to
+  <code>http://&lt;your Denizen site>/.denizen/login</code>
+  to log in.
+</p>
+
+<h2>Create your first post</h2>
+<p>
+  Click <q>+ New Post</q> at the bottom of the home page
+  to create your first post.
+  (This button will only show up if you are logged in).
+  The post title and tags ar optional. You can add more fields
+  (e.g. a summary or photo) using the buttons below.
+  Click <q>Post</q> to post.
+</p>
+
+<h2>Customize your profile</h2>
+<p>
+  Click <q>Console</q> at the bottom of the home page
+  to go to the site settings.
+  (This button will only show up if you are logged in).
+  You can edit your profile and bio and add social links.
+  You can also change your site URL (e.g. if you just bought a domain name).
+</p>
