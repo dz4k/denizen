@@ -59,10 +59,12 @@ pre {
 
   position: relative;
 
-  background-color: #fea;
-  border-radius: 2em;
-  box-shadow: 0 0 2em 2em white inset;
-  
+  filter:
+    drop-shadow(0 0 0.5em #fea)
+    drop-shadow(0 0 1.0em #fea)
+    drop-shadow(0 0 1.5em #fea)
+    drop-shadow(0 0 1.5em #fea);
+
   &::before {
       content: '⚠';
       position: absolute;
