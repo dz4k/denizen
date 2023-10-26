@@ -86,6 +86,9 @@ export const get = async (c: hono.Context<Env>) => {
 		const post = await getPostByURL(new URL(url))
 		return c.json(post?.toMF2Json())
 	}
+	if (q === 'syndicate-to') {
+		return c.json({ 'syndicate-to': [] })
+	}
 	return c.json({ error: 'query_not_implemented' }, 400)
 }
 export const post = async (c: hono.Context<Env>) => {
