@@ -7,6 +7,7 @@ html {
       /* see: https://modernfontstacks.com/ 'neo-grotesque' */;
   font: 1.2em/1.4em var(--font);
   accent-color: #287;
+  color-scheme: light dark;
   overflow-y: scroll;
 }
 
@@ -64,6 +65,14 @@ pre {
     drop-shadow(0 0 1.0em #feaa)
     drop-shadow(0 0 1.5em #feaa)
     drop-shadow(0 0 1.5em #feaa);
+
+  @media (prefers-color-scheme: dark) {
+    filter:
+    drop-shadow(0 0 0.5em #540a)
+    drop-shadow(0 0 1.0em #540a)
+    drop-shadow(0 0 1.5em #540a)
+    drop-shadow(0 0 1.5em #540a);
+  }
 
   &::before {
       content: '⚠';
