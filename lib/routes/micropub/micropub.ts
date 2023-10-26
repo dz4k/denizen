@@ -120,6 +120,21 @@ export const post = async (c: hono.Context<Env>) => {
 		if (!post) return c.json({ error: 'not_found' }, 404)
 		await undeletePost(post)
 		return c.body('', 200)
+	} else if (reqBody.action === 'update') {
+		if (
+			!(typeof reqBody.replace === 'object' ||
+				typeof reqBody.add === 'object' ||
+				typeof reqBody.delete === 'object')
+		) {
+			return badRequest(c)
+		}
+		const post = await getPostByURL(new URL(reqBody.url))
+		if (!post) return badRequest(c)
+		if (reqBody.replace) post.replace(reqBody.replace)
+		if (reqBody.add) post.add(reqBody.add)
+		if (reqBody.delete) post.delete(reqBody.delete)
+		await updatePost(post)
+		return c.body(null, 204)
 	} else {
 		// Create post
 		if (!c.var.authScopes.includes('create')) return insufficientScope(c)

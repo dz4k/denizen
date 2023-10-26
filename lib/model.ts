@@ -3,6 +3,7 @@ import { unescape } from 'https://deno.land/std@0.203.0/html/mod.ts'
 import {
 	mf2Date,
 	MF2Object,
+	MF2Properties,
 	MF2PropertyValue,
 	mf2String,
 	mf2StringArray,
@@ -64,38 +65,121 @@ export class Post {
 		)
 	}
 
-	static fromMF2Json(it: unknown): Post {
-		const { properties: p } = MF2Object.parse(it)
-
-		const rv = new Post({})
-
-		if ('published' in p) rv.published = mf2Date(p.published[0])
-		if ('x-deleted' in p) rv.deleted = p['x-deleted'][0] === 'true'
-		if ('uid' in p) rv.uid = mf2Url(p.uid[0])
-		if ('url' in p) rv.url = new Set(mf2UrlArray(p.url))
-		if ('updated' in p) rv.updated = mf2Date(p.updated[0])
-		if ('name' in p) rv.name = mf2String(p.name[0])
-		if ('summary' in p) rv.summary = mf2String(p.summary[0])
+	replace(p: MF2Properties) {
+		if ('published' in p) this.published = mf2Date(p.published[0])
+		if ('x-deleted' in p) this.deleted = p['x-deleted'][0] === 'true'
+		if ('uid' in p) this.uid = mf2Url(p.uid[0])
+		if ('url' in p) this.url = new Set(mf2UrlArray(p.url))
+		if ('updated' in p) this.updated = mf2Date(p.updated[0])
+		if ('name' in p) this.name = mf2String(p.name[0])
+		if ('summary' in p) this.summary = mf2String(p.summary[0])
 		if ('content' in p) {
 			const content = p.content[0]
-			if (typeof content === 'string') rv.content = unescape(content)
-			else if ('html' in content) rv.content = content.html
-			else if (content.value) rv.content = unescape(content.value)
+			if (typeof content === 'string') this.content = unescape(content)
+			else if ('html' in content) this.content = content.html
+			else if (content.value) this.content = unescape(content.value)
 		}
-		if ('category' in p) rv.category = mf2StringArray(p.category)
-		if ('syndication' in p) rv.syndication = mf2UrlArray(p.syndication)
-		if ('photo' in p) rv.photo = mf2UrlArray(p.photo)
-		if ('video' in p) rv.video = mf2UrlArray(p.video)
-		if ('audio' in p) rv.audio = mf2UrlArray(p.audio)
+		if ('category' in p) this.category = mf2StringArray(p.category)
+		if ('syndication' in p) this.syndication = mf2UrlArray(p.syndication)
+		if ('photo' in p) this.photo = mf2UrlArray(p.photo)
+		if ('video' in p) this.video = mf2UrlArray(p.video)
+		if ('audio' in p) this.audio = mf2UrlArray(p.audio)
 		if ('in-reply-to' in p) {
-			rv.inReplyTo = p['in-reply-to'].map((v) => Citation.fromMF2Json(v))
+			this.inReplyTo = p['in-reply-to'].map((v) => Citation.fromMF2Json(v))
 		}
 		if ('bookmark-of' in p) {
-			rv.bookmarkOf = p['bookmark-of'].map((v) => Citation.fromMF2Json(v))
+			this.bookmarkOf = p['bookmark-of'].map((v) => Citation.fromMF2Json(v))
 		}
 		if ('like-of' in p) {
-			rv.likeOf = p['like-of'].map((v) => Citation.fromMF2Json(v))
+			this.likeOf = p['like-of'].map((v) => Citation.fromMF2Json(v))
 		}
+	}
+
+	add(p: MF2Properties) {
+		if ('url' in p) mf2UrlArray(p.url).forEach((e) => this.url.add(e))
+		if ('category' in p) this.category.push(...mf2StringArray(p.category))
+		if ('syndication' in p) this.syndication.push(...mf2UrlArray(p.syndication))
+		if ('photo' in p) this.photo.push(...mf2UrlArray(p.photo))
+		if ('video' in p) this.video.push(...mf2UrlArray(p.video))
+		if ('audio' in p) this.audio.push(...mf2UrlArray(p.audio))
+		if ('in-reply-to' in p) {
+			this.inReplyTo.push(
+				...p['in-reply-to'].map((v) => Citation.fromMF2Json(v)),
+			)
+		}
+		if ('bookmark-of' in p) {
+			this.bookmarkOf.push(
+				...p['bookmark-of'].map((v) => Citation.fromMF2Json(v)),
+			)
+		}
+		if ('like-of' in p) {
+			this.likeOf.push(...p['like-of'].map((v) => Citation.fromMF2Json(v)))
+		}
+	}
+
+	delete(props: string[] | MF2Properties) {
+		if (Array.isArray(props)) {
+			for (const prop of props) {
+				if (prop === 'url') this.url = new Set()
+				if (prop === 'name') this.name = undefined
+				if (prop === 'summary') this.summary = undefined
+				if (prop === 'content') this.content = undefined
+				if (prop === 'category') this.category = []
+				if (prop === 'syndication') this.syndication = []
+				if (prop === 'photo') this.photo = []
+				if (prop === 'video') this.video = []
+				if (prop === 'audio') this.audio = []
+				if (prop === 'in-reply-to') this.inReplyTo = []
+				if (prop === 'bookmark-of') this.bookmarkOf = []
+				if (prop === 'like-of') this.likeOf = []
+			}
+		} else {
+			for (const [prop, values] of Object.entries(props)) {
+				if (prop === 'url') {
+					for (const url of this.url.values()) {
+						if (values.includes(url.href)) this.url.delete(url)
+					}
+				}
+				if (prop === 'category') {
+					this.category = this.category.filter((c) => !values.includes(c))
+				}
+				if (prop === 'syndication') {
+					this.syndication = this.syndication.filter((c) =>
+						!values.includes(c.href)
+					)
+				}
+				if (prop === 'photo') {
+					this.photo = this.photo.filter((c) => !values.includes(c.href))
+				}
+				if (prop === 'video') {
+					this.video = this.video.filter((c) => !values.includes(c.href))
+				}
+				if (prop === 'audio') {
+					this.audio = this.audio.filter((c) => !values.includes(c.href))
+				}
+				if (prop === 'in-reply-to') {
+					this.inReplyTo = this.inReplyTo.filter((c) =>
+						!values.includes(c.uid?.href ?? c.url[0].href)
+					)
+				}
+				if (prop === 'bookmark-of') {
+					this.bookmarkOf = this.bookmarkOf.filter((c) =>
+						!values.includes(c.uid?.href ?? c.url[0].href)
+					)
+				}
+				if (prop === 'like-of') {
+					this.likeOf = this.likeOf.filter((c) =>
+						!values.includes(c.uid?.href ?? c.url[0].href)
+					)
+				}
+			}
+		}
+	}
+
+	static fromMF2Json(it: unknown): Post {
+		const { properties: p } = MF2Object.parse(it)
+		const rv = new Post({})
+		rv.replace(p)
 		return rv
 	}
 
