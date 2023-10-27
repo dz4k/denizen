@@ -8,6 +8,7 @@ import { Layout } from '../../layout.ts'
 import * as config from '../../config.ts'
 import { User } from '../../model.ts'
 import { getUser, setConfig, updateUser } from '../../db.ts'
+import { ImportForm } from './import-blog.tsx'
 
 export const get = async (c: hono.Context<Env>) => {
 	const user = await getUser(c.var.session.get('user') as string)
@@ -114,6 +115,7 @@ const Console = ({ user }: { user: User }) => (
 					</p>
 				</form>
 			</section>
+			<ImportForm />
 		</main>
 	</Layout>
 )

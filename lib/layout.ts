@@ -8,7 +8,8 @@ export const Layout: FC<{
 }> = (p) =>
 	html`
 <!doctype html>
-<html lang="${p.lang ?? config.locales[0]}">
+<html lang="${p.lang ?? config.locales[0]}"
+	hx-on::before-swap='event.detail.shouldSwap = true'>
 <meta charset=utf-8 name=viewport content=width=device-width>
 
 <title>${p.title}</title>
