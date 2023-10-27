@@ -3,6 +3,7 @@
 		"dev": "LOCAL_DEV=1 deno task run",
 		"run": "deno task bundle-assets && bin/denizen.ts",
 		"deploy": "deno task bundle-assets && deployctl deploy --project=denizen-test bin/denizen.ts --prod --no-static",
+		"deploy-website": "wrangler pages deploy --project-name=denizen-website doc/",
 		"bundle-assets": "tool/assets_to_module.ts"
 	},
 	"fmt": {
