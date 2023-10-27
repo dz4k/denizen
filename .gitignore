@@ -1,3 +1,4 @@
 dev.sqlite*
 _blobs
 build
+doc/_site
