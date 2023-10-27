@@ -72,17 +72,17 @@ export const get = async (c: hono.Context<Env>) => {
 									{post.published.toLocaleString(config.locales)}
 								</time>
 							</a>
+							{post.updated
+								? (
+									<>
+										, last updated on{' '}
+										<time class='dt-updated'>
+											{post.updated.toLocaleString(config.locales)}
+										</time>
+									</>
+								)
+								: ''}
 						</p>
-						{post.updated
-							? (
-								<p>
-									Updated on
-									<time class='dt-updated'>
-										{post.updated.toLocaleString(config.locales)}
-									</time>
-								</p>
-							)
-							: ''}
 						<p>
 							{post.category.map((cat) => (
 								<>
