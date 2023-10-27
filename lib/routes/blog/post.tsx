@@ -34,7 +34,7 @@ export const get = async (c: hono.Context<Env>) => {
 			<article class='h-entry'>
 				<header class='container padding-block-start'>
 					<nav>
-						<a href="/" class='p-author h-card'>{siteOwner.profile.name}</a>
+						<a href='/' class='p-author h-card'>{siteOwner.profile.name}</a>
 					</nav>
 					{post.name ? <h1 class='p-name'>{post.name}</h1> : ''}
 					{post.summary
