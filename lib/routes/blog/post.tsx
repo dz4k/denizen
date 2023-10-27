@@ -34,17 +34,37 @@ export const get = async (c: hono.Context<Env>) => {
 			<article class='h-entry'>
 				<header class='container padding-block-start'>
 					<nav>
-						<a href='/' class='p-author h-card'>{siteOwner.profile.name}</a>
+						<a href='/' class='p-author h-card author-card unlink'>
+							<img src='/.denizen/public/profile.svg' alt='' class='photo' />
+							<strong class='p-name'>
+								{siteOwner.profile.name}
+							</strong>
+							<span>{config.baseUrl.hostname}</span>
+						</a>
 					</nav>
 					{post.name ? <h1 class='p-name'>{post.name}</h1> : ''}
 					{post.summary
 						? (
 							<p
-								class='big italic'
+								class='lede'
 								dangerouslySetInnerHTML={{ __html: post.summary }}
 							/>
 						)
 						: ''}
+				</header>
+				<main>
+					{post.photo.map((photo) => (
+						<figure>
+							{/* TODO alt text for u-photo */}
+							<img class='u-photo' src={photo} alt='' />
+						</figure>
+					))}
+					<div
+						class='e-content'
+						dangerouslySetInnerHTML={{ __html: post.content }}
+					/>
+				</main>
+				<footer>
 					<div class='<small>'>
 						<p>
 							<a href={post.uid} class='u-url u-uid'>
@@ -63,27 +83,16 @@ export const get = async (c: hono.Context<Env>) => {
 								</p>
 							)
 							: ''}
-						{post.category.map((cat) => (
-							<>
-								#<span class='p-category'>{cat}</span>
-								{' '}
-							</>
-						))}
+						<p>
+							{post.category.map((cat) => (
+								<>
+									#<span class='p-category'>{cat}</span>
+									{' '}
+								</>
+							))}
+						</p>
 					</div>
-				</header>
-				<main>
-					{post.photo.map((photo) => (
-						<figure>
-							{/* TODO alt text for u-photo */}
-							<img class='u-photo' src={photo} alt='' />
-						</figure>
-					))}
-					<div
-						class='e-content'
-						dangerouslySetInnerHTML={{ __html: post.content }}
-					/>
-				</main>
-				<footer>
+
 					{admin
 						? (
 							<div style='display: flex; flex-flow: row wrap; gap: 1em'>

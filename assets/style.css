@@ -13,22 +13,31 @@
     --fg2: #355;
 }
 
-header:has(+ main)::after,
-main + footer::before {
-    content: '';
-    display: block;
-    width: 2em;
-    margin: 2em 0;
-
-    border-block-start: 2px solid var(--accent);
+header:has(+ main),
+main + footer {
+    margin: 3em 0;
 }
 
-main + footer::before {
-    border-block-start: 1px solid var(--fg2);
-}
 
 main {
     min-height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-block-start: 2rem;
+}
+h1 {
+    font-size: 3em;
+    font-size: 2.25em;
+}
+h2 {
+    font-size: 1.6875em;
+}
+h3 {
+    font-size: 1.265625em;
+}
+h4, h5, h6 {
+    font-size: 1em;
 }
 
 button,
@@ -176,6 +185,17 @@ list-input {
     margin-block: 2em;
 }
 
+.lede {
+    font-size: 1.2em;
+    font-style: italic;
+    opacity: .8;
+    margin-block-start: 0;
+
+    h1:has(+ &) {
+        margin-block-end: 0;
+    }
+}
+
 .link-card {
     position: relative;
 
@@ -196,5 +216,26 @@ list-input {
             left: 0;
             z-index: 1;
         }
+    }
+}
+
+.author-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: 
+    'photo name'
+    'photo domain';
+    gap: 0 .5em;
+
+    &:not(:hover, :focus-visible) {
+        text-decoration: none;
+    }
+
+    .photo {
+        grid-area: photo;
+        height: 2.4em;
+        width: 2.4em;
+        border-radius: 9999em;
+        align-self: center;
     }
 }
