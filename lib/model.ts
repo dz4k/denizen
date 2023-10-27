@@ -376,7 +376,7 @@ export class Card {
 	static fromMf2Json(it: unknown): Card {
 		const mf2 = MF2PropertyValue.parse(it)
 		if (typeof mf2 === 'string') return new Card(mf2)
-		if ('html' in mf2) return new Card(mf2.value)
+		if ('html' in mf2) return new Card(mf2.value ?? mf2.html)
 
 		const p = mf2.properties
 

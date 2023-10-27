@@ -6,7 +6,7 @@ import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
-import { deletePost, getPostByURL, updatePost } from '../../db.ts'
+import { deletePost, getPostByURL, getUser, updatePost } from '../../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { Post } from '../../model.ts'
 import { PostEditor } from '../admin/posting.tsx'
@@ -25,6 +25,7 @@ export const get = async (c: hono.Context<Env>) => {
 
 	if (post.deleted) return c.html(<PostDeleted />, 410) // "Gone"
 	const admin = isAdmin(c)
+	const siteOwner = await getUser(c.var.session.get('user') as string)
 	return c.html(
 		<Layout
 			title={post.name ?? post.summary ??
@@ -32,6 +33,9 @@ export const get = async (c: hono.Context<Env>) => {
 		>
 			<article class='h-entry'>
 				<header class='container padding-block-start'>
+					<nav>
+						<a href="/" class='p-author h-card'>{siteOwner.profile.name}</a>
+					</nav>
 					{post.name ? <h1 class='p-name'>{post.name}</h1> : ''}
 					{post.summary
 						? (
