@@ -72,6 +72,7 @@ export const createPost = async (post: Post): Promise<string> => {
 }
 
 export const updatePost = async (post: Post): Promise<string> => {
+	post.updated = new Date()
 	const key = postKey(post)
 	const tx = db.atomic()
 	tx.set(key, post.toMF2Json())
