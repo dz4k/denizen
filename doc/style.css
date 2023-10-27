@@ -69,6 +69,17 @@ pre {
     padding-inline: calc(50vw - var(--page-width) / 2);
     margin-block: 0;
     padding-block: 1em;
+
+    scrollbar-width: thin;
+}
+
+pre::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    width: calc(50vw - var(--page-width) / 2);
+    ;
 }
 
 .unlink:not(:hover, :focus-visible) {
