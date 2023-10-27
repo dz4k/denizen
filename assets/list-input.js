@@ -1,10 +1,12 @@
+import { h, mkid } from './util.js'
+
 export class ListInput extends HTMLElement {
 	static observedAttributes = ['name']
 
-	constructor() {
-		super()
-
+	connectedCallback() {
 		// TODO: make dynamic
+		if (this.initialized) return
+		this.initialized = true
 		/**
 		 * @type {{name: string, type: string, labelId: string}[]}
 		 */
@@ -12,11 +14,6 @@ export class ListInput extends HTMLElement {
 			{ name: 'key', type: 'text', label: 'Key', labelId: mkid() },
 			{ name: 'value', type: 'text', label: 'Value', labelId: mkid() },
 		]
-
-		this.label = this.closest('label') ??
-			this.getRootNode()
-				.querySelector(`label[for=${JSON.stringify(this.id)}]`)
-		this.labelId = this.label.id ??= mkid()
 
 		this.append(
 			this.$items = h('ul'),
@@ -67,6 +64,13 @@ export class ListInput extends HTMLElement {
 		})
 	}
 
+	labelId() {
+		this.label = this.closest('label') ??
+			this.getRootNode()
+				.querySelector(`label[for=${JSON.stringify(this.id)}]`)
+		return this.label.id ??= mkid()
+	}
+
 	createItem() {
 		let $item
 		return $item = h(
@@ -77,7 +81,7 @@ export class ListInput extends HTMLElement {
 					type: field.type,
 					name: `${this.name}[${field.name}]`,
 					placeholder: field.label,
-					'@aria-labelledby': `${this.labelId} ${field.labelId}`,
+					'@aria-labelledby': `${this.labelId()} ${field.labelId}`,
 				})
 			}),
 			' ',
@@ -103,23 +107,3 @@ export class ListInput extends HTMLElement {
 }
 
 customElements.define('list-input', ListInput)
-
-/**
- * @param {string} name Tag name
- * @param {Partial<>} props Properties
- * @param  {...(Node | string)[]} children Child nodes
- * @returns {Element}
- */
-function h(name, props = {}, ...children) {
-	const $el = document.createElement(name)
-	for (const prop in props) {
-		if (prop.startsWith('@')) $el.setAttribute(prop.slice(1), props[prop])
-		else $el[prop] = props[prop]
-	}
-	$el.append(...children.flat())
-	return $el
-}
-
-function mkid() {
-	return 'id' + Math.floor(Math.random() * (36 ** 6)).toString(36)
-}

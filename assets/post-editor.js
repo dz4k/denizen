@@ -10,7 +10,8 @@
  * @prop {'text' | 'html' | 'list'} inputKind
  */
 
-import './list-input.js'
+import { h } from './util.js'
+import { ListInput } from './list-input.js'
 
 let idCounter = 0
 
@@ -42,25 +43,37 @@ class PostEditor extends HTMLElement {
 
 	constructor() {
 		super()
-		this.append(html`
-				<div data-fields class='grid' style='grid: auto-flow / auto auto 1fr'></div>
-				<p>
-					${
-			Object.entries(this.fields).map(([name, field]) =>
-				html`
-						<button type="button" data-add-field="${name}"
-							${field.default ? 'data-default=1' : ''}>+ ${field.label}</button>
-					`
-			)
-		}
-				</p>
-				<p><strong><button type="submit" class="big">Post</button></strong>
-        `)
-		this.fieldsDiv =
-			/** @type {HTMLFormElement} */ (this.querySelector('[data-fields]'))
-		this.addFieldButtons = /** @type {HTMLElement[]} */ (Array.from(
-			this.querySelectorAll('[data-add-field]'),
-		))
+		this.append(
+			this.fieldsDiv = h('div', {
+				'@data-fields': true,
+				className: 'grid',
+				style: 'grid: auto-flow / auto auto 1fr',
+			}),
+			h(
+				'p',
+				{ style: 'display: flex; gap: .5em' },
+				this.addFieldButtons =
+					/** @type {HTMLElement[]} */ (Object.entries(this.fields).map((
+						[name, field],
+					) =>
+						h(
+							'button',
+							{
+								type: 'button',
+								'@data-add-field': name,
+								'@data-default': field.default ? 1 : '',
+							},
+							'+ ',
+							field.label,
+						)
+					)),
+			),
+			h(
+				'p',
+				{},
+				h('button', { type: 'submit', className: 'big' }, 'Post'),
+			),
+		)
 		this.addFieldButtons.forEach((btn) => {
 			btn.addEventListener('click', () => {
 				this.addField(/** @type {string} */ (btn.dataset.addField))
@@ -69,8 +82,9 @@ class PostEditor extends HTMLElement {
 		})
 
 		// Initial value
-		if (this.hasAttribute('values')) {
-			const properties = JSON.parse(this.getAttribute('values'))
+		const valuesAttribute = this.getAttribute('values')
+		if (valuesAttribute) {
+			const properties = JSON.parse(valuesAttribute)
 			for (const [name, values] of Object.entries(properties)) {
 				console.log(name, this.fields[name], values)
 				if (this.fields[name]?.inputKind === 'list') {
@@ -87,7 +101,7 @@ class PostEditor extends HTMLElement {
 	/**
 	 * @param {string} name
 	 */
-	addField(name, value) {
+	addField(name, value = '') {
 		const field = this.fields[name]
 		if (!field) return
 		if (!field.multiple) {
@@ -95,38 +109,81 @@ class PostEditor extends HTMLElement {
 			if ($field) $field.setAttribute('hidden', '')
 		}
 		const id = idCounter++
-		const removeButton = html`
-			<button class="<a> unbutton" aria-labelledby="vh-${name}-${id} edit-${name}-${id}"
-				onclick="this.closest('post-editor').removeField(this.closest('p'))">
-				<span hidden id="vh-${name}-${id}">Remove</span>
-				<span aria-hidden="true">×</span>
-			</button>`
+		const removeButton = h(
+			'button',
+			{
+				className: '<a> unbutton',
+				'@aria-labelledby': `vh-${name}-${id} edit-${name}-${id}`,
+				onclick() {
+					this.closest('post-editor').removeField(this.closest('p'))
+				},
+			},
+			h('span', { hidden: true, id: `vh-${name}-${id}` }, 'Remove'),
+			h('span', { ariaHidden: true }, '×'),
+		)
 
 		switch (field?.inputKind) {
 			case 'text':
-				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
-					${removeButton}
-                    <label data-cols="2" for="edit-${name}-${id}">${field.label}</label>
-                    <input data-cols="3" type="text" id="edit-${name}-${id}" name="${name}" value="${value}">
-                </p>`)
+				this.fieldsDiv.append(
+					h(
+						'p',
+						{ '@data-field': name, className: 'grid-row' },
+						removeButton,
+						h(
+							'label',
+							{ '@data-cols': 2, htmlFor: `edit-${name}-${id}` },
+							field.label,
+						),
+						h('input', {
+							'@data-cols': 3,
+							type: 'text',
+							id: `edit-${name}-${id}`,
+							name,
+							value,
+						}),
+					),
+				)
 				break
 
 			case 'html':
-				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
-					${removeButton}
-                    <label for="edit-${name}-${id}">${field.label}</label>
-                    <textarea id="edit-${name}-${id}" name="${name}">${value}</textarea>
-                </p>`)
+				this.fieldsDiv.append(
+					h(
+						'p',
+						{ '@data-field': name, className: 'grid-row' },
+						removeButton,
+						h(
+							'label',
+							{ '@data-cols': 2, htmlFor: `edit-${name}-${id}` },
+							field.label,
+						),
+						h('textarea', {
+							'@data-cols': 3,
+							id: `edit-${name}-${id}`,
+							name,
+						}, value),
+					),
+				)
 				break
 
 			case 'list':
-				this.fieldsDiv.append(html`<p data-field="${name}" class="grid-row">
-					${removeButton}
-					<label for="edit-${name}-${id}">${field.label}</label>
-					<list-input id="edit-${name}-${id}" name="${name}" fields='=text;' value='${
-					JSON.stringify(value)
-				}'></list-input>
-				</p>`)
+				this.fieldsDiv.append(
+					h(
+						'p',
+						{ '@data-field': name, className: 'grid-row' },
+						removeButton,
+						h(
+							'label',
+							{ htmlFor: `edit-${name}-${id}` },
+							field.label,
+						),
+						h(ListInput, {
+							id: `edit-${name}-${id}`,
+							'@fields': '=text;',
+							'@name': name,
+							'@value': JSON.stringify(value),
+						}),
+					),
+				)
 				break
 		}
 	}
@@ -144,56 +201,6 @@ class PostEditor extends HTMLElement {
 			if ($field) $field.setAttribute('hidden', '')
 		}
 	}
-}
-
-/**
- * Convert a node to equivalent HTML.
- * @param {Node} node
- * @returns string
- */
-export function stringifyNode(node) {
-	const tmp = document.createElement('div')
-	tmp.append(node)
-	return tmp.innerHTML
-}
-
-/**
- * HTML-escape a string.
- * If given a DOM node, it will return **unescaped** HTML for it.
- * Returns empty string when given null or undefined.
- * @param {unknown} s
- * @returns {string}
- */
-export function htmlescape(s) {
-	if (s === null || s === undefined) return ''
-	if (Array.isArray(s)) return s.map(htmlescape).join('')
-	if (s instanceof Node) return stringifyNode(s)
-	return String(s)
-		.replaceAll('&', '&amp;')
-		.replaceAll('<', '&lt;')
-		.replaceAll('>', '&gt;')
-		.replaceAll('\'', '&#x27;')
-		.replaceAll('"', '&quot;')
-}
-
-/**
- * Template literal that escapes HTML in interpolated values and returns a DocumentFragment.
- * Can also be called with a string to parse it as HTML.
- * To let trusted HTML through escaping, parse it first:
- *
- *     html`<p>My trusted markup: ${html(trustedMarkup)}</p>`
- *
- * @param {TemplateStringsArray | string} str
- * @param {...unknown} values
- * @returns {DocumentFragment}
- */
-export function html(str, ...values) {
-	const tmpl = document.createElement('template')
-	if (typeof str === 'object' && 'raw' in str) {
-		str = String.raw(str, ...values.map(htmlescape))
-	}
-	tmpl.innerHTML = str
-	return tmpl.content
 }
 
 customElements.define('post-editor', PostEditor)
