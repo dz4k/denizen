@@ -35,6 +35,7 @@ export type Env = {
 }
 export const app = new Hono<Env>()
 
+// @ts-expect-error session middleware types wrong?
 app
 	.use(
 		'*',
@@ -44,6 +45,8 @@ app
 			cookieOptions: { sameSite: 'Lax' },
 		}),
 	)
+
+app
 	.get(`/.denizen/public/:asset`, assets.get)
 	.use('*', initialSetup.middleware)
 	.get('/.denizen/initial-setup', initialSetup.get)
