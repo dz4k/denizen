@@ -5,6 +5,8 @@ import prism from 'lume/plugins/prism.ts'
 import sitemap from 'lume/plugins/sitemap.ts'
 import vento from 'lume/plugins/vento.ts'
 
+import 'npm:prismjs@1.29.0/components/prism-bash.js'
+
 const site = lume()
 
 site.loadPages(['.html'])
