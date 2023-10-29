@@ -26,5 +26,7 @@ export const Layout: FC<{
 
 <link rel=micropub href="/.denizen/micropub">
 
+<link rel=webmention href="/.denizen/webmention">
+
 ${p.children}
 `

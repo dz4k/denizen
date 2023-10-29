@@ -1,7 +1,10 @@
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 import { unescape } from 'https://deno.land/std@0.203.0/html/mod.ts'
 import {
+	ImageUrl,
 	mf2Date,
+	MF2Html,
+	mf2ImgArray,
 	MF2Object,
 	MF2Properties,
 	MF2PropertyValue,
@@ -31,6 +34,8 @@ export class Post {
 	published: Date = new Date()
 	updated?: Date
 
+	author: Card[] = []
+
 	category: string[] = []
 
 	syndication: URL[] = []
@@ -39,7 +44,7 @@ export class Post {
 	bookmarkOf: Citation[] = []
 	likeOf: Citation[] = []
 
-	photo: URL[] = []
+	photo: ImageUrl[] = []
 	video: URL[] = []
 	audio: URL[] = []
 
@@ -79,9 +84,10 @@ export class Post {
 			else if ('html' in content) this.content = content.html
 			else if (content.value) this.content = unescape(content.value)
 		}
+		if ('author' in p) this.author = p.author.map((v) => Card.fromMf2Json(v))
 		if ('category' in p) this.category = mf2StringArray(p.category)
 		if ('syndication' in p) this.syndication = mf2UrlArray(p.syndication)
-		if ('photo' in p) this.photo = mf2UrlArray(p.photo)
+		if ('photo' in p) this.photo = mf2ImgArray(p.photo)
 		if ('video' in p) this.video = mf2UrlArray(p.video)
 		if ('audio' in p) this.audio = mf2UrlArray(p.audio)
 		if ('in-reply-to' in p) {
@@ -99,7 +105,10 @@ export class Post {
 		if ('url' in p) mf2UrlArray(p.url).forEach((e) => this.url.add(e))
 		if ('category' in p) this.category.push(...mf2StringArray(p.category))
 		if ('syndication' in p) this.syndication.push(...mf2UrlArray(p.syndication))
-		if ('photo' in p) this.photo.push(...mf2UrlArray(p.photo))
+		if ('author' in p) {
+			this.author.push(...p.author.map((v) => Card.fromMf2Json(v)))
+		}
+		if ('photo' in p) this.photo.push(...mf2ImgArray(p.photo))
 		if ('video' in p) this.video.push(...mf2UrlArray(p.video))
 		if ('audio' in p) this.audio.push(...mf2UrlArray(p.audio))
 		if ('in-reply-to' in p) {
@@ -124,6 +133,7 @@ export class Post {
 				if (prop === 'name') this.name = undefined
 				if (prop === 'summary') this.summary = undefined
 				if (prop === 'content') this.content = undefined
+				if (prop === 'author') this.author = []
 				if (prop === 'category') this.category = []
 				if (prop === 'syndication') this.syndication = []
 				if (prop === 'photo') this.photo = []
@@ -149,7 +159,7 @@ export class Post {
 					)
 				}
 				if (prop === 'photo') {
-					this.photo = this.photo.filter((c) => !values.includes(c.href))
+					this.photo = this.photo.filter((c) => !values.includes(c.url.href))
 				}
 				if (prop === 'video') {
 					this.video = this.video.filter((c) => !values.includes(c.href))
@@ -208,7 +218,10 @@ export class Post {
 		if (form.has('syndication')) {
 			props.syndication = getUrls('syndication')
 		}
-		if (form.has('photo')) props.photo = getUrls('photo')
+		// TODO: alt text in form data
+		if (form.has('photo')) {
+			props.photo = getUrls('photo').map((url) => ({ url }))
+		}
 		if (form.has('video')) props.video = getUrls('video')
 		if (form.has('audio')) props.audio = getUrls('audio')
 		if (form.has('in-reply-to')) {
@@ -233,6 +246,7 @@ export class Post {
 				name: this.name ? [this.name] : [],
 				summary: this.summary ? [this.summary] : [],
 				content: this.content ? [this.content] : [],
+				author: this.author.map((card) => card.toMF2Json()),
 				published: [this.published.toISOString()],
 				updated: this.updated ? [this.updated.toISOString()] : [],
 				category: this.category,
@@ -240,7 +254,7 @@ export class Post {
 				inReplyTo: this.inReplyTo.map((cite) => cite.toMF2Json()),
 				bookmarkOf: this.bookmarkOf.map((cite) => cite.toMF2Json()),
 				likeOf: this.likeOf.map((cite) => cite.toMF2Json()),
-				photo: this.photo.map(String),
+				photo: this.photo.map(({ url, alt }) => ({ value: url.href, alt })),
 				audio: this.audio.map(String),
 				video: this.video.map(String),
 				url: Array.from(this.url, String),
@@ -281,7 +295,7 @@ export class Citation {
 	static fromMF2Json(it: unknown): Citation {
 		const mf2 = MF2PropertyValue.parse(it)
 		if (typeof mf2 === 'string') return new Citation([new URL(mf2)])
-		if ('html' in mf2) return new Citation([new URL(mf2String(mf2))])
+		if (!('properties' in mf2)) return new Citation([new URL(mf2String(mf2))])
 
 		const { properties: p } = mf2
 
@@ -376,7 +390,9 @@ export class Card {
 	static fromMf2Json(it: unknown): Card {
 		const mf2 = MF2PropertyValue.parse(it)
 		if (typeof mf2 === 'string') return new Card(mf2)
-		if ('html' in mf2) return new Card(mf2.value ?? mf2.html)
+		if (!('properties' in mf2)) {
+			return new Card(mf2.value ?? (mf2 as MF2Html).html)
+		}
 
 		const p = mf2.properties
 
@@ -475,6 +491,33 @@ export class User {
 			String(json.username),
 			String(json.pwhash),
 			Card.fromMf2Json(json.profile),
+		)
+	}
+}
+
+export type WMResponseType = 'repost' | 'like' | 'reply' | 'mention'
+
+export class Webmention {
+	constructor(
+		public source: string,
+		public target: string,
+		public responseType: WMResponseType,
+		public content: Post,
+	) {}
+
+	serialize() {
+		return {
+			...this,
+			content: this.content.toMF2Json(),
+		}
+	}
+
+	static deserialize(obj: Record<string, unknown>) {
+		return new Webmention(
+			obj.source as string,
+			obj.target as string,
+			obj.responseType as WMResponseType,
+			Post.fromMF2Json(obj.content),
 		)
 	}
 }

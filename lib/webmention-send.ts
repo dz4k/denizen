@@ -1,10 +1,9 @@
-import { DOMParser, DOMParserMimeType, Element } from '../deps/dom.ts'
+import { DOMParser, Element } from '../deps/dom.ts'
 import { parseLinkHeader } from '../deps/parse-link-header.ts'
 
 import { db } from './db.ts'
 import { Citation, Post } from './model.ts'
 import * as config from './config.ts'
-import { parseMediaType } from 'https://deno.land/std@0.203.0/media_types/parse_media_type.ts'
 
 db.listenQueue(async (message) => {
 	if (
@@ -33,11 +32,6 @@ db.listenQueue(async (message) => {
 			return
 		}
 		await sendWebmention(message.source, message.target)
-	} else {
-		console.warn(
-			`Unknown message type ${message.type}`,
-			message,
-		)
 	}
 })
 
@@ -111,13 +105,9 @@ async function discoverWebmentionEndpoint(target: string | Request | URL) {
 	}
 	try {
 		const html = await res.text()
-		const [mime] = parseMediaType(res.headers.get('Content-Type')!)
-		const doc = new DOMParser().parseFromString(
-			html,
-			mime as DOMParserMimeType,
-		)!
-		const link = doc.querySelector('[rel~="webmention" i][href]')
-		const url = link?.getAttribute('href')
+		const doc = load(html, { baseURI: res.url })
+		const link = doc('[rel~="webmention" i][href]')
+		const url = link?.attr('href')
 		if (typeof url === 'string') return new URL(url, res.url ?? target)
 	} catch (e) {
 		console.error(e)

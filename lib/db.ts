@@ -1,15 +1,11 @@
-import { Post } from './model.ts'
+import { Post, Webmention, WMResponseType } from './model.ts'
 import { asyncIteratorToArray } from './common/util.ts'
 import { User } from './model.ts'
+import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 
 export const db = Deno.env.get('LOCAL_DEV')
 	? await Deno.openKv('dev.sqlite')
 	: await Deno.openKv()
-
-/**
- * Generate an UUIDv7
- * TODO: is this good? should I use a different format?
- */
 
 export type Page<T> = { data: T[]; cursor: string }
 export type PaginationOptions = {
@@ -102,6 +98,65 @@ export const getPostByURL = async (url: URL): Promise<Post | null> => {
 	if (kvEntry.value === null) return null
 	return getPost(kvEntry.value as string)
 }
+
+// #endregion
+
+// #region Webmentions
+
+export const saveWebmention = async (post: Post, wm: Webmention) => {
+	const srcDstKey = ['WMBySrcDst', wm.source, wm.target]
+	const existing = await db.get(srcDstKey)
+	if (existing.value) {
+		return db.atomic()
+			.set(existing.value as Deno.KvKey, wm)
+	}
+	const iid = [
+		'WM',
+		post.iid,
+		wm.responseType,
+		ulid(),
+	]
+	return db.atomic()
+		.check({ key: srcDstKey, versionstamp: existing.versionstamp })
+		.set(srcDstKey, iid)
+		.set(iid, wm.serialize())
+		.sum(['WMCount', post.iid], 1n)
+		.sum(['WMCount', post.iid, wm.responseType], 1n)
+		.commit()
+}
+
+export const deleteWebmention = async (post: Post, wm: Webmention) => {
+	const srcDstKey = ['WMBySrcDst', wm.source, wm.target]
+	const existing = await db.get(srcDstKey)
+	if (existing.value === null) return
+	return db.atomic()
+		.delete(srcDstKey)
+		.delete(existing.value as Deno.KvKey)
+		.sum(['WMCount', post.iid], -1n)
+		.sum(['WMCount', post.iid, wm.responseType], -1n)
+		.commit()
+}
+
+export const getWebmentions = async (
+	post: Post,
+	type: WMResponseType,
+	options: PaginationOptions = {},
+): Promise<Page<Webmention>> => {
+	const list = db.list({ prefix: ['WM', post.iid, type] }, {
+		...options,
+		reverse: true,
+	})
+	const entries = await asyncIteratorToArray(list)
+	const webmentions = entries.map((entry) =>
+		Webmention.deserialize(entry.value as Record<string, unknown>)
+	)
+	return { data: webmentions, cursor: list.cursor }
+}
+
+export const getWebmentionCount = async (
+	post: Post,
+	type: WMResponseType,
+) => (await db.get(['WMCount', post.iid, type])).value ?? 0
 
 // #endregion
 

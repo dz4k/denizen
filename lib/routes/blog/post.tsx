@@ -6,10 +6,18 @@ import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
-import { deletePost, getPostByURL, getUser, updatePost } from '../../db.ts'
+import {
+	deletePost,
+	getPostByURL,
+	getUser,
+	getWebmentionCount,
+	getWebmentions,
+	updatePost,
+} from '../../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { Post } from '../../model.ts'
 import { PostEditor } from '../admin/posting.tsx'
+import { Face } from '../../widgets/face.tsx'
 
 const accessPost = (c: hono.Context<Env>) =>
 	getPostByURL(new URL(c.req.path, config.baseUrl))
@@ -25,7 +33,10 @@ export const get = async (c: hono.Context<Env>) => {
 
 	if (post.deleted) return c.html(<PostDeleted />, 410) // "Gone"
 	const admin = isAdmin(c)
-	const siteOwner = await getUser(c.var.session.get('user') as string)
+	const siteOwner = await getUser('admin')
+
+	c.header('Link', '</.denizen/webmention>;rel="webmention"')
+
 	return c.html(
 		<Layout
 			title={post.name ?? post.summary ??
@@ -37,7 +48,8 @@ export const get = async (c: hono.Context<Env>) => {
 						<a href='/' class='p-author h-card author-card unlink'>
 							<img src='/.denizen/public/profile.svg' alt='' class='photo' />
 							<strong class='p-name'>
-								{siteOwner.profile.name}
+								{siteOwner.profile.name},
+								<Face card={siteOwner.profile} />
 							</strong>
 							<span>{config.baseUrl.hostname}</span>
 						</a>
@@ -89,6 +101,33 @@ export const get = async (c: hono.Context<Env>) => {
 									#<span class='p-category'>{cat}</span>
 									{' '}
 								</>
+							))}
+						</p>
+					</div>
+
+					<div id='webmentions'>
+						<p>
+							<strong>Likes:</strong>
+							{(await getWebmentions(post, 'like')).data.map((wm) => (
+								<Face card={wm.content.author[0]} link={wm.source} />
+							))}
+						</p>
+						<p>
+							<strong>Reposts:</strong>
+							{(await getWebmentions(post, 'repost')).data.map((wm) => (
+								<Face card={wm.content.author[0]} link={wm.source} />
+							))}
+						</p>
+						<p>
+							<strong>Mentions:</strong>
+							{(await getWebmentions(post, 'mention')).data.map((wm) => (
+								<Face card={wm.content.author[0]} link={wm.source} />
+							))}
+						</p>
+						<p>
+							<strong>Replies:</strong>
+							{(await getWebmentions(post, 'reply')).data.map((wm) => (
+								<Face card={wm.content.author[0]} link={wm.source} />
 							))}
 						</p>
 					</div>

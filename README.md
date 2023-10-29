@@ -34,7 +34,8 @@ bin/denizen.tsx
   - [ ] https://webmention.rocks/update/2 notify URLs that have been removed
         from a post
   - [X] https://webmention.rocks/delete/1
-- [ ] Webmention receiving
+- [X] Webmention receiving
+  - [X] https://webmention.rocks/ Pass all receiver tests
 - [X] IndieAuth
 - [X] Micropub
   - [X] Posting

@@ -26,6 +26,7 @@ import * as storage from './routes/storage/storage.ts'
 import * as fileManager from './routes/storage/file-manager.tsx'
 import * as assets from './routes/storage/assets.ts'
 import * as micropub from './routes/micropub/micropub.ts'
+import * as webmentionRecv from './routes/webmention/webmention-recv.ts'
 
 export type Env = {
 	Variables: {
@@ -72,6 +73,7 @@ app
 	.get('/.denizen/micropub', micropub.middleware, micropub.get)
 	.post('/.denizen/micropub', micropub.middleware, micropub.post)
 	.post('/.denizen/micropub/media', micropub.middleware, micropub.postMedia)
+	.post('/.denizen/webmention', webmentionRecv.post)
 	.get('/', homepage.get)
 	.get('/wp-admin/', wpAdmin.get)
 	.get('/feed.json', feed.json)
