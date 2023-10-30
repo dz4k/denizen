@@ -42,16 +42,14 @@ export async function sendWebmentions(post: Post) {
 		db.enqueue({
 			type: 'send_webmention',
 			source: post.uid!.href,
-			target: page.href,
+			target: page,
 		})))
 }
 
 function findMentions(post: Post) {
-	const urls = new Set<URL>()
+	const urls = new Set<string>()
 	const add = (url: URL) => {
-		if (url.origin !== config.baseUrl.origin) {
-			urls.add(url)
-		}
+		urls.add(url.href)
 	}
 	const addCitation = (cite: Citation) => {
 		if (cite.uid) add(cite.uid)
