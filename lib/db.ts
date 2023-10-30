@@ -2,6 +2,7 @@ import { Post, Webmention, WMResponseType } from './model.ts'
 import { asyncIteratorToArray } from './common/util.ts'
 import { User } from './model.ts'
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
+import { enqueue } from './queue.ts'
 
 export const db = Deno.env.get('LOCAL_DEV')
 	? await Deno.openKv('dev.sqlite')
@@ -60,7 +61,7 @@ export const createPost = async (post: Post): Promise<string> => {
 	await tx.commit()
 
 	// TODO: this doesn't feel like it belongs here
-	await db.enqueue({
+	await enqueue({
 		type: 'send_webmentions',
 		post: post.toMF2Json(),
 	})
@@ -76,7 +77,7 @@ export const updatePost = async (post: Post): Promise<string> => {
 	await tx.commit()
 
 	// TODO: this doesn't feel like it belongs here
-	await db.enqueue({
+	await enqueue({
 		type: 'send_webmentions',
 		post: post.toMF2Json(),
 	})
