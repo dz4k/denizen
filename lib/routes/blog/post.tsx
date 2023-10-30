@@ -190,7 +190,7 @@ const Webmentions = async (props: { post: Post }) => {
 								<span class='p-content'>
 									{wm.content.content?.value}
 								</span>{' '}
-								<a class='u-url' href={wm.source}>
+								<a class='u-url <small>' href={wm.source}>
 									<time
 										class='dt-published'
 										datetime={wm.content.published}
