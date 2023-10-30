@@ -16,7 +16,7 @@ export const Face = ({ card, link }: { card: Card; link?: string | URL }) => (
 	</a>
 )
 
-const makeProfileSvg = (card: Card) => {
+export const makeProfileSvg = (card: Card) => {
 	const rand = Math.random()
 	const hue = rand * 360
 	const svg = `

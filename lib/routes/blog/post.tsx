@@ -17,7 +17,7 @@ import {
 import { isAdmin } from '../admin/middleware.ts'
 import { Post } from '../../model.ts'
 import { PostEditor } from '../admin/posting.tsx'
-import { Face } from '../../widgets/face.tsx'
+import { Face, makeProfileSvg } from '../../widgets/face.tsx'
 
 const accessPost = (c: hono.Context<Env>) =>
 	getPostByURL(new URL(c.req.path, config.baseUrl))
@@ -46,7 +46,12 @@ export const get = async (c: hono.Context<Env>) => {
 				<header class='container padding-block-start'>
 					<nav>
 						<a href='/' class='p-author h-card author-card unlink'>
-							<img src='/.denizen/public/profile.svg' alt='' class='photo' />
+							<img
+								src={siteOwner.profile.photo[0] ??
+									makeProfileSvg(siteOwner.profile)}
+								alt=''
+								class='photo'
+							/>
 							<strong class='p-name'>
 								{siteOwner.profile.name}
 							</strong>
