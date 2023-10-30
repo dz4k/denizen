@@ -1,5 +1,5 @@
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
-import { unescape } from 'https://deno.land/std@0.203.0/html/mod.ts'
+import { escape as htmlEscape } from 'https://deno.land/std@0.203.0/html/mod.ts'
 import {
 	ImageUrl,
 	mf2Date,
@@ -29,7 +29,7 @@ export class Post {
 
 	name?: string
 	summary?: string
-	content?: string
+	content?: { html: string; value?: string }
 
 	published: Date = new Date()
 	updated?: Date
@@ -80,9 +80,10 @@ export class Post {
 		if ('summary' in p) this.summary = mf2String(p.summary[0])
 		if ('content' in p) {
 			const content = p.content[0]
-			if (typeof content === 'string') this.content = unescape(content)
-			else if ('html' in content) this.content = content.html
-			else if (content.value) this.content = unescape(content.value)
+			if (typeof content === 'string') {
+				this.content = { html: htmlEscape(content) }
+			} else if ('html' in content) this.content = content as MF2Html
+			else if (content.value) this.content = { html: htmlEscape(content.value) }
 		}
 		if ('author' in p) this.author = p.author.map((v) => Card.fromMf2Json(v))
 		if ('category' in p) this.category = mf2StringArray(p.category)
@@ -213,7 +214,7 @@ export class Post {
 
 		if (form.has('name')) props.name = get('name')
 		if (form.has('summary')) props.summary = get('summary')
-		if (form.has('content')) props.content = get('content')
+		if (form.has('content')) props.content = { html: get('content') }
 		if (form.has('category')) props.category = getAll('category')
 		if (form.has('syndication')) {
 			props.syndication = getUrls('syndication')

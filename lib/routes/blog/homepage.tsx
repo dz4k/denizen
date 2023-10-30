@@ -80,7 +80,7 @@ export const get = async (c: hono.Context<Env>) => {
 							: (
 								<div
 									class='e-content'
-									dangerouslySetInnerHTML={{ __html: post.content }}
+									dangerouslySetInnerHTML={{ __html: post.content?.html }}
 								/>
 							)}
 					</article>

@@ -1,4 +1,4 @@
-import { crypto } from "https://deno.land/std@0.204.0/crypto/mod.ts";
+import { crypto } from 'https://deno.land/std@0.204.0/crypto/mod.ts'
 
 export const asyncIteratorToArray = async <T>(
 	it: AsyncIterable<T>,
@@ -21,8 +21,10 @@ export const stringToRandNumber = (
 	str: string,
 	[min, max]: [number, number],
 ) => {
-	const hash = crypto.subtle.digestSync('SHA-1', new TextEncoder().encode(str))
-	const num = new BigUint64Array(hash)[0]
+	const buf = new TextEncoder().encode(str)
+	const hash = crypto.subtle.digestSync('SHA-1', buf)
+	const bu64a = new BigUint64Array(hash.slice(0, 8))
+	const num = bu64a[0]
 
 	const range = max - min + 1
 	const mappedNumber = Number((num % BigInt(range)) + BigInt(min))

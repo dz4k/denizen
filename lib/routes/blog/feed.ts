@@ -42,7 +42,7 @@ export const json = async (c: hono.Context<Env>) => {
 				id: post.uid,
 				url: post.uid,
 				title: post.name,
-				content_html: post.content,
+				content_html: post.content?.html,
 				summary: post.summary,
 				image: post.photo[0],
 				date_published: post.published.toISOString(),
@@ -88,7 +88,7 @@ export const xml = async (c: hono.Context<Env>) => {
 					updated: post.updated ?? post.published,
 					content: {
 						'@type': 'html',
-						'#text': post.content,
+						'#text': post.content.html,
 					},
 					summary: post.summary,
 					published: post.published,

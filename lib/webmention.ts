@@ -122,7 +122,7 @@ function findMentions(post: Post) {
 	post.likeOf.forEach(addCitation)
 
 	if (post.content) {
-		const doc = new DOMParser().parseFromString(post.content, 'text/html')
+		const doc = new DOMParser().parseFromString(post.content.html, 'text/html')
 		doc?.querySelectorAll('a[href]').forEach((node) => {
 			const el = node as Element
 			if (el.getAttribute('rel')?.includes('nomention')) return

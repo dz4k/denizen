@@ -59,14 +59,7 @@ export const get = async (c: hono.Context<Env>) => {
 						</a>
 					</nav>
 					{post.name ? <h1 class='p-name'>{post.name}</h1> : ''}
-					{post.summary
-						? (
-							<p
-								class='lede'
-								dangerouslySetInnerHTML={{ __html: post.summary }}
-							/>
-						)
-						: ''}
+					{post.summary ? <p class='lede'>{post.summary}</p> : ''}
 				</header>
 				<main>
 					{post.photo.map((photo) => (
@@ -77,7 +70,7 @@ export const get = async (c: hono.Context<Env>) => {
 					))}
 					<div
 						class='e-content'
-						dangerouslySetInnerHTML={{ __html: post.content }}
+						dangerouslySetInnerHTML={{ __html: post.content?.html }}
 					/>
 				</main>
 				<footer>
@@ -109,33 +102,6 @@ export const get = async (c: hono.Context<Env>) => {
 						</p>
 					</div>
 
-					<div id='webmentions'>
-						<p>
-							<strong>Likes:</strong>
-							{(await getWebmentions(post, 'like')).data.map((wm) => (
-								<Face card={wm.content.author[0]} link={wm.source} />
-							))}
-						</p>
-						<p>
-							<strong>Reposts:</strong>
-							{(await getWebmentions(post, 'repost')).data.map((wm) => (
-								<Face card={wm.content.author[0]} link={wm.source} />
-							))}
-						</p>
-						<p>
-							<strong>Mentions:</strong>
-							{(await getWebmentions(post, 'mention')).data.map((wm) => (
-								<Face card={wm.content.author[0]} link={wm.source} />
-							))}
-						</p>
-						<p>
-							<strong>Replies:</strong>
-							{(await getWebmentions(post, 'reply')).data.map((wm) => (
-								<Face card={wm.content.author[0]} link={wm.source} />
-							))}
-						</p>
-					</div>
-
 					{admin
 						? (
 							<div style='display: flex; flex-flow: row wrap; gap: 1em'>
@@ -149,9 +115,95 @@ export const get = async (c: hono.Context<Env>) => {
 							</div>
 						)
 						: ''}
+
+					{await Webmentions({ post })}
 				</footer>
 			</article>
 		</Layout>,
+	)
+}
+
+const Webmentions = async (props: { post: Post }) => {
+	const { post } = props
+	const [likes, reposts, mentions, replies] = await Promise.all([
+		getWebmentions(post, 'like'),
+		getWebmentions(post, 'repost'),
+		getWebmentions(post, 'mention'),
+		getWebmentions(post, 'reply'),
+	])
+	return (
+		<div id='webmentions'>
+			{likes.data.length
+				? (
+					<p>
+						{/* TODO: "load more" buttons and total number on each */}
+						<strong>Likes:</strong>
+						{likes.data.map((wm) => (
+							<Face card={wm.content.author[0]} link={wm.source} />
+						))}
+					</p>
+				)
+				: ''}
+			{reposts.data.length
+				? (
+					<p>
+						<strong>Reposts:</strong>
+						{reposts.data.map((wm) => (
+							<Face card={wm.content.author[0]} link={wm.source} />
+						))}
+					</p>
+				)
+				: ''}
+			{mentions.data.length
+				? (
+					<p>
+						<strong>Mentions:</strong>
+						{mentions.data.map((wm) => (
+							<Face card={wm.content.author[0]} link={wm.source} />
+						))}
+					</p>
+				)
+				: ''}
+			{replies.data.length
+				? (
+					<div>
+						<p>
+							<strong>Replies</strong>
+						</p>
+						{replies.data.map((wm) => (
+							<article class='p-comment h-entry link-card'>
+								{/* MAYBE TODO: replies with multiple authors? */}
+								<strong>
+									<Face card={wm.content.author[0]} />
+									<a
+										class='p-author h-card'
+										href={wm.content.author[0].url}
+									>
+										{wm.content.author[0].name}
+									</a>
+									{wm.content.name && (
+										<>
+											, <cite class='p-name'>{wm.content.name}</cite>
+										</>
+									)}
+								</strong>{' '}
+								<span class='p-content'>
+									{wm.content.content?.value}
+								</span>{' '}
+								<a class='u-url' href={wm.source}>
+									<time
+										class='dt-published'
+										datetime={wm.content.published}
+									>
+										{wm.content.published.toLocaleString(config.locales)}
+									</time>
+								</a>
+							</article>
+						))}
+					</div>
+				)
+				: ''}
+		</div>
 	)
 }
 
