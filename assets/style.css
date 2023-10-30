@@ -15,7 +15,7 @@
 }
 
 header:has(+ main),
-main + footer {
+main+footer {
     margin: 3em 0;
 }
 
@@ -24,20 +24,31 @@ main {
     min-height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin-block-start: 2rem;
 }
+
 h1 {
     font-size: 3em;
     font-size: 2.25em;
 }
+
 h2 {
     font-size: 1.6875em;
 }
+
 h3 {
     font-size: 1.265625em;
 }
-h4, h5, h6 {
+
+h4,
+h5,
+h6 {
     font-size: 1em;
 }
 
@@ -60,7 +71,8 @@ input[type=reset],
     color: var(--bg1);
     border: none;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         text-decoration: none;
         background: var(--bg2);
         color: var(--accent);
@@ -68,7 +80,7 @@ input[type=reset],
 
     &:active {
         background-color: var(--accent);
-        color: var(--bg2);    
+        color: var(--bg2);
     }
 
     &.big {
@@ -87,7 +99,8 @@ a,
     color: currentColor;
     text-decoration: 1px dashed var(--accent) underline;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         color: var(--accent);
         text-decoration: 2px solid var(--fg2) underline;
     }
@@ -97,6 +110,7 @@ a,
     font-size: .8em;
     color: var(--fg2);
 }
+
 a:any-link {
     cursor: pointer;
 }
@@ -113,21 +127,20 @@ th {
     border-block-end: 1px solid var(--bg2);
 }
 
-input:is(
-    :not([type]),
-    [type="text" i],
-    [type="text" i],
-    [type="date" i],
-    [type="datetime-local" i],
-    [type="email" i],
-    [type="month" i],
-    [type="number" i],
-    [type="password" i],
-    [type="search" i],
-    [type="tel" i],
-    [type="time" i],
-    [type="url" i],
-    [type="week" i],
+input:is( :not([type]),
+    [type="text"i],
+    [type="text"i],
+    [type="date"i],
+    [type="datetime-local"i],
+    [type="email"i],
+    [type="month"i],
+    [type="number"i],
+    [type="password"i],
+    [type="search"i],
+    [type="tel"i],
+    [type="time"i],
+    [type="url"i],
+    [type="week"i],
 ),
 textarea,
 select {
@@ -144,8 +157,8 @@ select {
 }
 
 label {
-    background-color: var(--bg3);
-    padding: .4em;
+    padding: .4em .4em 0 0;
+    min-width: 7em;
 }
 
 .contents {
@@ -159,6 +172,7 @@ label {
 
 .grid-row {
     display: contents;
+
     >:first-child {
         grid-column-start: 1;
     }
@@ -166,17 +180,21 @@ label {
 
 list-input {
     display: inline-block;
+
     ul {
         list-style: none;
         margin: 0;
         padding-inline-start: 0;
-        li + li {
+
+        li+li {
             margin-block-start: .5em;
         }
+
         input {
             margin-inline-end: .5em;
         }
     }
+
     button {
         display: block;
     }
@@ -201,12 +219,18 @@ list-input {
     position: relative;
 
     /* TODO: add all interactive elements */
-    a, button, input, textarea, details {
+    a,
+    button,
+    input,
+    textarea,
+    details {
         position: relative;
         z-index: 2;
     }
+
     .card-link {
         position: static;
+
         &::after {
             content: '';
             display: block;
@@ -223,9 +247,9 @@ list-input {
 .author-card {
     display: grid;
     grid-template-columns: auto 1fr;
-    grid-template-areas: 
-    'photo name'
-    'photo domain';
+    grid-template-areas:
+        'photo name'
+        'photo domain';
     gap: 0 .5em;
 
     &:not(:hover, :focus-visible) {
@@ -261,22 +285,33 @@ list-input {
     } */
 }
 
-.warn, .bad {
+.warn,
+.bad {
     color: var(--adm-fg);
     padding: 1em 2em;
-  
+
     position: relative;
-  
+
     filter:
-      drop-shadow(0 0 0.5em var(--adm-bg))
-      drop-shadow(0 0 1.0em var(--adm-bg))
-      drop-shadow(0 0 1.5em var(--adm-bg))
-      drop-shadow(0 0 1.5em var(--adm-bg));
+        drop-shadow(0 0 0.5em var(--adm-bg)) drop-shadow(0 0 1.0em var(--adm-bg)) drop-shadow(0 0 1.5em var(--adm-bg)) drop-shadow(0 0 1.5em var(--adm-bg));
 
     &::before {
         content: var(--adm-icon);
         position: absolute;
         left: 0;
         padding-block: inherit;
+    }
+}
+
+.face {
+    border-radius: 9999em;
+    border: 2px solid var(--bg1);
+
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+
+    &+& {
+        margin-left: -.3em;
     }
 }

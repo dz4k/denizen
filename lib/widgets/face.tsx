@@ -11,8 +11,6 @@ export const Face = ({ card, link }: { card: Card; link?: string | URL }) => (
 			src={card.photo[0] ?? makeProfileSvg(card)}
 			alt={card.name}
 			title={card.name}
-			width='24'
-			height='24'
 			class='face'
 		/>
 	</a>

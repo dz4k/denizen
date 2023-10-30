@@ -48,8 +48,7 @@ export const get = async (c: hono.Context<Env>) => {
 						<a href='/' class='p-author h-card author-card unlink'>
 							<img src='/.denizen/public/profile.svg' alt='' class='photo' />
 							<strong class='p-name'>
-								{siteOwner.profile.name},
-								<Face card={siteOwner.profile} />
+								{siteOwner.profile.name}
 							</strong>
 							<span>{config.baseUrl.hostname}</span>
 						</a>
