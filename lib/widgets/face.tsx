@@ -2,11 +2,12 @@
 /** @jsxFrag hono.fragment */
 
 import * as hono from '../../deps/hono.ts'
+import { stringToRandNumber } from '../common/util.ts'
 
 import { Card } from '../model.ts'
 
 export const Face = ({ card, link }: { card: Card; link?: string | URL }) => (
-	<a href={link}>
+	<a href={link} rel='noopener noreferrer'>
 		<img
 			src={card.photo[0] ?? makeProfileSvg(card)}
 			alt={card.name}
@@ -17,8 +18,7 @@ export const Face = ({ card, link }: { card: Card; link?: string | URL }) => (
 )
 
 export const makeProfileSvg = (card: Card) => {
-	const rand = Math.random()
-	const hue = rand * 360
+	const hue = stringToRandNumber(card.name, [0, 359])
 	const svg = `
     <svg xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20">
