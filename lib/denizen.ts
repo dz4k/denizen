@@ -6,8 +6,9 @@ import {
 } from '../deps/hono_sessions.ts'
 
 import './config.ts'
-import './webmention-send.ts'
+import './webmention.ts'
 
+import { listen } from './queue.ts'
 import { db } from './db.ts'
 
 import * as fourOhFour from './routes/404.tsx'
@@ -27,6 +28,8 @@ import * as fileManager from './routes/storage/file-manager.tsx'
 import * as assets from './routes/storage/assets.ts'
 import * as micropub from './routes/micropub/micropub.ts'
 import * as webmentionRecv from './routes/webmention/webmention-recv.ts'
+
+listen()
 
 export type Env = {
 	Variables: {

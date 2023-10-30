@@ -35,7 +35,7 @@ export const get = async (c: hono.Context<Env>) => {
 	const admin = isAdmin(c)
 	const siteOwner = await getUser('admin')
 
-	c.header('Link', '</.denizen/webmention>;rel="webmention"')
+	c.header('Link', '</.denizen/webmention>; rel="webmention"')
 
 	return c.html(
 		<Layout

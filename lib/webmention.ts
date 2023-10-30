@@ -7,6 +7,8 @@ import { parseMicroformats } from '../deps/microformats-parser.ts'
 import { MF2Object } from './common/mf2.ts'
 import { isValidUrl } from './common/util.ts'
 import { enqueue } from './queue.ts'
+import * as config from './config.ts'
+import { app } from './denizen.ts'
 
 export const receiveWebmention = async (source: string, target: string) => {
 	const targetPost = await getPostByURL(new URL(target))
@@ -20,7 +22,7 @@ export const receiveWebmention = async (source: string, target: string) => {
 		return
 	}
 
-	const sourceRes = await fetch(source)
+	const sourceRes = await fetchInternalOrExternal(new Request(source))
 	if (!sourceRes.ok) {
 		console.error(
 			'Webmention source returned HTTP error',
@@ -45,7 +47,7 @@ export const receiveWebmention = async (source: string, target: string) => {
 		// TODO: The HTML is parsed twice.
 		// Write own MF2 parser that works with deno_dom to avoid this.
 		html: sourceContent,
-		baseUrl: sourceRes.url,
+		baseUrl: sourceRes.url || source,
 	})
 	console.log('Parsed mf2', source, mf2doc)
 
@@ -138,31 +140,41 @@ function findMentions(post: Post) {
 
 export async function sendWebmention(source: string, target: string) {
 	console.log('Sending webmention from', source, 'to', target)
-	const endpoint = await discoverWebmentionEndpoint(target)
+	const endpoint = await discoverWebmentionEndpoint(new URL(target))
 	console.log('Found webmention endpoint of', target, ':', endpoint)
 	if (!endpoint) return
-	await fetch(endpoint, {
-		method: 'POST',
-		body: new URLSearchParams({ source, target }),
-	})
+	await fetchInternalOrExternal(
+		new Request(endpoint, {
+			method: 'POST',
+			body: new URLSearchParams({ source, target }),
+		}),
+	)
 }
 
-async function discoverWebmentionEndpoint(target: string | Request | URL) {
-	const res = await fetch(target)
+async function discoverWebmentionEndpoint(target: URL) {
+	const res = await fetchInternalOrExternal(
+		new Request(target, {
+			headers: {
+				'expect': 'text/html',
+			},
+		}),
+	)
 	for (const [header, value] of res.headers.entries()) {
+		console.log(target, header + ':', value)
 		if (header === 'link') {
 			const parsed = parseLinkHeader(value)
 			for (const link of parsed) {
 				console.log(target, 'Link:', link)
 				const rel = (link.rel as string ?? '').toLowerCase().split(/\s+/g)
 				if (rel.includes('webmention')) {
-					return new URL(link.uri, res.url ?? target)
+					return new URL(link.uri, res.url || target)
 				}
 			}
 		}
 	}
 	try {
 		const html = await res.text()
+		console.log('html', html)
 		const doc = new DOMParser().parseFromString(html, 'text/html')
 		const link = doc?.querySelector('[rel~="webmention" i][href]')
 		const url = link?.getAttribute('href')
@@ -171,4 +183,11 @@ async function discoverWebmentionEndpoint(target: string | Request | URL) {
 		console.error(e)
 		return null
 	}
+}
+
+const fetchInternalOrExternal = (req: Request) => {
+	const myFetch = new URL(req.url).hostname === config.baseUrl.hostname
+		? app.fetch
+		: fetch
+	return myFetch(req)
 }

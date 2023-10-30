@@ -110,6 +110,7 @@ export const saveWebmention = async (post: Post, wm: Webmention) => {
 	if (existing.value) {
 		return db.atomic()
 			.set(existing.value as Deno.KvKey, wm)
+			.commit()
 	}
 	const iid = [
 		'WM',
