@@ -160,7 +160,7 @@ class PostEditor extends HTMLElement {
 							'@data-cols': 3,
 							id: `edit-${name}-${id}`,
 							name,
-						}, value),
+						}, value.html ?? value),
 					),
 				)
 				break
