@@ -137,7 +137,7 @@ const Webmentions = async (props: { post: Post }) => {
 				? (
 					<p>
 						{/* TODO: "load more" buttons and total number on each */}
-						<strong>Likes:</strong>
+						<strong class='tiny-header'>Likes:</strong>
 						{likes.data.map((wm) => (
 							<Face card={wm.content.author[0]} link={wm.source} />
 						))}
@@ -147,7 +147,7 @@ const Webmentions = async (props: { post: Post }) => {
 			{reposts.data.length
 				? (
 					<p>
-						<strong>Reposts:</strong>
+						<strong class='tiny-header'>Reposts:</strong>
 						{reposts.data.map((wm) => (
 							<Face card={wm.content.author[0]} link={wm.source} />
 						))}
@@ -157,7 +157,7 @@ const Webmentions = async (props: { post: Post }) => {
 			{mentions.data.length
 				? (
 					<p>
-						<strong>Mentions:</strong>
+						<strong class='tiny-header'>Mentions:</strong>
 						{mentions.data.map((wm) => (
 							<Face card={wm.content.author[0]} link={wm.source} />
 						))}
@@ -168,36 +168,40 @@ const Webmentions = async (props: { post: Post }) => {
 				? (
 					<div>
 						<p>
-							<strong>Replies</strong>
+							<strong class='tiny-header'>Replies</strong>
 						</p>
 						{replies.data.map((wm) => (
 							<article class='p-comment h-entry link-card'>
 								{/* MAYBE TODO: replies with multiple authors? */}
-								<strong>
-									<Face card={wm.content.author[0]} />
-									<a
-										class='p-author h-card'
-										href={wm.content.author[0].url}
-									>
-										{wm.content.author[0].name}
+								<header>
+									<strong>
+										<Face card={wm.content.author[0]} />
+										<a
+											class='p-author h-card'
+											href={wm.content.author[0].url}
+										>
+											{wm.content.author[0].name}
+										</a>
+									</strong>{' '}
+									<a class='u-url <small> card-link' href={wm.source}>
+										<time
+											class='dt-published'
+											datetime={wm.content.published}
+										>
+											{wm.content.published.toLocaleString(config.locales)}
+										</time>
 									</a>
-									{wm.content.name && (
-										<>
-											, <cite class='p-name'>{wm.content.name}</cite>
-										</>
-									)}
-								</strong>{' '}
+								</header>
+								{wm.content.name && (
+									<strong>
+										<cite class='p-name'>{wm.content.name}</cite>
+										{' '}
+									</strong>
+								)}
 								<span class='p-content'>
 									{wm.content.content?.value}
-								</span>{' '}
-								<a class='u-url <small>' href={wm.source}>
-									<time
-										class='dt-published'
-										datetime={wm.content.published}
-									>
-										{wm.content.published.toLocaleString(config.locales)}
-									</time>
-								</a>
+								</span>
+								{' '}
 							</article>
 						))}
 					</div>

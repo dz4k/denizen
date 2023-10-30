@@ -303,6 +303,13 @@ list-input {
     }
 }
 
+.tiny-header {
+    font-size: inherit;
+    font-weight: normal;
+    font-variant-caps: all-small-caps;
+    letter-spacing: .1em;
+}
+
 .face {
     border-radius: 9999em;
     border: 2px solid var(--bg1);
