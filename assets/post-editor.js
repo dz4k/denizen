@@ -112,7 +112,7 @@ class PostEditor extends HTMLElement {
 		const removeButton = h(
 			'button',
 			{
-				className: '<a> unbutton',
+				className: '<a> unbutton unlink',
 				'@aria-labelledby': `vh-${name}-${id} edit-${name}-${id}`,
 				onclick() {
 					this.closest('post-editor').removeField(this.closest('p'))

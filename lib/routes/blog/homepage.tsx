@@ -53,7 +53,7 @@ export const get = async (c: hono.Context<Env>) => {
 					)
 					: ''}
 			</header>
-			<main>
+			<main class='entry-list'>
 				{posts.data.map((post) => (
 					<article class='h-entry link-card'>
 						<h2>
@@ -61,21 +61,6 @@ export const get = async (c: hono.Context<Env>) => {
 								{post.name}
 							</a>
 						</h2>
-						<p class='<small>'>
-							<a href={post.uid?.pathname} class='card-link'>
-								<time className='dt-published'>
-									{post.published.toLocaleString(config.locales)}
-								</time>
-							</a>
-							{post.updated && (
-								<>
-									{' '}&middot; Updated on{' '}
-									<time className='dt-updated'>
-										{post.updated.toLocaleString(config.locales)}
-									</time>
-								</>
-							)}
-						</p>
 						{post.summary
 							? (
 								<p
@@ -91,6 +76,21 @@ export const get = async (c: hono.Context<Env>) => {
 									dangerouslySetInnerHTML={{ __html: post.content?.html }}
 								/>
 							)}
+						<p class='<small>'>
+							<a href={post.uid?.pathname} class='card-link'>
+								<time className='dt-published'>
+									{post.published.toLocaleString(config.locales)}
+								</time>
+							</a>
+							{post.updated && (
+								<>
+									{' '}&middot; Updated on{' '}
+									<time className='dt-updated'>
+										{post.updated.toLocaleString(config.locales)}
+									</time>
+								</>
+							)}
+						</p>
 					</article>
 				))}
 				{posts.cursor

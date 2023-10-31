@@ -67,15 +67,15 @@ input[type=reset],
     padding: 0 .4em;
     vertical-align: middle;
 
-    background-color: var(--accent);
-    color: var(--bg1);
+    background: var(--bg2);
+    color: var(--accent);
     border: none;
 
     &:hover,
     &:focus-visible {
         text-decoration: none;
-        background: var(--bg2);
-        color: var(--accent);
+        background-color: var(--accent);
+        color: var(--bg1);
     }
 
     &:active {
@@ -144,10 +144,9 @@ input:is( :not([type]),
 ),
 textarea,
 select {
-    background-color: var(--bg2);
     border: none;
-    border-block-end: 1px solid var(--accent);
-    border-radius: 0;
+    border: 1px solid var(--bg3);
+    border-radius: .2rem;
     font: inherit;
     padding: .4em;
 }
@@ -200,8 +199,20 @@ list-input {
     }
 }
 
+.unlink {
+    &:not(:hover, :focus-visible) {
+        text-decoration: none;
+    }
+}
+
 .h-entry {
     margin-block: 2em;
+}
+
+.entry-list {
+    .h-entry {
+        border-block-start: 1px solid var(--bg3);
+    }
 }
 
 .lede {

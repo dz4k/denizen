@@ -88,7 +88,7 @@ export class ListInput extends HTMLElement {
 			h('button', {
 				type: 'button',
 				onclick: () => this.removeItem($item),
-				className: '<a>',
+				className: '<a> unlink',
 				title: 'Remove',
 				ariaLabel: 'Remove',
 			}, '×'),
@@ -103,6 +103,7 @@ export class ListInput extends HTMLElement {
 
 	removeItem($item) {
 		$item.remove()
+		if (this.$items.childElementCount === 0) this.addItem()
 	}
 }
 
