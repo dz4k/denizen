@@ -205,6 +205,9 @@ list-input {
     }
 }
 
+.h-entry {
+    margin-block: 1em;
+}
 
 .entry-list {
     .h-entry {
