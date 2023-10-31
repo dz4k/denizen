@@ -137,7 +137,7 @@ const Webmentions = async (props: { post: Post }) => {
 				? (
 					<p>
 						{/* TODO: "load more" buttons and total number on each */}
-						<strong class='tiny-header'>Likes:</strong>
+						<strong class='tiny-header'>Likes</strong>
 						{likes.data.map((wm) => (
 							<Face card={wm.content.author[0]} link={wm.source} />
 						))}
@@ -147,7 +147,7 @@ const Webmentions = async (props: { post: Post }) => {
 			{reposts.data.length
 				? (
 					<p>
-						<strong class='tiny-header'>Reposts:</strong>
+						<strong class='tiny-header'>Reposts</strong>
 						{reposts.data.map((wm) => (
 							<Face card={wm.content.author[0]} link={wm.source} />
 						))}
@@ -157,7 +157,7 @@ const Webmentions = async (props: { post: Post }) => {
 			{mentions.data.length
 				? (
 					<p>
-						<strong class='tiny-header'>Mentions:</strong>
+						<strong class='tiny-header'>Mentions</strong>
 						{mentions.data.map((wm) => (
 							<Face card={wm.content.author[0]} link={wm.source} />
 						))}

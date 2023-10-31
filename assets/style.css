@@ -320,6 +320,7 @@ list-input {
     font-weight: normal;
     font-variant-caps: all-small-caps;
     letter-spacing: .1em;
+    margin-inline-end: 1em;
 }
 
 .face {
