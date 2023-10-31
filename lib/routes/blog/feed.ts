@@ -88,7 +88,7 @@ export const xml = async (c: hono.Context<Env>) => {
 					updated: post.updated ?? post.published,
 					content: {
 						'@type': 'html',
-						'#text': post.content.html,
+						'#text': post.content?.html,
 					},
 					summary: post.summary,
 					published: post.published,

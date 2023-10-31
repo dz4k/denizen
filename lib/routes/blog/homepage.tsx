@@ -21,9 +21,9 @@ export const get = async (c: hono.Context<Env>) => {
 		<Layout title={siteOwner.profile.name}>
 			<header class='h-card'>
 				<img
-					src={siteOwner.profile.photo[0] ??
+					src={siteOwner.profile.photo[0]?.url ??
 						makeProfileSvg(siteOwner.profile)}
-					alt=''
+					alt={siteOwner.profile.photo[0]?.alt}
 					class='big face'
 				/>
 				<h1>
