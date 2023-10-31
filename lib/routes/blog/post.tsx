@@ -40,7 +40,7 @@ export const get = async (c: hono.Context<Env>) => {
 	return c.html(
 		<Layout
 			title={post.name ?? post.summary ??
-				post.published.toLocaleTimeString()}
+				post.published.toLocaleString()}
 		>
 			<article class='h-entry'>
 				<header class='container padding-block-start'>
