@@ -205,13 +205,11 @@ list-input {
     }
 }
 
-.h-entry {
-    margin-block: 2em;
-}
 
 .entry-list {
     .h-entry {
         border-block-start: 1px solid var(--bg3);
+        margin-block: 2em;
     }
 }
 
