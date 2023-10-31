@@ -316,10 +316,15 @@ list-input {
 
     width: 1em;
     height: 1em;
-    vertical-align: middle;
+    vertical-align: text-bottom;
 
     &+& {
         margin-left: -.3em;
+    }
+
+    &.big {
+        font-size: 6rem;
+        margin: -2px;
     }
 }
 

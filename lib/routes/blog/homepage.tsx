@@ -8,6 +8,7 @@ import { Layout } from '../../layout.ts'
 import * as config from '../../config.ts'
 import { getPosts, getUser } from '../../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
+import { makeProfileSvg } from '../../widgets/face.tsx'
 
 export const get = async (c: hono.Context<Env>) => {
 	const { cursor } = c.req.query()
@@ -19,7 +20,14 @@ export const get = async (c: hono.Context<Env>) => {
 	return c.html(
 		<Layout title={siteOwner.profile.name}>
 			<header class='h-card'>
+				<img
+					src={siteOwner.profile.photo[0] ??
+						makeProfileSvg(siteOwner.profile)}
+					alt=''
+					class='big face'
+				/>
 				<h1>
+					{/* TODO: used this makeprofilesvg in a few places now, factor out to Card. */}
 					<a href='/' class='u-url u-uid p-name'>{siteOwner.profile.name}</a>
 				</h1>
 				{siteOwner.profile.note.length
