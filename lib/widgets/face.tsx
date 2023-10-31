@@ -9,7 +9,7 @@ import { Card } from '../model.ts'
 export const Face = ({ card, link }: { card: Card; link?: string | URL }) => (
 	<a href={link} rel='noopener noreferrer'>
 		<img
-			src={card.photo[0] ?? makeProfileSvg(card)}
+			src={card.photo[0]?.url ?? makeProfileSvg(card)}
 			alt={card.name}
 			title={card.name}
 			class='face'
