@@ -41,9 +41,9 @@ bin/denizen.tsx
 - [X] Micropub
   - [X] Posting
   - [ ] Media endpoint (waiting on blob storage)
-  - [ ] Updating
+  - [X] Updating
   - [X] Deleting
-  - [ ] Undeleting?
+  - [X] Undeleting
 - [ ] Fetching link embeds
 - [ ] Syndication to social media silos
 - [ ] ActivityPub maybe?
