@@ -46,6 +46,7 @@ export const updateSettings = async (c: hono.Context<Env>) => {
 const Console = ({ user }: { user: User }) => (
 	<Layout title='Console'>
 		<script type='module' src='/.denizen/public/list-input.js' />
+		<script type='module' src='/.denizen/public/textarea-autoexpand.js' />
 		<header>
 			<h1>Console</h1>
 		</header>
@@ -69,7 +70,7 @@ const Console = ({ user }: { user: User }) => (
 					</p>
 					<p class='grid-row'>
 						<label for='profile.bio'>Bio</label>
-						<textarea name='note' id='profile.bio'>
+						<textarea name='note' id='profile.bio' data-autoexpand>
 							{user.profile.note}
 						</textarea>
 					</p>

@@ -70,6 +70,7 @@ input[type=reset],
     background: var(--bg2);
     color: var(--accent);
     border: none;
+    border-radius: .6em;
 
     &:hover,
     &:focus-visible {
@@ -127,7 +128,7 @@ th {
     border-block-end: 1px solid var(--bg2);
 }
 
-input:is( :not([type]),
+input:is(:not([type]),
     [type="text"i],
     [type="text"i],
     [type="date"i],
