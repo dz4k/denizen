@@ -31,11 +31,12 @@ bin/denizen.tsx
 - [X] Webmention sending
   - [X] https://webmention.rocks/ Pass all discovery tests
   - [X] https://webmention.rocks/update/1
-  - [ ] https://webmention.rocks/update/2 notify URLs that have been removed
+  - [X] https://webmention.rocks/update/2 notify URLs that have been removed
         from a post
   - [X] https://webmention.rocks/delete/1
 - [X] Webmention receiving
   - [X] https://webmention.rocks/ Pass all receiver tests
+  - [X] delete existing webmention if mentioning link was removed
 - [X] IndieAuth
 - [X] Micropub
   - [X] Posting

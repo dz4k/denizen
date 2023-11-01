@@ -69,7 +69,10 @@ export const createPost = async (post: Post): Promise<string> => {
 }
 
 export const updatePost = async (post: Post): Promise<string> => {
+	const oldPost = await getPost(post.iid)
+
 	post.updated = new Date()
+
 	const key = postKey(post)
 	const tx = db.atomic()
 	tx.set(key, post.toMF2Json())
@@ -80,7 +83,9 @@ export const updatePost = async (post: Post): Promise<string> => {
 	await enqueue({
 		type: 'send_webmentions',
 		post: post.toMF2Json(),
+		oldHtml: oldPost?.content?.html,
 	})
+
 	return post.iid!
 }
 
@@ -127,15 +132,20 @@ export const saveWebmention = async (post: Post, wm: Webmention) => {
 		.commit()
 }
 
-export const deleteWebmention = async (post: Post, wm: Webmention) => {
+export const deleteWebmention = async (
+	wm: { source: string; target: string },
+) => {
 	const srcDstKey = ['WMBySrcDst', wm.source, wm.target]
 	const existing = await db.get(srcDstKey)
 	if (existing.value === null) return
+
+	const [_wm, postIid, responseType, _wmUlid] = existing.value as Deno.KvKey
+
 	return db.atomic()
 		.delete(srcDstKey)
 		.delete(existing.value as Deno.KvKey)
-		.sum(['WMCount', post.iid], -1n)
-		.sum(['WMCount', post.iid, wm.responseType], -1n)
+		.sum(['WMCount', postIid], -1n)
+		.sum(['WMCount', postIid, responseType], -1n)
 		.commit()
 }
 

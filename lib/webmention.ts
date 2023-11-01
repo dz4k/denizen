@@ -1,7 +1,7 @@
 import { DOMParser, Element } from '../deps/dom.ts'
 import { parseLinkHeader } from '../deps/parse-link-header.ts'
 
-import { getPostByURL, saveWebmention } from './db.ts'
+import { deleteWebmention, getPostByURL, saveWebmention } from './db.ts'
 import { Citation, Post, Webmention, WMResponseType } from './model.ts'
 import { parseMicroformats } from '../deps/microformats-parser.ts'
 import { MF2Object } from './common/mf2.ts'
@@ -23,6 +23,12 @@ export const receiveWebmention = async (source: string, target: string) => {
 	}
 
 	const sourceRes = await fetchInternalOrExternal(new Request(source))
+
+	if (sourceRes.status === 410 /* "Gone" */) {
+		await deleteWebmention({ source, target })
+		return
+	}
+
 	if (!sourceRes.ok) {
 		console.error(
 			'Webmention source returned HTTP error',
@@ -39,7 +45,12 @@ export const receiveWebmention = async (source: string, target: string) => {
 		`[href=${JSON.stringify(target)}]`,
 	)
 	if (!mentioningElement) {
-		console.error('Webmention source doesn\'t mention target', source, target)
+		console.info(
+			'Webmention source does not mention target',
+			source,
+			target,
+		)
+		await deleteWebmention({ source, target })
 		return
 	}
 
@@ -97,8 +108,8 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 	return 'mention'
 }
 
-export async function sendWebmentions(post: Post) {
-	const mentionedPages = findMentions(post)
+export async function sendWebmentions(post: Post, oldContent?: string) {
+	const mentionedPages = findMentions(post, oldContent)
 	console.log(`Found mentioned pages:`, mentionedPages, 'in post', post)
 	await Promise.all(Array.from(mentionedPages, (page) =>
 		enqueue({
@@ -108,7 +119,7 @@ export async function sendWebmentions(post: Post) {
 		})))
 }
 
-function findMentions(post: Post) {
+function findMentions(post: Post, oldContent?: string) {
 	const urls = new Set<string>()
 	const add = (url: URL) => {
 		urls.add(url.href)
@@ -122,20 +133,37 @@ function findMentions(post: Post) {
 	post.likeOf.forEach(addCitation)
 
 	if (post.content) {
-		const doc = new DOMParser().parseFromString(post.content.html, 'text/html')
-		doc?.querySelectorAll('a[href]').forEach((node) => {
-			const el = node as Element
-			if (el.getAttribute('rel')?.includes('nomention')) return
-			try {
-				add(new URL(el.getAttribute('href')!, post.uid))
-			} catch {
-				// invalid URL
-				// TODO: maybe post a warning?
-			}
-		})
+		for (
+			const mention of findMentionsInContent(post.content.html, {
+				baseUrl: post.uid!,
+			})
+		) add(mention)
+	}
+	if (oldContent) {
+		for (
+			const mention of findMentionsInContent(oldContent, { baseUrl: post.uid! })
+		) add(mention)
 	}
 
 	return urls
+}
+
+function* findMentionsInContent(
+	content: string,
+	{ baseUrl }: { baseUrl: URL },
+) {
+	const doc = new DOMParser().parseFromString(content, 'text/html')
+	if (!doc) return
+	for (const node of doc.querySelectorAll('a[href]')) {
+		const el = node as Element
+		if (el.getAttribute('rel')?.includes('nomention')) return
+		try {
+			yield new URL(el.getAttribute('href')!, baseUrl)
+		} catch {
+			// invalid URL
+			// TODO: maybe post a warning?
+		}
+	}
 }
 
 export async function sendWebmention(source: string, target: string) {

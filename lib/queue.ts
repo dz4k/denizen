@@ -10,6 +10,7 @@ import {
 export type QueueMessage = {
 	type: 'send_webmentions'
 	post: MF2Object
+	oldHtml?: string
 } | {
 	type: 'send_webmention'
 	source: string
@@ -28,7 +29,7 @@ export const listen = () =>
 
 		switch (message.type) {
 			case 'send_webmentions':
-				return sendWebmentions(Post.fromMF2Json(message.post))
+				return sendWebmentions(Post.fromMF2Json(message.post), message.oldHtml)
 			case 'send_webmention':
 				return sendWebmention(message.source, message.target)
 			case 'recv_webmention':
