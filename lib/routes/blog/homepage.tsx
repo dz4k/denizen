@@ -40,9 +40,9 @@ export const get = async (c: hono.Context<Env>) => {
 								<>
 									<a
 										rel='me'
-										{...(value.startsWith('mailto')
-											? { class: 'u-email' }
-											: {})}
+										class={`<button> ${
+											value.startsWith('mailto') ? 'u-email' : ''
+										}`}
 										href={value}
 									>
 										{name}
