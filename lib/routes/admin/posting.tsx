@@ -42,7 +42,11 @@ export const post = async (c: hono.Context<Env>) => {
 	)
 	await createPost(post)
 
-	return c.redirect(post.uid!.pathname, 307)
+	if (c.req.header('HX-Request')) {
+		return c.body(null, 200, { 'HX-Redirect': post.uid!.pathname })
+	} else {
+		return c.redirect(post.uid!.pathname, 303)
+	}
 }
 
 export const PostEditor = (p: { title: string; post?: Post }) => (
