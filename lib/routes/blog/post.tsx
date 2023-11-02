@@ -225,7 +225,7 @@ export const put = async (c: hono.Context<Env>) => {
 	console.log(c.res)
 
 	return c.body(null, 204, {
-		'HX-Redirect': newPost.uid!.pathname
+		'HX-Redirect': newPost.uid!.pathname,
 	})
 }
 
