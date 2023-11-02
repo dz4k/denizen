@@ -80,6 +80,9 @@ const InitialSetup = (p: { error?: string }) => (
 				<p class='grid-row'>
 					<label for='edit-site-url'>Site URL</label>
 					<input type='url' name='site-url' id='edit-site-url' />
+					<script>
+						document.getElementById('edit-site-url').value = location.origin
+					</script>
 				</p>
 				<p class='grid-row'>
 					<label for='edit-pw'>Password</label>
