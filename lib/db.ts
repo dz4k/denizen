@@ -1,6 +1,7 @@
-import { Post, Webmention, WMResponseType } from './model.ts'
+import { Post } from './model/post.ts'
+import { Webmention, WMResponseType } from './model/webmention.ts'
 import { asyncIteratorToArray } from './common/util.ts'
-import { User } from './model.ts'
+import { User } from './model/user.ts'
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 import { enqueue } from './queue.ts'
 

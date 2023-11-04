@@ -8,7 +8,8 @@ import { Layout } from '../../layout.ts'
 import * as bcrypt from '../../../deps/bcrypt.ts'
 
 import { completeInitialSetup, createUser, initialSetupDone } from '../../db.ts'
-import { Card, User } from '../../model.ts'
+import { User } from '../../model/user.ts'
+import { Card } from '../../model/card.ts'
 
 const signup = async (username: string, pw: string, card: Card) => {
 	const salt = await bcrypt.genSaltSync()

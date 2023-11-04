@@ -6,7 +6,7 @@ import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
-import { User } from '../../model.ts'
+import { User } from '../../model/user.ts'
 import { getUser, setConfig, updateUser } from '../../db.ts'
 import { ImportForm } from './import-blog.tsx'
 

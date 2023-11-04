@@ -1,6 +1,6 @@
 import { MF2Object } from './common/mf2.ts'
 import { db } from './db.ts'
-import { Post } from './model.ts'
+import { Post } from './model/post.ts'
 import {
 	receiveWebmention,
 	sendWebmention,

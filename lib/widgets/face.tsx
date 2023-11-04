@@ -4,7 +4,7 @@
 import * as hono from '../../deps/hono.ts'
 import { stringToRandNumber } from '../common/util.ts'
 
-import { Card } from '../model.ts'
+import { Card } from '../model/card.ts'
 
 export const Face = ({ card, link }: { card: Card; link?: string | URL }) => (
 	<a href={link} rel='noopener noreferrer'>

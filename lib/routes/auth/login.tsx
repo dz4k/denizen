@@ -7,7 +7,7 @@ import type { Env } from '../../denizen.ts'
 import * as bcrypt from '../../../deps/bcrypt.ts'
 
 import { getUser } from '../../db.ts'
-import { User } from '../../model.ts'
+import { User } from '../../model/user.ts'
 import { LoginForm } from './_login-form.tsx'
 
 const login = async (
