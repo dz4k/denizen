@@ -5,10 +5,10 @@ import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
-import { Post } from '../../model.ts'
+import { Post } from '../../model/post.ts'
 import { makeSlug } from '../../common/slug.ts'
 import * as config from '../../config.ts'
-import { createPost, getPost, getPostByURL } from '../../db.ts'
+import { createPost, getPostByURL } from '../../db.ts'
 
 export const get = (c: hono.Context<Env>) =>
 	c.html(<PostEditor title='New post' />)
