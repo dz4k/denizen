@@ -12,7 +12,7 @@ import {
 	undeletePost,
 	updatePost,
 } from '../../db.ts'
-import { Post } from '../../model.ts'
+import { Post } from '../../model/post.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { makeSlug } from '../../common/slug.ts'
 
@@ -47,7 +47,7 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	}
 	if (!token) {
 		const auth = c.req.header('Authorization')
-		if (!(auth && auth.startsWith('Bearer'))) {
+		if (!auth || !auth.startsWith('Bearer'model)) {
 			return unauthorized(c)
 		}
 		token = auth.slice(7)
