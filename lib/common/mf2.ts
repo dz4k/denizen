@@ -27,10 +27,11 @@ export const MF2Properties: z.ZodType<MF2Properties> = z.record(
 // Cannot z.infer
 export type MF2Properties = Record<string, MF2PropertyValue[]>
 
-export const MF2Object = z.object({
+export const MF2Object: z.ZodType<MF2Object> = z.object({
 	type: z.string().array().nonempty(),
 	value: z.string().optional(),
 	properties: MF2Properties,
+	children: z.lazy(() => MF2Object).array().optional(),
 })
 // Cannot z.infer
 export type MF2Object = {

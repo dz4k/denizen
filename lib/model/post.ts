@@ -17,6 +17,11 @@ import { makeSlug } from '../common/slug.ts'
 import * as config from '../config.ts'
 import { Card } from './card.ts'
 import { Citation } from './citation.ts'
+import {
+	Document,
+	DocumentFragment,
+	HTMLTemplateElement,
+} from '../../deps/dom.ts'
 
 /**
  * @see http://microformats.org/wiki/h-entry
@@ -264,5 +269,19 @@ export class Post {
 				'x-deleted': [String(this.deleted)],
 			},
 		})
+	}
+
+	mutateDom(
+		cb: (dom: DocumentFragment) => void | Promise<void>,
+	): ReturnType<typeof cb> {
+		const doc = new Document()
+		const template = doc.createElement('template') as HTMLTemplateElement
+		template.innerHTML = this.content?.html ?? ''
+		const rv = cb(template.content)
+		this.content = {
+			html: template.innerHTML,
+			value: template.innerText,
+		}
+		return rv
 	}
 }
