@@ -47,7 +47,7 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	}
 	if (!token) {
 		const auth = c.req.header('Authorization')
-		if (!auth || !auth.startsWith('Bearer'model)) {
+		if (!auth || !auth.startsWith('Bearer')) {
 			return unauthorized(c)
 		}
 		token = auth.slice(7)
