@@ -15,7 +15,7 @@ import {
 	updatePost,
 } from '../../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
-import { Post } from '../../model.ts'
+import { Post } from '../../model/post.ts'
 import { PostEditor } from '../admin/posting.tsx'
 import { Face, makeProfileSvg } from '../../widgets/face.tsx'
 

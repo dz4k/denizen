@@ -29,6 +29,8 @@ import * as assets from './routes/storage/assets.ts'
 import * as micropub from './routes/micropub/micropub.ts'
 import * as webmentionRecv from './routes/webmention/webmention-recv.ts'
 
+import style from './routes/style.css.js'
+
 listen()
 
 export type Env = {
@@ -53,6 +55,10 @@ app
 
 app
 	.get(`/.denizen/public/:asset`, assets.get)
+	.get(
+		'/.denizen/css',
+		(c) => c.body(style, 200, { 'Content-Type': 'text/css' }),
+	)
 	.use('*', initialSetup.middleware)
 	.get('/.denizen/initial-setup', initialSetup.get)
 	.post('/.denizen/initial-setup', initialSetup.post)
