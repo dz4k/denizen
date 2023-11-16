@@ -34,7 +34,7 @@ export const post = async (c: hono.Context<Env>) => {
 
 export const ImportForm = (p: { error?: string }) => (
 	<section>
-		<h1>Import blog to Denizen</h1>
+		<h2>Import blog to Denizen</h2>
 		<main>
 			<form
 				hx-post='/.denizen/import-blog'

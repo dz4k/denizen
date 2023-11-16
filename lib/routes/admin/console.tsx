@@ -43,6 +43,13 @@ export const updateSettings = async (c: hono.Context<Env>) => {
 	return c.redirect('/.denizen/console', 303)
 }
 
+export const updateTheme = async (c: hono.Context<Env>) => {
+	const formdata = await c.req.formData()
+	const theme = formdata.get('theme')
+	if (theme) await setConfig('theme', theme)
+	return c.redirect('/.denizen/console', 303)
+}
+
 const Console = ({ user }: { user: User }) => (
 	<Layout title='Console'>
 		<script type='module' src='/.denizen/public/list-input.js' />
@@ -107,6 +114,32 @@ const Console = ({ user }: { user: User }) => (
 							id='edit-site-url'
 							value={config.baseUrl}
 						/>
+					</p>
+					<p class='grid-row'>
+						<span />
+						<span>
+							<button class='big'>Save</button>
+						</span>
+					</p>
+				</form>
+			</section>
+			<section>
+				<h2>Theme</h2>
+				<form
+					action='/.denizen/theme-settings'
+					method='POST'
+					class='grid'
+					style='grid: auto-flow / auto 1fr'
+				>
+					<p class='grid-row'>
+						<label for='edit-theme'>Theme</label>
+						<select name='theme' id='edit-theme'>
+							{Object.entries(config.themes).map(([id, theme]) => (
+								<option value={id} selected={config.theme === id}>
+									{theme.name}
+								</option>
+							))}
+						</select>
 					</p>
 					<p class='grid-row'>
 						<span />

@@ -217,6 +217,15 @@ export const getConfig = async (name: string) => {
 	return res.value
 }
 
+export const getConfigs = async () => {
+	const rv: Record<string, unknown> = {}
+
+	const res = await db.list({ prefix: ['Cfg'] })
+	for await (const { key, value } of res) rv[key[1] as string] = value
+
+	return rv
+}
+
 export const setConfig = (name: string, value: unknown) =>
 	db.set(['Cfg', name], value)
 
