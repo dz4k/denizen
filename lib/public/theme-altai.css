@@ -99,6 +99,18 @@ input[type=reset],
     }
 }
 
+a,
+.\<a\> {
+    color: currentColor;
+    text-decoration: 1px dashed currentColor underline;
+
+    &:hover,
+    &:focus-visible {
+        color: var(--accent2);
+        text-decoration: 2px solid var(--accent2) underline;
+    }
+}
+
 input:is(:not([type]),
     [type="text"i],
     [type="text"i],
