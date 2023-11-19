@@ -1,31 +1,3 @@
-export default //*
-
-String.raw`*/ {
-    --: -
-}
-
-:root {
-    font-family: Inter, sans-serif;
-
-    max-width: 70ch;
-    margin: auto;
-
-    background: var(--bg1);
-    color-scheme: light;
-
-    --accent: #287;
-    --bg1: white;
-    --bg2: #dee;
-    --bg3: #ddd;
-    --fg2: #355;
-}
-
-header:has(+ main),
-main+footer {
-    margin: 3em 0;
-}
-
-
 main {
     min-height: 100%;
 }
@@ -64,32 +36,6 @@ input[type=button],
 input[type=submit],
 input[type=reset],
 ::file-selector-button {
-    font: inherit;
-    font-size: .9em;
-    font-weight: bold;
-    text-decoration: none;
-
-    display: inline-block;
-    padding: 0 .4em;
-    vertical-align: middle;
-
-    background: var(--bg2);
-    color: var(--accent);
-    border: none;
-    border-radius: .6em;
-
-    &:hover,
-    &:focus-visible {
-        text-decoration: none;
-        background-color: var(--accent);
-        color: var(--bg1);
-    }
-
-    &:active {
-        background-color: var(--accent);
-        color: var(--bg2);
-    }
-
     &.big {
         font-size: 1em;
         padding: .3em .5em;
@@ -113,13 +59,12 @@ a,
     }
 }
 
-.\<small\> {
-    font-size: .8em;
-    color: var(--fg2);
-}
-
 a:any-link {
     cursor: pointer;
+}
+
+.\<small\> {
+    font-size: .8em;
 }
 
 img {
@@ -131,7 +76,6 @@ td,
 th {
     vertical-align: baseline;
     text-align: start;
-    border-block-end: 1px solid var(--bg2);
 }
 
 input:is(:not([type]),
@@ -237,6 +181,10 @@ list-input {
 .link-card {
     position: relative;
 
+    &:hover {
+        background: var(--bg2);
+    }
+
     /* TODO: add all interactive elements */
     a,
     button,
@@ -249,6 +197,12 @@ list-input {
 
     .card-link {
         position: static;
+
+        &,
+        &:hover,
+        &:focus-visible {
+            text-decoration: none;
+        }
 
         &::after {
             content: '';
@@ -331,9 +285,6 @@ list-input {
 }
 
 .face {
-    border-radius: 9999em;
-    border: 2px solid var(--bg1);
-
     width: 1em;
     height: 1em;
     vertical-align: text-bottom;

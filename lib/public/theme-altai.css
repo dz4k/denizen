@@ -1,5 +1,6 @@
 :root {
     --bg1: #44484f;
+    --bg2: #353a42;
     --fg1: #e8cccc;
     --fg2: #a99;
     --accent1: #132;
@@ -7,10 +8,17 @@
 }
 
 :root {
-    background: var(--bg1);
+    max-width: 70ch;
+    margin: auto;
+    background: radial-gradient(at left, var(--bg1), var(--bg2) 100vw);
     color: var(--fg1);
     font-family: monaspace neon;
     transform: rotate(-5deg) skew(-5deg);
+}
+
+header:has(+ main),
+main+footer {
+    margin: 3em 0;
 }
 
 h1,
@@ -60,13 +68,34 @@ input[type=button],
 input[type=submit],
 input[type=reset],
 ::file-selector-button {
-    background: var(--accent1);
-    color: var(--accent2);
+    font: inherit;
+    font-size: 1rem;
     font-weight: bold;
     font-stretch: expanded;
     text-decoration: none;
+
+    display: inline-block;
+    padding: 0 .4em;
+    vertical-align: middle;
+
+    border: none;
+    background: var(--accent1);
+    color: var(--accent2);
+
     padding-inline: 1ch;
     border-radius: 0;
+
+    &:hover,
+    &:focus-visible {
+        text-decoration: none;
+        background-color: var(--accent);
+        color: var(--bg1);
+    }
+
+    &:active {
+        background-color: var(--accent);
+        color: var(--bg2);
+    }
 }
 
 input:is(:not([type]),
@@ -91,6 +120,11 @@ select {
     font-weight: 600;
     border-radius: 0;
     border: none;
+}
+
+td,
+th {
+    border-block-end: 1px solid var(--bg2);
 }
 
 .\<small\> {
