@@ -11,6 +11,7 @@
     max-width: 70ch;
     margin: auto;
     background: radial-gradient(at left, var(--bg1), var(--bg2) 100vw);
+    background-attachment: fixed;
     color: var(--fg1);
     font-family: monaspace neon;
     transform: rotate(-5deg) skew(-5deg);
