@@ -48,15 +48,6 @@ a,
     border-radius: 0;
     background: none;
     display: inline;
-
-    color: currentColor;
-    text-decoration: 1px dashed var(--accent) underline;
-
-    &:hover,
-    &:focus-visible {
-        color: var(--accent);
-        text-decoration: 2px solid var(--fg2) underline;
-    }
 }
 
 a:any-link {

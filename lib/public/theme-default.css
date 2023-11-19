@@ -52,6 +52,18 @@ input[type=reset],
     }
 }
 
+a,
+.\<a\> {
+    color: currentColor;
+    text-decoration: 1px dashed var(--accent) underline;
+
+    &:hover,
+    &:focus-visible {
+        color: var(--accent);
+        text-decoration: 2px solid var(--fg2) underline;
+    }
+}
+
 td,
 th {
     border-block-end: 1px solid var(--bg2);
