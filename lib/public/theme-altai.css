@@ -89,12 +89,12 @@ input[type=reset],
     &:hover,
     &:focus-visible {
         text-decoration: none;
-        background-color: var(--accent);
+        background-color: var(--accent2);
         color: var(--bg1);
     }
 
     &:active {
-        background-color: var(--accent);
+        background-color: var(--accent2);
         color: var(--bg2);
     }
 }
