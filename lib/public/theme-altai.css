@@ -13,11 +13,11 @@
 :root {
     max-width: 70ch;
     margin: auto;
+    padding-inline-start: 2em;
     background: radial-gradient(at left, var(--bg1), var(--bg2) 100vw);
     background-attachment: fixed;
     color: var(--fg1);
     font-family: var(--text);
-    transform: rotate(-5deg) skew(-5deg);
 }
 
 header:has(+ main),
@@ -42,7 +42,14 @@ h1 {
     font-size: 2em;
 }
 
-.h-card {
+/* TODO: create class for "main header" */
+body>header,
+body>article>header {
+    transform: rotate(-5deg) skew(-5deg);
+    margin-inline-start: -2em;
+}
+
+header.h-card {
     h1 {
         font-family: var(--display);
     }
