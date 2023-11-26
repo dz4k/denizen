@@ -4,7 +4,7 @@ import * as mediaType from 'https://deno.land/std@0.203.0/media_types/mod.ts'
 import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 import * as config from '../../config.ts'
-import * as storage from '../../storage.ts'
+import * as storage from '../../storage/fs-backend.ts'
 import {
 	createPost,
 	deletePost,

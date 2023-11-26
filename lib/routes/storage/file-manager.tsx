@@ -6,7 +6,7 @@ import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
 import { asyncIteratorToArray } from '../../common/util.ts'
-import * as storage from '../../storage.ts'
+import * as storage from '../../storage/fs-backend.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const files = await asyncIteratorToArray(storage.list())
