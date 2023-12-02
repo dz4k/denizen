@@ -110,7 +110,7 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 	return 'mention'
 }
 
-export async function sendWebmentions(post: Post, oldContent?: string) {
+export const sendWebmentions = async (post: Post, oldContent?: string) => {
 	const mentionedPages = findMentions(post, oldContent)
 	console.log(`Found mentioned pages:`, mentionedPages, 'in post', post)
 	await Promise.all(Array.from(mentionedPages, (page) =>
@@ -121,7 +121,7 @@ export async function sendWebmentions(post: Post, oldContent?: string) {
 		})))
 }
 
-function findMentions(post: Post, oldContent?: string) {
+export const findMentions = (post: Post, oldContent?: string) => {
 	const urls = new Set<string>()
 	const add = (url: URL) => {
 		urls.add(url.href)
@@ -150,7 +150,7 @@ function findMentions(post: Post, oldContent?: string) {
 	return urls
 }
 
-function* findMentionsInContent(
+const findMentionsInContent = function* (
 	content: string,
 	{ baseUrl }: { baseUrl: URL },
 ) {
@@ -168,7 +168,7 @@ function* findMentionsInContent(
 	}
 }
 
-export async function sendWebmention(source: string, target: string) {
+export const sendWebmention = async (source: string, target: string) => {
 	console.log('Sending webmention from', source, 'to', target)
 	const endpoint = await discoverWebmentionEndpoint(new URL(target))
 	console.log('Found webmention endpoint of', target, ':', endpoint)
@@ -181,7 +181,7 @@ export async function sendWebmention(source: string, target: string) {
 	)
 }
 
-async function discoverWebmentionEndpoint(target: URL) {
+const discoverWebmentionEndpoint = async (target: URL) => {
 	const res = await fetchInternalOrExternal(
 		new Request(target, {
 			headers: {
