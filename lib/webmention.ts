@@ -208,7 +208,7 @@ const discoverWebmentionEndpoint = async (target: URL) => {
 		const doc = new DOMParser().parseFromString(html, 'text/html')
 		const link = doc?.querySelector('[rel~="webmention" i][href]')
 		const url = link?.getAttribute('href')
-		if (typeof url === 'string') return new URL(url, res.url ?? target)
+		if (typeof url === 'string') return new URL(url, res.url || target)
 	} catch (e) {
 		console.error(e)
 		return null
