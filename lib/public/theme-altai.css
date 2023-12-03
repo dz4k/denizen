@@ -121,7 +121,7 @@ input[type=reset],
 a,
 .\<a\> {
     color: currentColor;
-    text-decoration: 1px dashed currentColor underline;
+    text-decoration: 1px solid currentColor underline;
 
     &:hover,
     &:focus-visible {
