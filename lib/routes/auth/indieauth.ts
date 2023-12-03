@@ -13,7 +13,6 @@ export const get = async (c: hono.Context<Env>) => {
 			client_id: config.baseUrl.href,
 		}),
 	}).then((res) => res.json())
-	console.log(validate)
 	if (validate.me === config.baseUrl.href) {
 		const sesh = c.get('session')
 		sesh.set('user', 'admin')

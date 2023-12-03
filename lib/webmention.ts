@@ -62,8 +62,6 @@ export const receiveWebmention = async (source: string, target: string) => {
 		html: sourceContent,
 		baseUrl: sourceRes.url || source,
 	})
-	console.log('Parsed mf2', source, mf2doc)
-
 	const hEntry = mf2doc.items.find((item) => item.type.includes('h-entry'))
 	if (!hEntry) {
 		console.error(
@@ -75,8 +73,6 @@ export const receiveWebmention = async (source: string, target: string) => {
 	}
 
 	const webmentionPost = Post.fromMF2Json(hEntry)
-
-	console.log('Createw webmention post', source, webmentionPost)
 
 	const responseType = discoverResponseType(hEntry)
 
@@ -112,7 +108,7 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 
 export const sendWebmentions = async (post: Post, oldContent?: string) => {
 	const mentionedPages = findMentions(post, oldContent)
-	console.log(`Found mentioned pages:`, mentionedPages, 'in post', post)
+	console.log(`Found mentioned pages:`, mentionedPages, 'in post', post.uid)
 	await Promise.all(Array.from(mentionedPages, (page) =>
 		enqueue({
 			type: 'send_webmention',
@@ -194,7 +190,6 @@ const discoverWebmentionEndpoint = async (target: URL) => {
 		if (header === 'link') {
 			const parsed = parseLinkHeader(value)
 			for (const link of parsed) {
-				console.log(target, 'Link:', link)
 				const rel = (link.rel as string ?? '').toLowerCase().split(/\s+/g)
 				if (rel.includes('webmention')) {
 					return new URL(link.uri, res.url || target)
@@ -204,7 +199,6 @@ const discoverWebmentionEndpoint = async (target: URL) => {
 	}
 	try {
 		const html = await res.text()
-		console.log('html', html)
 		const doc = new DOMParser().parseFromString(html, 'text/html')
 		const link = doc?.querySelector('[rel~="webmention" i][href]')
 		const url = link?.getAttribute('href')

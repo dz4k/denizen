@@ -8,7 +8,6 @@ export const get = async (c: hono.Context<Env>) => {
 	if (!filename) return c.body('', 400)
 	try {
 		const blob = await storage.read(filename)
-		console.log(blob)
 		return c.body(blob.stream(), 200, {
 			'Content-Type': blob.type,
 		})
