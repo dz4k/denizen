@@ -7,6 +7,7 @@ import { Layout } from '../../layout.ts'
 
 import { Post } from '../../model/post.ts'
 import { makeSlug } from '../../common/slug.ts'
+import { parseHashtags } from '../../common/hashtag.ts'
 import * as config from '../../config.ts'
 import { createPost, getPostByURL } from '../../db.ts'
 
@@ -40,6 +41,9 @@ export const post = async (c: hono.Context<Env>) => {
 		}`,
 		config.baseUrl, // TODO derive this somehow
 	)
+	const { tags, html } = parseHashtags(post.content!.html)
+	post.content!.html = html
+	post.category.push(...tags)
 	await createPost(post)
 
 	if (c.req.header('HX-Request')) {
@@ -56,19 +60,29 @@ export const PostEditor = (p: { title: string; post?: Post }) => (
 		</header>
 		<main>
 			<script type='module' src='/.denizen/public/post-editor.js'></script>
-			{p.post
-				? (
-					<form hx-put={p.post.uid?.pathname} hx-target='main' hx-select='main'>
-						<post-editor
-							values={p.post && JSON.stringify(p.post.toMF2Json().properties)}
-						/>
-					</form>
-				)
-				: (
-					<form method='POST'>
-						<post-editor />
-					</form>
-				)}
+			<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
+				<p class='grid-row'>
+					<label for='edit-title'>Title</label>
+					<input type='text' name='name' id='edit-title' value={p.post?.name} />
+				</p>
+				<p class='grid-row'>
+					<label for='edit-content'>Content</label>
+					<textarea name='content' id=''>{p.post?.content?.html}</textarea>
+				</p>
+				<details open={!!p.post?.summary}>
+					<summary>Add summary</summary>
+					<label for='edit-summary'>Summary</label>
+					<input
+						type='text'
+						name='name'
+						id='edit-title'
+						value={p.post?.summary}
+					/>
+				</details>
+				<p class='grid-row'>
+					<button type='submit'>Post</button>
+				</p>
+			</form>
 		</main>
 	</Layout>
 )
