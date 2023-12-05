@@ -7,9 +7,10 @@ import { Layout } from '../../layout.ts'
 
 import * as bcrypt from '../../../deps/bcrypt.ts'
 
-import { completeInitialSetup, createUser, initialSetupDone } from '../../db.ts'
+import { completeInitialSetup, createUser, initialSetupDone, setConfig } from '../../db.ts'
 import { User } from '../../model/user.ts'
 import { Card } from '../../model/card.ts'
+import { isValidUrl } from '../../common/util.ts'
 
 const signup = async (username: string, pw: string, card: Card) => {
 	const salt = await bcrypt.genSaltSync()
@@ -37,11 +38,27 @@ export const post = async (c: hono.Context<Env>) => {
 	if (typeof pw !== 'string') {
 		return c.html(<InitialSetup error='Missing username or password' />, 400)
 	}
+	
 	const displayName = form.get('name')
 	if (typeof displayName !== 'string') {
 		return c.html(<InitialSetup error='Please enter a name' />, 400)
 	}
+
+	const siteUrl = form.get('site-url')
+	if (typeof siteUrl !== 'string'
+		|| !isValidUrl(siteUrl)) {
+		return c.html(<InitialSetup error='Site URL should be a valid URL' />, 400)
+	}
+
+	const locale = form.get('lang')
+	if (typeof locale !== 'string') {
+		return c.html('Please choose a language for your blog')
+	}
+
+	// Do setup
 	await signup('admin', pw, new Card(displayName))
+	await setConfig('base url', siteUrl)
+	await setConfig('locales', [locale])
 
 	// Mark setup as completed
 	await completeInitialSetup()
