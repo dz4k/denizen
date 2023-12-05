@@ -127,12 +127,12 @@ list-input {
         margin: 0;
         padding-inline-start: 0;
 
-        li+li {
-            margin-block-start: .5em;
-        }
+        display: grid;
+        grid: auto-flow / 1fr 1fr auto;
+        gap: .5em;
 
-        input {
-            margin-inline-end: .5em;
+        li {
+            display: contents;
         }
     }
 
