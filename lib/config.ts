@@ -12,4 +12,4 @@ export const themes = {
 	altai: { name: 'Altai' },
 } as const
 
-export const theme = configs['theme'] as keyof typeof themes
+export const theme = configs['theme'] as keyof typeof themes ?? 'default'
