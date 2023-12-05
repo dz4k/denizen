@@ -81,14 +81,20 @@ export const get = async (c: hono.Context<Env>) => {
 						<p class='<small>'>
 							<a href={post.uid?.pathname} class='card-link'>
 								<time className='dt-published'>
-									{post.published.toLocaleString([post.lang, ...config.locales])}
+									{post.published.toLocaleString([
+										post.lang,
+										...config.locales,
+									])}
 								</time>
 							</a>
 							{post.updated && (
 								<>
 									{' '}&middot; Updated on{' '}
 									<time className='dt-updated'>
-										{post.updated.toLocaleString([post.lang, ...config.locales])}
+										{post.updated.toLocaleString([
+											post.lang,
+											...config.locales,
+										])}
 									</time>
 								</>
 							)}
