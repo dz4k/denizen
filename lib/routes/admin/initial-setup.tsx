@@ -55,12 +55,40 @@ export const post = async (c: hono.Context<Env>) => {
 const InitialSetup = (p: { error?: string }) => (
 	<Layout title='Initial Setup -- Denizen'>
 		<header>
-			<h1>Welcome to Denizen</h1>
-			<p class='big'>Choose a password to set up your site</p>
+			<h1 style='white-space:nowrap'>Welcome to Denizen</h1>
+			{hono.html`<script>
+				const welcomes = [
+					'Welcome to Denizen',
+					'Denizen’e hoş geldiniz',
+					'sina kama pona tawa ilo Denizen',
+					'Benvido a Denizen',
+					'TODO: add more languages',
+					'Denizenga xush kelibsiz',
+					'Welkom by Denizen',
+					'Bienvenue à Denizen',
+				]
+				const h1 = document.currentScript.previousElementSibling
+				let i = 0
+				setInterval(async () => {
+					await h1.animate({ opacity: [1, 0] }, { duration: 500, easing: 'ease-in-out' }).finished
+					h1.textContent = welcomes[++i % welcomes.length]
+					await h1.animate({ opacity: [0, 1] }, { duration: 500, easing: 'ease-in-out' })
+				}, 3000)
+			</script>`}
 		</header>
 		<main>
 			{p.error && <div class='bad box'>{p.error}</div>}
 			<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
+				<p class='grid-row'>
+					<label for='edit-lang'>🌐 Site language</label>
+					<select name='lang' id='edit-lang'>
+						<option value='en'>[af] Afrikaans</option>
+						<option value='en' selected>[en] English</option>
+						<option value='en'>[es] Esperanto</option>
+						<option value='en'>[tok] Toki Pona</option>
+						<option value='en'>[tr] Türkçe</option>
+					</select>
+				</p>
 				<p class='grid-row'>
 					<label for='edit-name'>Name</label>
 					<span class='grid'>
@@ -80,9 +108,9 @@ const InitialSetup = (p: { error?: string }) => (
 				<p class='grid-row'>
 					<label for='edit-site-url'>Site URL</label>
 					<input type='url' name='site-url' id='edit-site-url' />
-					<script>
+					{hono.html`<script>
 						document.getElementById('edit-site-url').value = location.origin
-					</script>
+					</script>`}
 				</p>
 				<p class='grid-row'>
 					<label for='edit-pw'>Password</label>
