@@ -19,7 +19,8 @@ export const get = async (c: hono.Context<Env>) => {
 	const socials = Object.entries(siteOwner.profile.me)
 	return c.html(
 		<Layout title={siteOwner.profile.name}>
-			<header class='h-card'>
+			<header class='h-card' lang={config.lang()}>
+				{/* TODO: used this makeprofilesvg in a few places now, factor out to Card. */}
 				<img
 					src={siteOwner.profile.photo[0]?.url ??
 						makeProfileSvg(siteOwner.profile)}
@@ -27,8 +28,9 @@ export const get = async (c: hono.Context<Env>) => {
 					class='big face'
 				/>
 				<h1>
-					{/* TODO: used this makeprofilesvg in a few places now, factor out to Card. */}
-					<a href='/' class='u-url u-uid p-name'>{siteOwner.profile.name}</a>
+					<a href='/' class='u-url u-uid p-name'>
+						{siteOwner.profile.name}
+					</a>
 				</h1>
 				{siteOwner.profile.note.length
 					? <p class='p-note'>{siteOwner.profile.note}</p>
@@ -55,7 +57,7 @@ export const get = async (c: hono.Context<Env>) => {
 			</header>
 			<main class='entry-list'>
 				{posts.data.map((post) => (
-					<article class='h-entry link-card'>
+					<article class='h-entry link-card' lang={post.lang ?? config.lang()}>
 						<h2>
 							<a class='p-name u-url u-uid' href={post.uid!.pathname}>
 								{post.name}
@@ -79,14 +81,14 @@ export const get = async (c: hono.Context<Env>) => {
 						<p class='<small>'>
 							<a href={post.uid?.pathname} class='card-link'>
 								<time className='dt-published'>
-									{post.published.toLocaleString(config.locales)}
+									{post.published.toLocaleString([post.lang, ...config.locales])}
 								</time>
 							</a>
 							{post.updated && (
 								<>
 									{' '}&middot; Updated on{' '}
 									<time className='dt-updated'>
-										{post.updated.toLocaleString(config.locales)}
+										{post.updated.toLocaleString([post.lang, ...config.locales])}
 									</time>
 								</>
 							)}

@@ -37,7 +37,7 @@ export const json = async (c: hono.Context<Env>) => {
 				name: siteOwner.profile.name,
 				url: config.baseUrl,
 			}],
-			language: config.locales[0],
+			language: config.lang(),
 			items: posts.data.map((post) => ({
 				id: post.uid,
 				url: post.uid,

@@ -7,6 +7,8 @@ export const baseUrl = new URL(
 )
 export const locales = configs['locales'] as string[] ?? ['en-US']
 
+export const lang = () => locales[0]
+
 export const themes = {
 	default: { name: 'Default' },
 	altai: { name: 'Altai' },

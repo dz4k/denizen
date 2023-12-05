@@ -27,6 +27,7 @@ export class Post {
 	 */
 	iid: string
 	deleted: boolean = false
+	lang?: string
 
 	name?: string
 	summary?: string

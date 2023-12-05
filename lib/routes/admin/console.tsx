@@ -40,6 +40,8 @@ export const updateSettings = async (c: hono.Context<Env>) => {
 	const formdata = await c.req.formData()
 	const siteUrl = formdata.get('site-url')
 	if (siteUrl) await setConfig('base url', siteUrl)
+	const lang = formdata.get('lang')
+	if (lang) await setConfig('locales', [lang])
 	return c.redirect('/.denizen/console', 303)
 }
 
@@ -113,6 +115,16 @@ const Console = ({ user }: { user: User }) => (
 							name='site-url'
 							id='edit-site-url'
 							value={config.baseUrl}
+						/>
+					</p>
+					<p class='grid-row'>
+						<label for='edit-lang'>Language</label>
+						{/* TODO: actual language picker */}
+						<input
+							type='text'
+							name='lang'
+							id='edit-lang'
+							value={config.lang()}
 						/>
 					</p>
 					<p class='grid-row'>
