@@ -27,10 +27,12 @@ export const MF2Properties: z.ZodType<MF2Properties> = z.record(
 // Cannot z.infer
 export type MF2Properties = Record<string, MF2PropertyValue[]>
 
-export const MF2Object = z.object({
+export const MF2Object: z.ZodType<MF2Object> = z.object({
 	type: z.string().array().nonempty(),
 	value: z.string().optional(),
 	properties: MF2Properties,
+	children: z.lazy(() => MF2Object).array().optional(),
+	lang: z.string().optional(),
 })
 // Cannot z.infer
 export type MF2Object = {
@@ -38,6 +40,7 @@ export type MF2Object = {
 	value?: string | undefined
 	properties: MF2Properties
 	children?: MF2Object[]
+	lang?: string
 }
 
 export const MF2Document = z.object({
@@ -125,5 +128,6 @@ export const removeEmptyProperties = (ob: MF2Object): MF2Object => {
 	for (const prop in ob.properties) {
 		if (ob.properties[prop].length === 0) delete ob.properties[prop]
 	}
+	if (!ob.lang) delete ob.lang
 	return ob
 }

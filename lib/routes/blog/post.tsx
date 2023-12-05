@@ -221,8 +221,11 @@ const Webmentions = async (props: { post: Post }) => {
 	)
 }
 
-export const put = async (c: hono.Context<Env>) => {
-	const oldPost = await getPostByURL(new URL(c.req.url))
+export const put = async (
+	c: hono.Context<Env>,
+	url = new URL(c.req.url),
+) => {
+	const oldPost = await getPostByURL(url)
 	if (!oldPost) return c.notFound()
 
 	const formdata = await c.req.formData()
@@ -232,9 +235,15 @@ export const put = async (c: hono.Context<Env>) => {
 	newPost.uid = oldPost.uid
 	await updatePost(newPost)
 
-	return c.body(null, 204, {
-		'HX-Redirect': newPost.uid!.pathname,
-	})
+	if (c.req.header('HX-Request')) {
+		return c.body(null, 204, {
+			'HX-Redirect': newPost.uid!.pathname,
+		})
+	} else {
+		return c.body(null, 303, {
+			'Location': newPost.uid!.pathname,
+		})
+	}
 }
 
 export const del = async (c: hono.Context<Env>) => {

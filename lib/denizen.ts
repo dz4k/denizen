@@ -59,6 +59,7 @@ app
 	.get('/.denizen/post/new', posting.get)
 	.post('/.denizen/post/new', requireAdmin, posting.post)
 	.get('/.denizen/post/edit', posting.getEdit)
+	.post('/.denizen/post/edit', posting.postEdit)
 	.get('/.denizen/console', requireAdmin, o5command.get)
 	.post('/.denizen/profile', requireAdmin, o5command.updateProfile)
 	.post('/.denizen/site-settings', requireAdmin, o5command.updateSettings)

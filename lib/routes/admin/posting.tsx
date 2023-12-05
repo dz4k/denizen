@@ -10,6 +10,7 @@ import { makeSlug } from '../../common/slug.ts'
 import { parseHashtags } from '../../common/hashtag.ts'
 import * as config from '../../config.ts'
 import { createPost, getPostByURL } from '../../db.ts'
+import * as blogPost from '../blog/post.tsx'
 
 export const get = (c: hono.Context<Env>) =>
 	c.html(<PostEditor title='New post' />)
@@ -29,6 +30,13 @@ export const getEdit = async (c: hono.Context<Env>) => {
 			post={post}
 		/>,
 	)
+}
+
+export const postEdit = (c: hono.Context<Env>) => {
+	const postPath = c.req.query('post')
+	if (!postPath) return c.notFound()
+
+	return blogPost.put(c, new URL(postPath, config.baseUrl))
 }
 
 export const post = async (c: hono.Context<Env>) => {
@@ -67,17 +75,33 @@ export const PostEditor = (p: { title: string; post?: Post }) => (
 				</p>
 				<p class='grid-row'>
 					<label for='edit-content'>Content</label>
-					<textarea name='content' id=''>{p.post?.content?.html}</textarea>
+					<textarea name='content' id='edit-content'>
+						{p.post?.content?.html}
+					</textarea>
 				</p>
-				<details open={!!p.post?.summary}>
+				<details style='grid-column: 1 / 3' open={!!p.post?.summary}>
 					<summary>Add summary</summary>
-					<label for='edit-summary'>Summary</label>
-					<input
-						type='text'
-						name='name'
-						id='edit-title'
-						value={p.post?.summary}
-					/>
+					<p class='grid' style='grid: auto-flow / auto 1fr'>
+						<label for='edit-summary'>Summary</label>
+						<input
+							type='text'
+							name='summary'
+							id='edit-summary'
+							value={p.post?.summary}
+						/>
+					</p>
+				</details>
+				<details style='grid-column: 1 / 3'>
+					<summary>Advanced</summary>
+					<p class='grid' style='grid: auto-flow / auto 1fr'>
+						<label for='edit-lang'>Language</label>
+						{/* TODO: Make this a <select> when multiple site locales is impld. */}
+						<input
+							name='lang'
+							id='edit-lang'
+							value={p.post?.lang ?? config.lang()}
+						/>
+					</p>
 				</details>
 				<p class='grid-row'>
 					<button type='submit'>Post</button>

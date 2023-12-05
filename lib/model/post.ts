@@ -190,9 +190,11 @@ export class Post {
 	}
 
 	static fromMF2Json(it: unknown): Post {
-		const { properties: p } = MF2Object.parse(it)
+		const mf2 = MF2Object.parse(it)
+		const { properties: p } = mf2
 		const rv = new Post({})
 		rv.replace(p)
+		if (mf2.lang) rv.lang = mf2.lang
 		return rv
 	}
 
@@ -239,12 +241,15 @@ export class Post {
 
 		// TODO configurable URL pattern
 
-		return new Post(props)
+		const rv = new Post(props)
+		if (form.has('lang')) rv.lang = get('lang')
+		return rv
 	}
 
 	toMF2Json(): MF2Object {
 		return removeEmptyProperties({
 			type: ['h-entry'],
+			lang: this.lang,
 			properties: {
 				name: this.name ? [this.name] : [],
 				summary: this.summary ? [this.summary] : [],
