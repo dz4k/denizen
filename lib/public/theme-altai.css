@@ -1,20 +1,20 @@
 :root {
-    --bg1: #44484f;
-    --bg2: #353a42;
+    --bg1: #353a42;
+    --bg2: #44484f;
     --fg1: #e8cccc;
     --fg2: #a99;
     --accent1: #132;
     --accent2: #88a098;
-    --text: monaspace neon, sans-serif;
+    --text: monaspace krypton, sans-serif;
     --display: monaspace krypton, monospace;
-    --code: monaspace neon, monospace;
+    --code: monaspace krypton, monospace;
 }
 
 :root {
     max-width: 70ch;
     margin: auto;
     padding-inline-start: 2em;
-    background: radial-gradient(at left, var(--bg1), var(--bg2) 100vw);
+    background: var(--bg1);
     background-attachment: fixed;
     color: var(--fg1);
     font-family: var(--text);
@@ -32,7 +32,6 @@ h4,
 h5,
 h6 {
     font-weight: 900;
-    font-stretch: expanded;
     line-height: 1.4;
     margin-block-end: 0;
 }
@@ -45,7 +44,6 @@ h1 {
 /* TODO: create class for "main header" */
 body>header,
 body>article>header {
-    transform: rotate(-5deg) skew(-5deg);
     margin-inline-start: -2em;
 }
 
@@ -57,24 +55,22 @@ header.h-card {
     .p-name.u-uid {
         color: currentColor;
         text-decoration: none;
-        text-transform: uppercase;
     }
 
     /* .u-photo */
     .big.face {
         display: none;
     }
-}
 
-.p-note {
-    font-family: var(--display);
-    font-stretch: expanded;
-    font-weight: 100;
-    font-size: 2em;
-    text-transform: uppercase;
-    line-height: 1.4;
-    margin-block-start: 0;
-    color: var(--accent2);
+    .p-note {
+        font-family: var(--display);
+        font-stretch: expanded;
+        font-weight: 100;
+        font-size: 2em;
+        line-height: 1.4;
+        margin-block-start: 0;
+        color: var(--accent2);
+    }
 }
 
 .author-card {
