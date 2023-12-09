@@ -9,7 +9,7 @@ import { asyncIteratorToArray } from '../../common/util.ts'
 import * as storage from '../../storage/fs-backend.ts'
 
 export const get = async (c: hono.Context<Env>) => {
-	const files = await asyncIteratorToArray(storage.list())
+	const files = await asyncIteratorToArray(c.var.storage.list())
 	return c.html(<FileManager files={files} />)
 }
 

@@ -2,6 +2,8 @@
 
 import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
 
+export const name = 'FSBackend'
+
 export const read = async (name: string): Promise<Blob> =>
 	new Blob([await Deno.readFile(encode(name))], {
 		type: await Deno.readTextFile(encode(name) + '.#type'),

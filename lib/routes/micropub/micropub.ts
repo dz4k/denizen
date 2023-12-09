@@ -172,7 +172,7 @@ export const postMedia = async (c: hono.Context<Env>) => {
 	const file = formdata.get('file')
 	if (!file || !(file instanceof File)) return badRequest(c)
 	const name = crypto.randomUUID() + path.extname(file.name)
-	await storage.write(name, file)
+	await c.var.storage.write(name, file)
 	return c.body('', 201, {
 		'Location':
 			new URL(`/.denizen/storage/${encodeURIComponent(name)}`, config.baseUrl)

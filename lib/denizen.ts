@@ -28,6 +28,8 @@ import * as fileManager from './routes/storage/file-manager.tsx'
 import * as assets from './routes/storage/assets.ts'
 import * as micropub from './routes/micropub/micropub.ts'
 import * as webmentionRecv from './routes/webmention/webmention-recv.ts'
+import { StorageBackend } from './storage/storage-interface.ts'
+import * as fsBackend from './storage/fs-backend.ts'
 
 listen()
 
@@ -36,9 +38,12 @@ export type Env = {
 		session: Session
 		session_key_rotation: boolean
 		authScopes: string[]
+		storage: StorageBackend
 	}
 }
 export const app = new Hono<Env>()
+
+app.use((c, next) => (c.set('storage', fsBackend), next()))
 
 // @ts-expect-error session middleware types wrong?
 app
@@ -84,6 +89,6 @@ app
 	.get('/feed.json', feed.json)
 	.get('/feed.xml', feed.xml)
 	.get('*', post.get)
-	.put('*', requireAdmin, post.put)
+	.put('*', requireAdmin, (c) => post.put(c))
 	.delete('*', requireAdmin, post.del)
 	.notFound(fourOhFour.get)
