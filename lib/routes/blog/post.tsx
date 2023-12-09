@@ -15,7 +15,7 @@ import {
 	updatePost,
 } from '../../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
-import { Post } from '../../model/post.ts'
+import { Entry } from '../../model/entry.ts'
 import { PostEditor } from '../admin/posting.tsx'
 import { Face, makeProfileSvg } from '../../widgets/face.tsx'
 
@@ -130,7 +130,7 @@ export const get = async (c: hono.Context<Env>) => {
 	)
 }
 
-const Webmentions = async (props: { post: Post }) => {
+const Webmentions = async (props: { post: Entry }) => {
 	const { post } = props
 	const [likes, reposts, mentions, replies] = await Promise.all([
 		getWebmentions(post, 'like'),
@@ -230,7 +230,7 @@ export const put = async (
 
 	const formdata = await c.req.formData()
 
-	const newPost = Post.fromFormData(formdata)
+	const newPost = Entry.fromFormData(formdata)
 	newPost.iid = oldPost.iid
 	newPost.uid = oldPost.uid
 	await updatePost(newPost)

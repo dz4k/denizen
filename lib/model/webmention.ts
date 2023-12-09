@@ -1,4 +1,4 @@
-import { Post } from './post.ts'
+import { Entry } from './entry.ts'
 
 export type WMResponseType = 'repost' | 'like' | 'reply' | 'mention'
 
@@ -7,7 +7,7 @@ export class Webmention {
 		public source: string,
 		public target: string,
 		public responseType: WMResponseType,
-		public content: Post,
+		public content: Entry,
 	) {}
 
 	serialize() {
@@ -22,7 +22,7 @@ export class Webmention {
 			obj.source as string,
 			obj.target as string,
 			obj.responseType as WMResponseType,
-			Post.fromMF2Json(obj.content),
+			Entry.fromMF2Json(obj.content),
 		)
 	}
 }

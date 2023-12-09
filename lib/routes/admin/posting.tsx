@@ -5,7 +5,7 @@ import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
-import { Post } from '../../model/post.ts'
+import { Entry } from '../../model/entry.ts'
 import { makeSlug } from '../../common/slug.ts'
 import { parseHashtags } from '../../common/hashtag.ts'
 import * as config from '../../config.ts'
@@ -42,7 +42,7 @@ export const postEdit = (c: hono.Context<Env>) => {
 export const post = async (c: hono.Context<Env>) => {
 	const formdata = await c.req.formData()
 
-	const post = Post.fromFormData(formdata)
+	const post = Entry.fromFormData(formdata)
 	post.uid = new URL(
 		`${post.published.getFullYear()}/${
 			post.name ? makeSlug(post.name) : post.published.toISOString()
@@ -61,7 +61,7 @@ export const post = async (c: hono.Context<Env>) => {
 	}
 }
 
-export const PostEditor = (p: { title: string; post?: Post }) => (
+export const PostEditor = (p: { title: string; post?: Entry }) => (
 	<Layout title={p.title}>
 		<header>
 			<h1>{p.title}</h1>

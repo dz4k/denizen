@@ -21,7 +21,7 @@ import { Citation } from './citation.ts'
 /**
  * @see http://microformats.org/wiki/h-entry
  */
-export class Post {
+export class Entry {
 	/**
 	 * Internal ID.
 	 */
@@ -57,7 +57,7 @@ export class Post {
 	// TODO: RSVP (.p-rsvp)
 	// TODO: some draft properties: u-listen-of u-watch-of p-read-of u-checkin
 
-	constructor(props?: Partial<Post>) {
+	constructor(props?: Partial<Entry>) {
 		Object.assign(this, props)
 		this.published ??= new Date()
 		this.iid ??= ulid()
@@ -189,16 +189,16 @@ export class Post {
 		}
 	}
 
-	static fromMF2Json(it: unknown): Post {
+	static fromMF2Json(it: unknown): Entry {
 		const mf2 = MF2Object.parse(it)
 		const { properties: p } = mf2
-		const rv = new Post({})
+		const rv = new Entry({})
 		rv.replace(p)
 		if (mf2.lang) rv.lang = mf2.lang
 		return rv
 	}
 
-	static fromFormData(form: FormData): Post {
+	static fromFormData(form: FormData): Entry {
 		// discard empty values
 		for (const [k, v] of form.entries()) {
 			if (k.endsWith('[]')) {
@@ -206,7 +206,7 @@ export class Post {
 			}
 		}
 
-		const props: Partial<Post> = {}
+		const props: Partial<Entry> = {}
 
 		props.published = new Date()
 
@@ -241,7 +241,7 @@ export class Post {
 
 		// TODO configurable URL pattern
 
-		const rv = new Post(props)
+		const rv = new Entry(props)
 		if (form.has('lang')) rv.lang = get('lang')
 		return rv
 	}

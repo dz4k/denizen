@@ -2,7 +2,7 @@ import { DOMParser, Element } from '../deps/dom.ts'
 import { parseLinkHeader } from '../deps/parse-link-header.ts'
 
 import { deleteWebmention, getPostByURL, saveWebmention } from './db.ts'
-import { Post } from './model/post.ts'
+import { Entry } from './model/entry.ts'
 import { Webmention, WMResponseType } from './model/webmention.ts'
 import { Citation } from './model/citation.ts'
 import { parseMicroformats } from '../deps/microformats-parser.ts'
@@ -72,7 +72,7 @@ export const receiveWebmention = async (source: string, target: string) => {
 		return
 	}
 
-	const webmentionPost = Post.fromMF2Json(hEntry)
+	const webmentionPost = Entry.fromMF2Json(hEntry)
 
 	const responseType = discoverResponseType(hEntry)
 
@@ -106,7 +106,7 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 	return 'mention'
 }
 
-export const sendWebmentions = async (post: Post, oldContent?: string) => {
+export const sendWebmentions = async (post: Entry, oldContent?: string) => {
 	const mentionedPages = findMentions(post, oldContent)
 	console.log(`Found mentioned pages:`, mentionedPages, 'in post', post.uid)
 	await Promise.all(Array.from(mentionedPages, (page) =>
@@ -117,7 +117,7 @@ export const sendWebmentions = async (post: Post, oldContent?: string) => {
 		})))
 }
 
-export const findMentions = (post: Post, oldContent?: string) => {
+export const findMentions = (post: Entry, oldContent?: string) => {
 	const urls = new Set<string>()
 	const add = (url: URL) => {
 		urls.add(url.href)

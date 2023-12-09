@@ -12,7 +12,7 @@ import {
 	undeletePost,
 	updatePost,
 } from '../../db.ts'
-import { Post } from '../../model/post.ts'
+import { Entry } from '../../model/entry.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { makeSlug } from '../../common/slug.ts'
 
@@ -145,8 +145,8 @@ export const post = async (c: hono.Context<Env>) => {
 		// Create post
 		if (!c.var.authScopes.includes('create')) return insufficientScope(c)
 		const createdPost = mime === 'application/json'
-			? Post.fromMF2Json(await c.req.json())
-			: Post.fromFormData(await c.req.formData())
+			? Entry.fromMF2Json(await c.req.json())
+			: Entry.fromFormData(await c.req.formData())
 		// TODO: This is duplicated from routes/admin/posting.tsx#post.
 		// Factor out and move somewhere sensible.
 		// also make customizable.

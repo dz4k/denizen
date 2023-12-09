@@ -1,6 +1,6 @@
 import { MF2Object } from './common/mf2.ts'
 import { db } from './db.ts'
-import { Post } from './model/post.ts'
+import { Entry } from './model/entry.ts'
 import {
 	receiveWebmention,
 	sendWebmention,
@@ -29,7 +29,7 @@ export const listen = () =>
 
 		switch (message.type) {
 			case 'send_webmentions':
-				return sendWebmentions(Post.fromMF2Json(message.post), message.oldHtml)
+				return sendWebmentions(Entry.fromMF2Json(message.post), message.oldHtml)
 			case 'send_webmention':
 				return sendWebmention(message.source, message.target)
 			case 'recv_webmention':
