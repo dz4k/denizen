@@ -54,8 +54,8 @@ export const post = async (c: hono.Context<Env>) => {
 	post.category.push(...tags)
 	await createPost(post)
 
-	if (c.req.header('HX-Request')) {
-		return c.body(null, 200, { 'HX-Redirect': post.uid!.pathname })
+	if (c.req.header('Whet')) {
+		return c.html(hono.html`<script>location='${post.uid.pathname}'</script>`)
 	} else {
 		return c.redirect(post.uid!.pathname, 303)
 	}

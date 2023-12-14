@@ -12,8 +12,11 @@ export const get = (c: hono.Context<Env>) => {
 	return c.html(
 		<Layout title='Not found'>
 			<main>
-				<h1>Page not found</h1>
-				<p>HTTP 404</p>
+				<h1>HTTP 404</h1>
+				<p>There's nothing here... and never was.</p>
+				<p>
+					<a href='/'>&gt; Go back home.</a>
+				</p>
 			</main>
 		</Layout>,
 		404,

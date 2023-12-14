@@ -8,8 +8,7 @@ export const Layout: FC<{
 }> = (p) =>
 	html`
 <!doctype html>
-<html lang="${p.lang ?? config.lang}"
-	hx-on::before-swap='event.detail.shouldSwap = true'>
+<html lang="${p.lang ?? config.lang}">
 <meta charset=utf-8 name=viewport content=width=device-width>
 
 <title>${p.title}</title>
@@ -18,7 +17,10 @@ export const Layout: FC<{
 <link rel=stylesheet href="/.denizen/public/style.css">
 <link rel=stylesheet href="/.denizen/public/theme-${config.theme}.css">
 
-<script src="https://unpkg.com/htmx.org@1.9" crossorigin="anonymous"></script>
+<script type="module">
+	import whet from "/.denizen/public/whet.remote.js"
+	whet()
+</script>
 
 <link rel=alternate type=application/feed+json href=/feed.json>
 

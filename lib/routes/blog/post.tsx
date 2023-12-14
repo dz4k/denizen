@@ -116,7 +116,12 @@ export const get = async (c: hono.Context<Env>) => {
 									<input type='hidden' name='post' value={post.uid?.pathname} />
 									<button>Edit</button>
 								</form>
-								<form hx-delete={post.uid!.pathname} class='contents'>
+								<form
+									whet
+									method='DELETE'
+									action={post.uid!.pathname}
+									class='contents'
+								>
 									<button>Delete</button>
 								</form>
 							</div>
@@ -235,10 +240,10 @@ export const put = async (
 	newPost.uid = oldPost.uid
 	await updatePost(newPost)
 
-	if (c.req.header('HX-Request')) {
-		return c.body(null, 204, {
-			'HX-Redirect': newPost.uid!.pathname,
-		})
+	if (c.req.header('Whet')) {
+		return c.html(
+			hono.html`<script>location='${newPost.uid!.pathname}'</script>`,
+		)
 	} else {
 		return c.body(null, 303, {
 			'Location': newPost.uid!.pathname,
@@ -250,9 +255,8 @@ export const del = async (c: hono.Context<Env>) => {
 	const post = await accessPost(c)
 	if (post === null) return c.notFound()
 	await deletePost(post)
-	if (c.req.header('HX-Request')) {
-		c.header('HX-Redirect', '/')
-		return c.body('')
+	if (c.req.header('Whet')) {
+		return c.html(hono.html`<script>location='/'</script>`)
 	}
 	return c.redirect('/', 303)
 }
@@ -260,6 +264,7 @@ export const del = async (c: hono.Context<Env>) => {
 const PostDeleted = () => (
 	<Layout title='Deleted post'>
 		<main>
+			<h1>HTTP 410</h1>
 			<p>
 				There's nothing here... but there might have been.
 			</p>

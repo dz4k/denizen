@@ -33,13 +33,15 @@ export const post = async (c: hono.Context<Env>) => {
 }
 
 export const ImportForm = (p: { error?: string }) => (
-	<section>
+	<section id='sect-import-form'>
 		<h2>Import blog to Denizen</h2>
 		<main>
 			<form
-				hx-post='/.denizen/import-blog'
-				hx-target='closest section'
-				hx-swap='outerHTML'
+				whet
+				method='POST'
+				action='/.denizen/import-blog'
+				data-target='#sect-import-form'
+				data-swap='replaceWith'
 				class='grid'
 				style='grid: auto-flow / auto 1fr'
 			>

@@ -42,8 +42,10 @@ const FileManager = ({ files }: { files: string[] }) => (
 										Download
 									</a>{' '}
 									<button
-										hx-delete={`/.denizen/storage?filename=${file}`}
-										hx-target='closest tr'
+										whet
+										method='delete'
+										action={`/.denizen/storage?filename=${file}`}
+										target='closest tr'
 									>
 										Delete
 									</button>

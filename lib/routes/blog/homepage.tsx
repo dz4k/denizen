@@ -13,7 +13,7 @@ import { makeProfileSvg } from '../../widgets/face.tsx'
 export const get = async (c: hono.Context<Env>) => {
 	const { cursor } = c.req.query()
 	const siteOwner = await getUser('admin')
-	const posts = await getPosts({ cursor })
+	const posts = await getPosts({ limit: 1, cursor })
 	const admin = isAdmin(c)
 
 	const socials = Object.entries(siteOwner.profile.me)
@@ -105,11 +105,11 @@ export const get = async (c: hono.Context<Env>) => {
 					? (
 						<a
 							rel='next'
-							href={'/?cursor=' + encodeURIComponent(posts.cursor)}
-							hx-boost
-							hx-select='main :is(.h-entry, [rel=next])'
-							hx-target='this'
-							hx-swap='outerHTML'
+							whet
+							href={'/?cursor=' + encodeURIComponent(posts.cursor) +
+								'#:~:selector=main :is(.h-entry, [rel=next])'}
+							data-target=':this'
+							data-swap='replaceWith'
 						>
 							Load more
 						</a>
