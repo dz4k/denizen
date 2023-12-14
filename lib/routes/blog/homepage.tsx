@@ -13,7 +13,7 @@ import { makeProfileSvg } from '../../widgets/face.tsx'
 export const get = async (c: hono.Context<Env>) => {
 	const { cursor } = c.req.query()
 	const siteOwner = await getUser('admin')
-	const posts = await getPosts({ limit: 1, cursor })
+	const posts = await getPosts({ cursor })
 	const admin = isAdmin(c)
 
 	const socials = Object.entries(siteOwner.profile.me)
