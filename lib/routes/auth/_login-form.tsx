@@ -6,8 +6,8 @@ import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
 
-export const LoginForm = (p: { error?: string }) => (
-	<Layout title='Login -- Denizen'>
+export const LoginForm = (p: { error?: string; theme: string }) => (
+	<Layout title='Login -- Denizen' theme={p.theme}>
 		<header>
 			<h1>Log in</h1>
 		</header>

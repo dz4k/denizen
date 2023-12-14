@@ -10,6 +10,7 @@ import './webmention.ts'
 
 import { listen } from './queue.ts'
 import { db } from './db.ts'
+import * as config from './config.ts'
 
 import * as fourOhFour from './routes/404.tsx'
 import * as o5command from './routes/admin/console.tsx'
@@ -39,11 +40,13 @@ export type Env = {
 		session_key_rotation: boolean
 		authScopes: string[]
 		storage: StorageBackend
+		theme: string
 	}
 }
 export const app = new Hono<Env>()
 
 app.use((c, next) => (c.set('storage', fsBackend), next()))
+app.use(async (c, next) => (c.set('theme', await config.theme()), next()))
 
 // @ts-expect-error session middleware types wrong?
 app

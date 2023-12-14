@@ -31,7 +31,7 @@ export const get = async (c: hono.Context<Env>) => {
 		return c.json(post.toMF2Json())
 	}
 
-	if (post.deleted) return c.html(<PostDeleted />, 410) // "Gone"
+	if (post.deleted) return c.html(<PostDeleted theme={c.var.theme} />, 410) // "Gone"
 	const admin = isAdmin(c)
 	const siteOwner = await getUser('admin')
 
@@ -39,6 +39,7 @@ export const get = async (c: hono.Context<Env>) => {
 
 	return c.html(
 		<Layout
+			theme={c.var.theme}
 			title={post.name ?? post.summary ??
 				post.published.toLocaleString()}
 			lang={post.lang ?? config.lang()}
@@ -261,8 +262,8 @@ export const del = async (c: hono.Context<Env>) => {
 	return c.redirect('/', 303)
 }
 
-const PostDeleted = () => (
-	<Layout title='Deleted post'>
+const PostDeleted = (p: { theme: string }) => (
+	<Layout title='Deleted post' theme={p.theme}>
 		<main>
 			<h1>HTTP 410</h1>
 			<p>

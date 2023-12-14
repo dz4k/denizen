@@ -13,7 +13,7 @@ import { createPost, getPostByURL } from '../../db.ts'
 import * as blogPost from '../blog/post.tsx'
 
 export const get = (c: hono.Context<Env>) =>
-	c.html(<PostEditor title='New post' />)
+	c.html(<PostEditor theme={c.var.theme} title='New post' />)
 
 export const getEdit = async (c: hono.Context<Env>) => {
 	let post
@@ -26,6 +26,7 @@ export const getEdit = async (c: hono.Context<Env>) => {
 	if (!post) return c.notFound()
 	return c.html(
 		<PostEditor
+			theme={c.var.theme}
 			title='Edit'
 			post={post}
 		/>,
@@ -61,8 +62,10 @@ export const post = async (c: hono.Context<Env>) => {
 	}
 }
 
-export const PostEditor = (p: { title: string; post?: Entry }) => (
-	<Layout title={p.title}>
+export const PostEditor = (
+	p: { title: string; post?: Entry; theme: string },
+) => (
+	<Layout title={p.title} theme={p.theme}>
 		<header>
 			<h1>{p.title}</h1>
 		</header>

@@ -10,7 +10,7 @@ export const get = (c: hono.Context<Env>) => {
 		return c.json({ error: 'not_found', http: 404 })
 	}
 	return c.html(
-		<Layout title='Not found'>
+		<Layout title='Not found' theme={c.var.theme}>
 			<main>
 				<h1>HTTP 404</h1>
 				<p>There's nothing here... and never was.</p>

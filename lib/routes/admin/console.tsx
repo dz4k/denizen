@@ -12,7 +12,7 @@ import { ImportForm } from './import-blog.tsx'
 
 export const get = async (c: hono.Context<Env>) => {
 	const user = await getUser(c.var.session.get('user') as string)
-	return c.html(<Console user={user} />)
+	return c.html(<Console user={user} theme={await config.theme()} />)
 }
 
 export const updateProfile = async (c: hono.Context<Env>) => {
@@ -52,8 +52,8 @@ export const updateTheme = async (c: hono.Context<Env>) => {
 	return c.redirect('/.denizen/console', 303)
 }
 
-const Console = ({ user }: { user: User }) => (
-	<Layout title='Console'>
+const Console = ({ user, theme }: { user: User; theme: string }) => (
+	<Layout title='Console' theme={theme}>
 		<script type='module' src='/.denizen/public/list-input.js' />
 		<script type='module' src='/.denizen/public/textarea-autoexpand.js' />
 		<header>
@@ -146,9 +146,9 @@ const Console = ({ user }: { user: User }) => (
 					<p class='grid-row'>
 						<label for='edit-theme'>Theme</label>
 						<select name='theme' id='edit-theme'>
-							{Object.entries(config.themes).map(([id, theme]) => (
-								<option value={id} selected={config.theme === id}>
-									{theme.name}
+							{Object.entries(config.themes).map(([id, themeData]) => (
+								<option value={id} selected={theme === id}>
+									{themeData.name}
 								</option>
 							))}
 						</select>

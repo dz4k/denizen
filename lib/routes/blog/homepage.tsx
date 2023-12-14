@@ -18,7 +18,7 @@ export const get = async (c: hono.Context<Env>) => {
 
 	const socials = Object.entries(siteOwner.profile.me)
 	return c.html(
-		<Layout title={siteOwner.profile.name}>
+		<Layout theme={c.var.theme} title={siteOwner.profile.name}>
 			<header class='h-card' lang={config.lang()}>
 				{/* TODO: used this makeprofilesvg in a few places now, factor out to Card. */}
 				<img

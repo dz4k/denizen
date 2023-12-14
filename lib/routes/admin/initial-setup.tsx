@@ -32,7 +32,8 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	} else await next()
 }
 
-export const get = (c: hono.Context<Env>) => c.html(<InitialSetup />)
+export const get = (c: hono.Context<Env>) =>
+	c.html(<InitialSetup theme={c.var.theme} />)
 
 export const post = async (c: hono.Context<Env>) => {
 	if (await initialSetupDone()) return c.status(403)
@@ -41,12 +42,18 @@ export const post = async (c: hono.Context<Env>) => {
 	const form = await c.req.formData()
 	const pw = form.get('pw')
 	if (typeof pw !== 'string') {
-		return c.html(<InitialSetup error='Missing username or password' />, 400)
+		return c.html(
+			<InitialSetup theme={c.var.theme} error='Missing username or password' />,
+			400,
+		)
 	}
 
 	const displayName = form.get('name')
 	if (typeof displayName !== 'string') {
-		return c.html(<InitialSetup error='Please enter a name' />, 400)
+		return c.html(
+			<InitialSetup theme={c.var.theme} error='Please enter a name' />,
+			400,
+		)
 	}
 
 	const siteUrl = form.get('site-url')
@@ -54,7 +61,13 @@ export const post = async (c: hono.Context<Env>) => {
 		typeof siteUrl !== 'string' ||
 		!isValidUrl(siteUrl)
 	) {
-		return c.html(<InitialSetup error='Site URL should be a valid URL' />, 400)
+		return c.html(
+			<InitialSetup
+				theme={c.var.theme}
+				error='Site URL should be a valid URL'
+			/>,
+			400,
+		)
 	}
 
 	const locale = form.get('lang')
@@ -76,8 +89,8 @@ export const post = async (c: hono.Context<Env>) => {
 	return c.redirect('/', 303)
 }
 
-const InitialSetup = (p: { error?: string }) => (
-	<Layout title='Initial Setup -- Denizen'>
+const InitialSetup = (p: { error?: string; theme: string }) => (
+	<Layout title='Initial Setup -- Denizen' theme={p.theme}>
 		<header>
 			<h1 style='white-space:nowrap'>Welcome to Denizen</h1>
 			{hono.html`<script>

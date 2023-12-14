@@ -5,6 +5,7 @@ import * as config from './config.ts'
 export const Layout: FC<{
 	lang?: string
 	title: string
+	theme: string
 }> = (p) =>
 	html`
 <!doctype html>
@@ -15,7 +16,7 @@ export const Layout: FC<{
 
 <link rel=stylesheet href="https://rsms.me/inter/inter.css">
 <link rel=stylesheet href="/.denizen/public/style.css">
-<link rel=stylesheet href="/.denizen/public/theme-${config.theme}.css">
+<link rel=stylesheet href="/.denizen/public/theme-${p.theme}.css">
 
 <script type="module">
 	import whet from "/.denizen/public/whet.remote.js"

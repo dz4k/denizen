@@ -10,11 +10,11 @@ import * as storage from '../../storage/fs-backend.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const files = await asyncIteratorToArray(c.var.storage.list())
-	return c.html(<FileManager files={files} />)
+	return c.html(<FileManager files={files} theme={c.var.theme} />)
 }
 
-const FileManager = ({ files }: { files: string[] }) => (
-	<Layout title='Files -- Denizen'>
+const FileManager = ({ files, theme }: { files: string[]; theme: string }) => (
+	<Layout title='Files -- Denizen' theme={theme}>
 		<header>
 			<h1>Files</h1>
 		</header>

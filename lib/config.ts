@@ -1,4 +1,4 @@
-import { getConfigs } from './db.ts'
+import { getConfig, getConfigs } from './db.ts'
 
 const configs = await getConfigs()
 
@@ -14,4 +14,5 @@ export const themes = {
 	altai: { name: 'Altai' },
 } as const
 
-export const theme = configs['theme'] as keyof typeof themes ?? 'default'
+export const theme = async () =>
+	await getConfig('theme') as keyof typeof themes ?? 'default'
