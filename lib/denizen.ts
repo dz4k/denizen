@@ -46,7 +46,7 @@ export type Env = {
 export const app = new Hono<Env>()
 
 app.use((c, next) => (c.set('storage', fsBackend), next()))
-app.use(async (c, next) => (c.set('theme', await config.theme()), next()))
+app.use('*', async (c, next) => (c.set('theme', await config.theme()), next()))
 
 // @ts-expect-error session middleware types wrong?
 app
