@@ -10,13 +10,11 @@ import {
 	deletePost,
 	getPostByURL,
 	getUser,
-	getWebmentionCount,
 	getWebmentions,
 	updatePost,
 } from '../../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { Entry } from '../../model/entry.ts'
-import { PostEditor } from '../admin/posting.tsx'
 import { Face, makeProfileSvg } from '../../widgets/face.tsx'
 
 const accessPost = (c: hono.Context<Env>) =>
