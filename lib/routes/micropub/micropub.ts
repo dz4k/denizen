@@ -50,8 +50,7 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 			return unauthorized(c)
 		}
 		token = auth.slice(7)
-	}
-	if (token) {
+	} else {
 		if (c.req.header('Authorization')) return badRequest(c)
 	}
 	const auth = await fetch('https://tokens.indieauth.com/token', {
@@ -93,6 +92,7 @@ export const get = async (c: hono.Context<Env>) => {
 	}
 	return c.json({ error: 'query_not_implemented' }, 400)
 }
+
 export const post = async (c: hono.Context<Env>) => {
 	if (!c.var.authScopes.includes('create')) return forbidden(c)
 
