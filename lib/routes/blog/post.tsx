@@ -64,8 +64,7 @@ export const get = async (c: hono.Context<Env>) => {
 				<main>
 					{post.photo.map((photo) => (
 						<figure>
-							{/* TODO alt text for u-photo */}
-							<img class='u-photo' src={photo} alt='' />
+							<img class='u-photo' src={photo.url} alt={photo.alt} />
 						</figure>
 					))}
 					<div
