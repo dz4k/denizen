@@ -22,5 +22,11 @@
 				"no-inferrable-types"
 			]
 		}
+	},
+	"imports": {
+		// hono_sessions dependencies
+		// remapping since esm.sh seems to break deno.lock
+		"https://esm.sh/nanoid@4.0.0/async": "https://deno.land/x/nanoid@v3.0.0/async.ts",
+		"https://esm.sh/iron-webcrypto@0.10.1": "https://deno.land/x/iron@v0.10.1/mod.ts"
 	}
 }

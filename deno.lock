@@ -356,6 +356,9 @@
       }
     }
   },
+  "redirects": {
+    "https://deno.land/x/nanoid/async.ts": "https://deno.land/x/nanoid@v3.0.0/async.ts"
+  },
   "remote": {
     "https://deno.land/std@0.203.0/assert/assert.ts": "9a97dad6d98c238938e7540736b826440ad8c1c1e54430ca4c4e623e585607ee",
     "https://deno.land/std@0.203.0/assert/assertion_error.ts": "4d0bde9b374dfbcbe8ac23f54f567b77024fb67dbb1906a852d67fe050d42f56",
@@ -619,6 +622,15 @@
     "https://deno.land/x/hono_sessions@v0.3.2/src/store/MemoryStore.ts": "c61a7b2974da37f111163dea484dc8b82c19107a913a47b004c579d7af7b81d3",
     "https://deno.land/x/hono_sessions@v0.3.2/src/store/Store.ts": "4ff3a3e1a2cf2398d1307657e9934fa2deb39253f421ae9ba7d4d52f21611aed",
     "https://deno.land/x/hono_sessions@v0.3.2/src/store/deno/DenoKvStore.ts": "f9107cc47d6777975a3e3d12a068952d22e3afbe4cac86b304e953beb001c76a",
+    "https://deno.land/x/iron@v0.10.1/dist/index.js": "1f97761866fcc7631b2efcc8b6e763a11c73be07ae220572928e03d41123572b",
+    "https://deno.land/x/iron@v0.10.1/mod.ts": "fa0cd3914f0f0ca5794e2ac859b10b0ae728b181681040c74b9a743bf1830831",
+    "https://deno.land/x/nanoid@v3.0.0/async.ts": "654420a3b480b46393538c96a2690af1aa7cbe2fae5614054068c53f8d0679d4",
+    "https://deno.land/x/nanoid@v3.0.0/customAlphabet.ts": "1cfd7cfd2f07ca8d78a7e7855fcc9f59abf01ef2a127484ef94328fadf940ead",
+    "https://deno.land/x/nanoid@v3.0.0/customRandom.ts": "af56e19038c891a4b4ef2be931554c27579bd407ee5bbea5cb64f6ee1347cbe3",
+    "https://deno.land/x/nanoid@v3.0.0/mod.ts": "3ead610e40c58d8fdca21d5da9ec661445a2b82526e19c34d05de5f90be8a1be",
+    "https://deno.land/x/nanoid@v3.0.0/nanoid.ts": "8d119bc89a0f34e7bbe0c2dbdc280d01753e431af553d189663492310a31085d",
+    "https://deno.land/x/nanoid@v3.0.0/random.ts": "4da71d5f72f2bfcc6a4ee79b5d4e72f48dcf4fe4c3835fd5ebab08b9f33cd598",
+    "https://deno.land/x/nanoid@v3.0.0/urlAlphabet.ts": "8b1511deb1ecb23c66202b6000dc10fb68f9a96b5550c6c8cef5009324793431",
     "https://deno.land/x/ui7@v0.2.3/mod.ts": "069acd0fa2550977e93cee5a8fca0f14176fbfa8112079963dfae3a8c150f46d",
     "https://deno.land/x/ulid@v0.3.0/mod.ts": "f7ff065b66abd485051fc68af23becef6ccc7e81f7774d7fcfd894a4b2da1984",
     "https://deno.land/x/xml@2.1.2/mod.ts": "4a314a7a28d1ec92f899ce4c6991f0356c77550a75955ec3f4a36733f08548e8",
@@ -642,6 +654,8 @@
     "https://deno.land/x/zod@v3.22.2/locales/en.ts": "a7a25cd23563ccb5e0eed214d9b31846305ddbcdb9c5c8f508b108943366ab4c",
     "https://deno.land/x/zod@v3.22.2/mod.ts": "64e55237cb4410e17d968cd08975566059f27638ebb0b86048031b987ba251c4",
     "https://deno.land/x/zod@v3.22.2/types.ts": "18cbe3d895f42977c43fa9411da214b06d0d682cf2f4c9dd26cc8c3737740d40",
+    "https://esm.sh/iron-webcrypto@0.10.1": "d22f1754664367cacb10a3ec1dc65c24827015d50f52448ca53eae719fea994c",
+    "https://esm.sh/v135/iron-webcrypto@0.10.1/denonext/iron-webcrypto.mjs": "39fb4e5d337adcc364f399451bfbe851bfe50f2cd5ca3783a89e15b17b0c1bdd",
     "https://raw.githubusercontent.com/bryik/deno-parse-link-header/v0.1.1/parseLinkHeader.ts": "28e4de22d9ae65152a41cc9a09e4d8fb976955dbad572f7e3e9aa60067efac6a",
     "https://raw.githubusercontent.com/bryik/deno-parse-link-header/v0.1.1/src/LinkHeader.ts": "c4dc130e88f7dd88daa77d65d8a0c866032370d580b18fdf874be4803fe05f2a",
     "https://raw.githubusercontent.com/bryik/deno-parse-link-header/v0.1.1/src/extractLinks.ts": "6097c229bc8657d567333f79d4983282f1f4141ff182299d52073b92df09445a",
