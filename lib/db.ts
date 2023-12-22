@@ -5,9 +5,7 @@ import { User } from './model/user.ts'
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 import { enqueue } from './queue.ts'
 
-export const db = Deno.env.get('LOCAL_DEV')
-	? await Deno.openKv('dev.sqlite')
-	: await Deno.openKv()
+export const db = await Deno.openKv(Deno.env.get('DENIZEN_KV'))
 
 export type Page<T> = { data: T[]; cursor: string }
 export type PaginationOptions = {

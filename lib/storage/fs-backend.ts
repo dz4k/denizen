@@ -23,5 +23,5 @@ export const list = async function* () {
 }
 export const del = (name: string) => Deno.remove(encode(name))
 
-const blobDir = '_blobs'
+const blobDir = Deno.env.get('DENIZEN_BLOBS') ?? '_blobs'
 const encode = (s: string) => path.join(blobDir, encodeURIComponent(s))

@@ -1,11 +1,11 @@
 {
 	"tasks": {
-		"dev": "LOCAL_DEV=1 deno task run",
+		"dev": "DENIZEN_KV=dev.sqlite deno task run",
 		"dev-website": "cd doc && deno task serve",
 		"run": "deno task bundle-assets && bin/denizen.ts",
 		"deploy": "deno task bundle-assets && deployctl deploy --project=denizen-test bin/denizen.ts --prod --no-static",
 		"deploy-website": "cd doc && deno task build && wrangler pages deploy --project-name=denizen-website _site/",
-		"bundle-assets": "tool/assets_to_module.ts"
+		"bundle-assets": "deno run -A tool/assets_to_module.ts"
 	},
 	"fmt": {
 		"semiColons": false,
