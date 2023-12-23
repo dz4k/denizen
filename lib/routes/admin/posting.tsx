@@ -56,7 +56,7 @@ export const post = async (c: hono.Context<Env>) => {
 	await createPost(post)
 
 	if (c.req.header('Whet')) {
-		return c.html(hono.html`<script>location='${post.uid.pathname}'</script>`)
+		return c.html(clientRedirect(post.uid.pathname))
 	} else {
 		return c.redirect(post.uid!.pathname, 303)
 	}

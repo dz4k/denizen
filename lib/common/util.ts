@@ -1,4 +1,5 @@
 import { crypto } from 'https://deno.land/std@0.204.0/crypto/mod.ts'
+import { unknown } from '../../deps/zod.ts'
 
 export const asyncIteratorToArray = async <T>(
 	it: AsyncIterable<T>,
@@ -31,3 +32,14 @@ export const stringToRandNumber = (
 
 	return mappedNumber
 }
+
+export const toScript = <TArgs extends unknown[] = []>(
+	f: (...args: TArgs) => unknown,
+	...args: TArgs
+) =>
+	`<script>(${f.toString()})(${
+		args.map((arg: unknown) => `JSON.parse(${JSON.stringify(arg)})`)
+	})</script>`
+
+export const clientRedirect = (path: string | URL) =>
+	toScript((path) => location.assign(path), path.toString())

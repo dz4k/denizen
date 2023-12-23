@@ -16,6 +16,7 @@ import {
 import { isAdmin } from '../admin/middleware.ts'
 import { Entry } from '../../model/entry.ts'
 import { Face, makeProfileSvg } from '../../widgets/face.tsx'
+import { clientRedirect } from '../../common/util.ts'
 
 const accessPost = (c: hono.Context<Env>) =>
 	getPostByURL(new URL(c.req.path, config.baseUrl))
@@ -254,7 +255,7 @@ export const del = async (c: hono.Context<Env>) => {
 	if (post === null) return c.notFound()
 	await deletePost(post)
 	if (c.req.header('Whet')) {
-		return c.html(hono.html`<script>location='/'</script>`)
+		return c.html(clientRedirect('/'))
 	}
 	return c.redirect('/', 303)
 }
