@@ -115,7 +115,7 @@ export const get = async (c: hono.Context<Env>) => {
 									<button>Edit</button>
 								</form>
 								<form
-									whet
+									data-whet
 									method='DELETE'
 									action={post.uid!.pathname}
 									class='contents'

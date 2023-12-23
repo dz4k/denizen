@@ -42,7 +42,7 @@ const FileManager = ({ files, theme }: { files: string[]; theme: string }) => (
 										Download
 									</a>{' '}
 									<button
-										whet
+										data-whet
 										method='delete'
 										action={`/.denizen/storage?filename=${file}`}
 										target='closest tr'

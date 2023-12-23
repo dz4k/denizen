@@ -110,7 +110,7 @@ export const get = async (c: hono.Context<Env>) => {
 					? (
 						<a
 							rel='next'
-							whet
+							data-whet
 							href={'/?cursor=' + encodeURIComponent(posts.cursor) +
 								'#:~:selector=main :is(.h-entry, [rel=next])'}
 							data-target=':this'

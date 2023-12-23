@@ -37,7 +37,7 @@ export const ImportForm = (p: { error?: string }) => (
 		<h2>Import blog to Denizen</h2>
 		<main>
 			<form
-				whet
+				data-whet
 				method='POST'
 				action='/.denizen/import-blog'
 				data-target='#sect-import-form'
