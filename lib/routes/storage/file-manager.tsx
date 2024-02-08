@@ -31,7 +31,7 @@ const FileManager = ({ files, theme }: { files: string[]; theme: string }) => (
 							</tr>
 						</thead>
 						{files.map((file) => (
-							<tr>
+							<tr id={`file-${encodeURIComponent(file)}`}>
 								<td>{file}</td>
 								<td style='white-space: nowrap'>
 									<a
@@ -41,14 +41,14 @@ const FileManager = ({ files, theme }: { files: string[]; theme: string }) => (
 									>
 										Download
 									</a>{' '}
-									<button
-										data-whet
-										method='delete'
+									<form
+										rel='swap-replaceWith'
+										target={`file-${encodeURIComponent(file)}`}
+										method='DELETE'
 										action={`/.denizen/storage?filename=${file}`}
-										target='closest tr'
 									>
-										Delete
-									</button>
+										<button>Delete</button>
+									</form>
 								</td>
 							</tr>
 						))}

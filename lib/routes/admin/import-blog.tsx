@@ -13,6 +13,7 @@ export const get = (c: hono.Context<Env>) => {
 
 export const post = async (c: hono.Context<Env>) => {
 	const body = await c.req.parseBody()
+	console.log(body)
 	if (typeof body['feed-url'] !== 'string') {
 		return c.html(<ImportForm error='Please specify an URL' />, 400)
 	}
@@ -37,11 +38,10 @@ export const ImportForm = (p: { error?: string }) => (
 		<h2>Import blog to Denizen</h2>
 		<main>
 			<form
-				data-whet
+				rel='swap-replaceWith'
+				target='#sect-import-form'
 				method='POST'
 				action='/.denizen/import-blog'
-				data-target='#sect-import-form'
-				data-swap='replaceWith'
 				class='grid'
 				style='grid: auto-flow / auto 1fr'
 			>

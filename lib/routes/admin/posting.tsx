@@ -56,7 +56,7 @@ export const post = async (c: hono.Context<Env>) => {
 	post.category.push(...tags)
 	await createPost(post)
 
-	if (c.req.header('Whet')) {
+	if (c.req.header('Soiree')) {
 		return c.html(clientRedirect(post.uid.pathname))
 	} else {
 		return c.redirect(post.uid!.pathname, 303)

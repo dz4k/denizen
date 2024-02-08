@@ -116,7 +116,7 @@ export const get = async (c: hono.Context<Env>) => {
 									<button>Edit</button>
 								</form>
 								<form
-									data-whet
+									rel='swap-after'
 									method='DELETE'
 									action={post.uid!.pathname}
 									class='contents'
@@ -239,7 +239,7 @@ export const put = async (
 	newPost.uid = oldPost.uid
 	await updatePost(newPost)
 
-	if (c.req.header('Whet')) {
+	if (c.req.header('Soiree')) {
 		return c.html(
 			hono.html`<script>location='${newPost.uid!.pathname}'</script>`,
 		)
@@ -254,7 +254,7 @@ export const del = async (c: hono.Context<Env>) => {
 	const post = await accessPost(c)
 	if (post === null) return c.notFound()
 	await deletePost(post)
-	if (c.req.header('Whet')) {
+	if (c.req.header('Soiree')) {
 		return c.html(clientRedirect('/'))
 	}
 	return c.redirect('/', 303)

@@ -38,7 +38,7 @@ export const toScript = <TArgs extends unknown[] = []>(
 	...args: TArgs
 ) =>
 	`<script>(${f.toString()})(${
-		args.map((arg: unknown) => `JSON.parse(${JSON.stringify(arg)})`)
+		args.map((arg: unknown) => JSON.stringify(arg))
 	})</script>`
 
 export const clientRedirect = (path: string | URL) =>

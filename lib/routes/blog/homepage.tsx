@@ -109,12 +109,9 @@ export const get = async (c: hono.Context<Env>) => {
 				{posts.cursor
 					? (
 						<a
-							rel='next'
-							data-whet
+							rel='next swap-replaceWith'
 							href={'/?cursor=' + encodeURIComponent(posts.cursor) +
 								'#:~:selector=main :is(.h-entry, [rel=next])'}
-							data-target=':this'
-							data-swap='replaceWith'
 						>
 							Load more
 						</a>
