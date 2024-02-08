@@ -14,7 +14,6 @@ export const Layout: FC<{
 
 <title>${p.title}</title>
 
-<link rel=stylesheet href="https://rsms.me/inter/inter.css">
 <link rel=stylesheet href="/.denizen/public/style.css">
 <link rel=stylesheet href="/.denizen/public/theme-${p.theme}.css">
 
