@@ -9,6 +9,7 @@ import * as config from '../../config.ts'
 import { User } from '../../model/user.ts'
 import { getUser, setConfig, updateUser } from '../../db.ts'
 import { ImportForm } from './import-blog.tsx'
+import { Face } from '../../widgets/face.tsx'
 
 export const get = async (c: hono.Context<Env>) => {
 	const user = await getUser(c.var.session.get('user') as string)
@@ -21,6 +22,19 @@ export const updateProfile = async (c: hono.Context<Env>) => {
 	const user = await getUser('admin')
 	user.profile.name = formdata.get('name') as string
 	user.profile.note = [formdata.get('note') as string]
+
+	// Profile image
+	const photo = formdata.get('photo')
+	if (photo instanceof File) {
+		console.log('photo', photo)
+		const filename = crypto.randomUUID()
+		const oldUrl = user.profile.photo[0]?.url
+		if (oldUrl) await c.var.storage.del(oldUrl.pathname.split('/').pop() as string)
+		await c.var.storage.write(filename, photo)
+		user.profile.photo = [{
+			url: new URL(`/.denizen/storage/${filename}`, config.baseUrl),
+		}]
+	}
 
 	const socials = formdata.getAll('me[value]')
 	if (socials) {
@@ -65,9 +79,17 @@ const Console = ({ user, theme }: { user: User; theme: string }) => (
 				<form
 					action='/.denizen/profile'
 					method='POST'
+					enctype='multipart/form-data'
 					class='grid'
 					style='grid: auto-flow / auto 1fr'
 				>
+					<p class='grid-row'>
+						<label for='profile.photo'>Photo</label>
+						<span>
+							<Face card={user.profile} link={undefined} />
+							<input type='file' id='profile.photo' name='photo' />
+						</span>
+					</p>
 					<p class='grid-row'>
 						<label for='profile.name'>Name</label>
 						<input

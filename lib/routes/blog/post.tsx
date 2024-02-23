@@ -48,9 +48,9 @@ export const get = async (c: hono.Context<Env>) => {
 					<nav>
 						<a href='/' class='p-author h-card author-card unlink'>
 							<img
-								src={siteOwner.profile.photo[0] ??
+								src={siteOwner.profile.photo[0]?.url ??
 									makeProfileSvg(siteOwner.profile)}
-								alt=''
+								alt={siteOwner.profile.photo[0]?.alt}
 								class='photo'
 							/>
 							<strong class='p-name'>
