@@ -44,7 +44,7 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	} catch {
 		// no formdata
 	}
-	if (!token) {
+	if (token === null || token === undefined) {
 		const auth = c.req.header('Authorization')
 		if (!auth || !auth.startsWith('Bearer')) {
 			return unauthorized(c)
@@ -93,8 +93,12 @@ export const get = async (c: hono.Context<Env>) => {
 	return c.json({ error: 'query_not_implemented' }, 400)
 }
 
+const fileProperties = new Set(
+	['photo', 'video', 'audio'].flatMap((prop) => [prop, prop + '[]']),
+)
+
 export const post = async (c: hono.Context<Env>) => {
-	if (!c.var.authScopes.includes('create')) return forbidden(c)
+	if (!c.var.authScopes.includes('create')) return insufficientScope(c)
 
 	const [mime] = mediaType.parseMediaType(c.req.header('Content-Type')!)
 	const reqBody = mime === 'application/json'
@@ -142,10 +146,36 @@ export const post = async (c: hono.Context<Env>) => {
 		return c.body(null, 204)
 	} else {
 		// Create post
+
+		// Upload files
+		let formData: FormData
+		if (
+			mime === 'application/x-www-form-urlencoded' ||
+			mime === 'multipart/form-data'
+		) {
+			formData = await c.req.formData()
+			const upload = async (file: File) => {
+				const filename = crypto.randomUUID()
+				await c.var.storage.write(filename, file)
+				return new URL(
+					`/.denizen/storage/${encodeURIComponent(filename)}`,
+					config.baseUrl,
+				).href
+			}
+			for (const prop of fileProperties) {
+				const values = formData.getAll(prop)
+				formData.delete(prop)
+				for (const value of values) {
+					if (value instanceof File) formData.append(prop, await upload(value))
+					else formData.append(prop, value)
+				}
+			}
+		}
+
 		if (!c.var.authScopes.includes('create')) return insufficientScope(c)
 		const createdPost = mime === 'application/json'
-			? Entry.fromMF2Json(await c.req.json())
-			: Entry.fromFormData(await c.req.formData())
+			? Entry.fromMF2Json(reqBody)
+			: Entry.fromFormData(formData!)
 		// TODO: This is duplicated from routes/admin/posting.tsx#post.
 		// Factor out and move somewhere sensible.
 		// also make customizable.
@@ -166,7 +196,8 @@ export const post = async (c: hono.Context<Env>) => {
 }
 
 export const postMedia = async (c: hono.Context<Env>) => {
-	if (!c.var.authScopes.includes('media')) return forbidden(c)
+	if (!c.var.authScopes.includes('create')) return forbidden(c)
+	// if (!c.var.authScopes.includes('media')) return forbidden(c)
 	const formdata = await c.req.formData()
 	const file = formdata.get('file')
 	if (!file || !(file instanceof File)) return badRequest(c)
