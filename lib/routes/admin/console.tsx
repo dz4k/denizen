@@ -29,7 +29,9 @@ export const updateProfile = async (c: hono.Context<Env>) => {
 		console.log('photo', photo)
 		const filename = crypto.randomUUID()
 		const oldUrl = user.profile.photo[0]?.url
-		if (oldUrl) await c.var.storage.del(oldUrl.pathname.split('/').pop() as string)
+		if (oldUrl) {
+			await c.var.storage.del(oldUrl.pathname.split('/').pop() as string)
+		}
 		await c.var.storage.write(filename, photo)
 		user.profile.photo = [{
 			url: new URL(`/.denizen/storage/${filename}`, config.baseUrl),
