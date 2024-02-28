@@ -70,6 +70,8 @@ app
 	.post('/.denizen/post/edit', posting.postEdit)
 	.get('/.denizen/console', requireAdmin, o5command.get)
 	.post('/.denizen/profile', requireAdmin, o5command.updateProfile)
+	.post('/.denizen/profile/badge', requireAdmin, o5command.postBadge)
+	.delete('/.denizen/profile/badge/:iid', requireAdmin, o5command.deleteBadge)
 	.post('/.denizen/site-settings', requireAdmin, o5command.updateSettings)
 	.post('/.denizen/theme-settings', requireAdmin, o5command.updateTheme)
 	.post('/.denizen/import-blog', requireAdmin, importBlog.post)

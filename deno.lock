@@ -2,6 +2,7 @@
   "version": "3",
   "packages": {
     "specifiers": {
+      "jsr:@std/bytes@0.216": "jsr:@std/bytes@0.216.0",
       "npm:cheerio": "npm:cheerio@1.0.0-rc.12",
       "npm:html2text@6.0.0": "npm:html2text@6.0.0",
       "npm:microformat-node": "npm:microformat-node@2.0.1",

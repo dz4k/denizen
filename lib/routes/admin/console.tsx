@@ -10,6 +10,7 @@ import { User } from '../../model/user.ts'
 import { getUser, setConfig, updateUser } from '../../db.ts'
 import { ImportForm } from './import-blog.tsx'
 import { Face } from '../../widgets/face.tsx'
+import { DenizenBadge } from '../../model/card.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const user = await getUser(c.var.session.get('user') as string)
@@ -68,6 +69,58 @@ export const updateTheme = async (c: hono.Context<Env>) => {
 	return c.redirect('/.denizen/console', 303)
 }
 
+export const postBadge = async (c: hono.Context<Env>) => {
+	const formdata = await c.req.formData()
+	const photo = formdata.get('photo'),
+		alt = formdata.get('alt'),
+		href = formdata.get('url')
+	const url = href ? new URL(href as string) : undefined
+
+	const filename = crypto.randomUUID()
+	await c.var.storage.write(filename, photo as File)
+	const photoUrl = new URL(`/.denizen/storage/${filename}`, config.baseUrl)
+
+	const badge = new DenizenBadge({
+		photo: { url: photoUrl, alt: (alt ?? undefined) as string | undefined },
+		url,
+	})
+	const user = await getUser('admin')
+
+	user.profile.denizenBadge.push(badge)
+	updateUser(user)
+
+	return c.html(<BadgeItem badge={badge} />)
+}
+
+export const deleteBadge = async (c: hono.Context<Env>) => {
+	const badgeIid = c.req.param('iid')
+	const user = await getUser('admin')
+	const index = user.profile.denizenBadge.findIndex((badge) =>
+		badge.iid === badgeIid
+	)
+	console.log(badgeIid, user, index)
+	if (index === -1) return c.body(null, 404)
+	user.profile.denizenBadge.splice(index, 1)
+	updateUser(user)
+	return c.html('')
+}
+
+const BadgeItem = ({ badge }: { badge: DenizenBadge }) => (
+	<li id={`badge-item-${badge.iid}`}>
+		<img src={badge.photo?.url} alt={badge.photo?.alt} />
+		<form
+			rel='swap-replaceWith'
+			action={`/.denizen/profile/badge/${badge.iid}`}
+			method='DELETE'
+			target={`#badge-item-${badge.iid}`}
+		>
+			<button aria-label='Delete' title='Delete'>
+				<span aria-hidden='true'>×</span>
+			</button>
+		</form>
+	</li>
+)
+
 const Console = ({ user, theme }: { user: User; theme: string }) => (
 	<Layout title='Console' theme={theme}>
 		<script type='module' src='/.denizen/public/list-input.js' />
@@ -123,6 +176,44 @@ const Console = ({ user, theme }: { user: User; theme: string }) => (
 						</span>
 					</p>
 				</form>
+			</section>
+			<section>
+				<h2>Badges</h2>
+				<ul id='badge-list'>
+					{user.profile.denizenBadge.map((badge) => (
+						<BadgeItem
+							badge={badge}
+						/>
+					))}
+				</ul>
+				<button popovertarget='add-badge-dialog'>Add</button>
+				<dialog popover id='add-badge-dialog'>
+					<form
+						rel='swap-append'
+						action='/.denizen/profile/badge'
+						method='POST'
+						enctype='multipart/form-data'
+						target='#badge-list'
+						class='grid'
+						style='grid: auto-flow / auto 1fr'
+						aria-labelledby='add-badge-dialog-title'
+					>
+						<h1 id='add-badge-dialog-title'>Add a badge</h1>
+						<p class='grid-row'>
+							<label for='add-badge.photo'>Image</label>
+							<input type='file' name='photo' id='add-badge.photo' />
+						</p>
+						<p class='grid-row'>
+							<label for='add-badge.photo.alt'>Alt text</label>
+							<input type='text' name='photo.alt' id='add-badge.photo.alt' />
+						</p>
+						<p class='grid-row'>
+							<label for='add-badge.url'>Link</label>
+							<input type='url' name='photo' id='add-badge.url' />
+						</p>
+						<button onclick='this.closest("dialog").close()'>Add</button>
+					</form>
+				</dialog>
 			</section>
 			<section>
 				<h2>Site</h2>

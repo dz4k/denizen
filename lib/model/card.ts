@@ -1,6 +1,7 @@
 import {
 	ImageUrl,
 	MF2Html,
+	mf2Img,
 	mf2ImgArray,
 	MF2Object,
 	MF2PropertyValue,
@@ -53,6 +54,9 @@ export class Card {
 
 	me: Record<string, string> = {}
 
+	// denizen vendor-specific properties
+	denizenBadge: DenizenBadge[] = []
+
 	// TODO: handle multiple names
 	// TODO: what is p-label?
 	// TODO: what to do with name parts?
@@ -97,6 +101,9 @@ export class Card {
 				rv.me[name] = values[i]
 			)
 		}
+		if ('x-denizen-badge' in p) {
+			rv.denizenBadge = p['x-denizen-badge'].map((v) => DenizenBadge.fromMf2Json(v))
+		}
 
 		return rv
 	}
@@ -137,6 +144,62 @@ export class Card {
 
 				'x-me-key': Object.keys(this.me),
 				'x-me-value': Object.values(this.me),
+
+				'x-denizen-badge': this.denizenBadge.map(badge => badge.toMF2Json()),
+			},
+		})
+	}
+}
+
+export class DenizenBadge {
+	iid: string = crypto.randomUUID()
+	photo?: ImageUrl
+	url?: URL
+
+	constructor(props?: Partial<DenizenBadge>) {
+		Object.assign(this, props)
+	}
+
+	static fromMf2Json(it: unknown): DenizenBadge {
+		const mf2 = MF2PropertyValue.parse(it)
+		if (typeof mf2 !== 'object') {
+			throw new Error(
+				'Denizen badges must be images or entities in microformat data',
+			)
+		}
+		if ('value' in mf2 && 'alt' in mf2) {
+			return new DenizenBadge({ photo: mf2Img(mf2) })
+		}
+		if (!('type' in mf2) || !('properties' in mf2)) {
+			throw new Error(
+				'Denizen badges must be images or entities in microformat data',
+			)
+		}
+		if (!mf2.type.includes('h-x-denizen-badge')) {
+			throw new Error(
+				'Denizen badges must be entities of type h-x-denizen-badge',
+			)
+		}
+
+		const p = mf2.properties
+
+		const rv = new DenizenBadge()
+		if ('iid' in p) rv.iid = mf2String(p.iid[0])
+		if ('url' in p) rv.url = mf2Url(p.url[0])
+		if ('photo' in p) rv.photo = mf2Img(p.photo[0])
+
+		return rv
+	}
+
+	toMF2Json(): MF2Object {
+		return removeEmptyProperties({
+			type: ['h-x-denizen-badge'],
+			properties: {
+				iid: [this.iid],
+				photo: this.photo
+					? [{ value: this.photo.url.href, alt: this.photo.alt }]
+					: [],
+				url: this.url ? [this.url.toString()] : [],
 			},
 		})
 	}

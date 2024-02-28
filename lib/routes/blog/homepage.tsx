@@ -17,6 +17,7 @@ export const get = async (c: hono.Context<Env>) => {
 	const admin = isAdmin(c)
 
 	const socials = Object.entries(siteOwner.profile.me)
+	const badges = siteOwner.profile.denizenBadge
 	return c.html(
 		<Layout theme={c.var.theme} title={siteOwner.profile.name}>
 			<header class='h-card' lang={config.lang()}>
@@ -51,6 +52,32 @@ export const get = async (c: hono.Context<Env>) => {
 									</a>&emsp;
 								</>
 							))}
+						</p>
+					)
+					: ''}
+				{badges.length
+					? (
+						<p class='denizen-badges'>
+							{badges.map((badge) => {
+								const img = (
+									<img
+										src={badge.photo?.url}
+										alt={badge.photo?.alt}
+										class='badge'
+									/>
+								)
+								return (
+									<span className='p-x-denizen-badge h-x-denizen-badge'>
+										{badge.url
+											? (
+												<a href={badge.url.href} class='u-url'>
+													{img}
+												</a>
+											)
+											: img}
+									</span>
+								)
+							})}
 						</p>
 					)
 					: ''}
