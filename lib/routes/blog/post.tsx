@@ -43,6 +43,34 @@ export const get = async (c: hono.Context<Env>) => {
 				post.published.toLocaleString()}
 			lang={post.lang ?? config.lang()}
 		>
+			<meta property='og:url' content={post.uid} />
+			<meta property='og:site_name' content={siteOwner.profile.name} />
+			{post.name ? <meta property='og:title' content={post.name} /> : ''}
+			{post.summary
+				? (
+					<meta
+						name='description'
+						property='og:description'
+						content={post.summary}
+					/>
+				)
+				: ''}
+			{post.photo.map((photo) => (
+				<>
+					<meta property='og:image' content={photo.url} />
+					<meta property='og:image:alt' content={photo.alt} />
+				</>
+			))}
+			{post.video.map((video) => (
+				<>
+					<meta property='og:video' content={video} />
+				</>
+			))}
+			{post.audio.map((audio) => (
+				<>
+					<meta property='og:audio' content={audio} />
+				</>
+			))}
 			<article class='h-entry'>
 				<header class='container padding-block-start'>
 					<nav>
