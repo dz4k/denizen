@@ -102,7 +102,9 @@ export class Card {
 			)
 		}
 		if ('x-denizen-badge' in p) {
-			rv.denizenBadge = p['x-denizen-badge'].map((v) => DenizenBadge.fromMf2Json(v))
+			rv.denizenBadge = p['x-denizen-badge'].map((v) =>
+				DenizenBadge.fromMf2Json(v)
+			)
 		}
 
 		return rv
@@ -145,7 +147,7 @@ export class Card {
 				'x-me-key': Object.keys(this.me),
 				'x-me-value': Object.values(this.me),
 
-				'x-denizen-badge': this.denizenBadge.map(badge => badge.toMF2Json()),
+				'x-denizen-badge': this.denizenBadge.map((badge) => badge.toMF2Json()),
 			},
 		})
 	}
