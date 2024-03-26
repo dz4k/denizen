@@ -1,5 +1,3 @@
-#!/usr/bin/env -S deno run --allow-read=lib/public --allow-write=build
-
 import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
 import { encodeBase64 } from 'https://deno.land/std@0.203.0/encoding/base64.ts'
 
