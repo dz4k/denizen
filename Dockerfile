@@ -23,7 +23,6 @@ COPY --from=bin /deno /bin/deno
 WORKDIR /deno-dir
 COPY . .
 
-RUN deno task bundle-assets
 RUN deno cache bin/denizen.ts
 
 ENV DENIZEN_KV=/var/denizen/kv.sqlite

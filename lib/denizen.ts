@@ -60,10 +60,13 @@ app
 	)
 
 app
-	.use('/.denizen/public/*', serveStatic({
-		root: './lib/public',
-		rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
-	}))
+	.use(
+		'/.denizen/public/*',
+		serveStatic({
+			root: './lib/public',
+			rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
+		}),
+	)
 	.use('*', initialSetup.middleware)
 	.get('/.denizen/initial-setup', initialSetup.get)
 	.post('/.denizen/initial-setup', initialSetup.post)

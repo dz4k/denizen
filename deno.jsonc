@@ -2,10 +2,9 @@
 	"tasks": {
 		"dev": "DENIZEN_KV=dev.sqlite deno task run",
 		"dev-website": "cd doc && deno task serve",
-		"run": "deno task bundle-assets && deno run -A --unstable bin/denizen.ts",
-		"deploy": "deno task bundle-assets && deployctl deploy --project=denizen-test bin/denizen.ts --prod --no-static",
-		"deploy-website": "cd doc && deno task build && wrangler pages deploy --project-name=denizen-website _site/",
-		"bundle-assets": "deno run -A tool/assets_to_module.ts"
+		"run": "deno run -A --unstable bin/denizen.ts",
+		"deploy": "deployctl deploy --project=denizen-test bin/denizen.ts --prod",
+		"deploy-website": "cd doc && deno task build && wrangler pages deploy --project-name=denizen-website _site/"
 	},
 	"fmt": {
 		"semiColons": false,
@@ -29,7 +28,7 @@
 	},
 	"deploy": {
 		"project": "270e113e-a588-4f91-b2e2-806750028adc",
-		"exclude": [],
+		"exclude": ["./lib", "./bin", "./deps"],
 		"include": [],
 		"entrypoint": "bin/denizen.ts"
 	}
