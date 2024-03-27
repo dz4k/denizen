@@ -6,7 +6,7 @@ import type { Env } from '../../denizen.ts'
 
 import * as bcrypt from '../../../deps/bcrypt.ts'
 
-import { getUser } from '../../db.ts'
+import { getConfig, getUser } from '../../db.ts'
 import { User } from '../../model/user.ts'
 import { LoginForm } from './_login-form.tsx'
 
@@ -19,18 +19,19 @@ const login = async (
 	else return null
 }
 
-export const get = (c: hono.Context<Env>) => c.html(<LoginForm />)
+export const get = (c: hono.Context<Env>) =>
+	c.html(<LoginForm theme={c.var.theme} />)
 
 export const post = async (c: hono.Context<Env>) => {
 	const form = await c.req.formData()
 	const username = form.get('username')
 	const pw = form.get('pw')
 	if (typeof username !== 'string' || typeof pw !== 'string') {
-		return c.html(<LoginForm error='Missing username or password' />, 400)
+		return c.html(<LoginForm theme={c.var.theme} error='Missing username or password' />, 400)
 	}
 	const user = login(username, pw)
 	if (!user) {
-		return c.html(<LoginForm error='Incorrect username or password' />, 400)
+		return c.html(<LoginForm theme={c.var.theme} error='Incorrect username or password' />, 400)
 	}
 
 	// Login successful
