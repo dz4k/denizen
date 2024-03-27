@@ -1,4 +1,4 @@
-import { Hono } from '../deps/hono.ts'
+import { Hono, serveStatic } from '../deps/hono.ts'
 import {
 	DenoKvStore,
 	Session,
@@ -60,7 +60,10 @@ app
 	)
 
 app
-	.get(`/.denizen/public/:asset`, assets.get)
+	.use('/.denizen/public/*', serveStatic({
+		root: './lib/public',
+		rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
+	}))
 	.use('*', initialSetup.middleware)
 	.get('/.denizen/initial-setup', initialSetup.get)
 	.post('/.denizen/initial-setup', initialSetup.post)
