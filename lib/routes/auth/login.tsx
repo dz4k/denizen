@@ -27,11 +27,17 @@ export const post = async (c: hono.Context<Env>) => {
 	const username = form.get('username')
 	const pw = form.get('pw')
 	if (typeof username !== 'string' || typeof pw !== 'string') {
-		return c.html(<LoginForm theme={c.var.theme} error='Missing username or password' />, 400)
+		return c.html(
+			<LoginForm theme={c.var.theme} error='Missing username or password' />,
+			400,
+		)
 	}
 	const user = login(username, pw)
 	if (!user) {
-		return c.html(<LoginForm theme={c.var.theme} error='Incorrect username or password' />, 400)
+		return c.html(
+			<LoginForm theme={c.var.theme} error='Incorrect username or password' />,
+			400,
+		)
 	}
 
 	// Login successful
