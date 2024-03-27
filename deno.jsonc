@@ -12,7 +12,8 @@
 		"indentWidth": 2,
 		"singleQuote": true,
 		"exclude": [
-			"**/*.md"
+			"**/*.md",
+			"**/*.html"
 		]
 	},
 	"lint": {
