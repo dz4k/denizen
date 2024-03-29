@@ -156,7 +156,11 @@ export const post = async (c: hono.Context<Env>) => {
 			formData = await c.req.formData()
 			const upload = async (file: File) => {
 				const filename = crypto.randomUUID()
-				await c.var.storage.write(filename, file, 'public, max-age=31536000, immutable')
+				await c.var.storage.write(
+					filename,
+					file,
+					'public, max-age=31536000, immutable',
+				)
 				return new URL(
 					`/.denizen/storage/${encodeURIComponent(filename)}`,
 					config.baseUrl,
