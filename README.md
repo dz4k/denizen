@@ -8,7 +8,7 @@ A CMS written in Deno, aiming to be one-click deployable.
 ## Run locally
 
 ~~~
-bin/denizen.tsx
+deno task dev
 ~~~
 
 ## TODO
