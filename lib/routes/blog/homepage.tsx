@@ -82,57 +82,79 @@ export const get = async (c: hono.Context<Env>) => {
 					)
 					: ''}
 			</header>
-			<main class='entry-list'>
-				{posts.data.map((post) => (
-					<article class='h-entry link-card' lang={post.lang ?? config.lang()}>
-						<h2>
-							<a class='p-name u-url u-uid' href={post.uid!.pathname}>
-								{post.name}
-							</a>
-						</h2>
-						{post.photo.map((photo) => (
-							<figure>
-								<img class='u-photo' src={photo.url} alt={photo.alt} />
-							</figure>
-						))}
-						{post.summary
-							? (
-								<p
-									class='italic'
-									dangerouslySetInnerHTML={{ __html: post.summary }}
-								/>
-							)
-							: post.name
-							? ''
-							: (
-								<div
-									class='e-content'
-									dangerouslySetInnerHTML={{ __html: post.content?.html }}
-								/>
-							)}
-						<p class='<small>'>
-							<a href={post.uid?.pathname} class='card-link'>
-								<time className='dt-published'>
-									{post.published.toLocaleString([
-										...(post.lang ? [post.lang] : []),
-										...config.locales,
-									])}
-								</time>
-							</a>
-							{post.updated && (
-								<>
-									{' '}&middot; Updated on{' '}
-									<time className='dt-updated'>
-										{post.updated.toLocaleString([
+			<main>
+				<form
+					class='quick-post'
+					method='POST'
+					action='/.denizen/post/new'
+				>
+					<textarea
+						name='content'
+						class='quick-post-content'
+						aria-label='What&apos;s on your mind?'
+						placeholder='What&apos;s on your mind?'
+					>
+					</textarea>
+					<div class='quick-post-form-actions'>
+						<a class='<small>' href='/.denizen/post/new'>Open big editor</a>
+						<button type='submit' class='quick-post-submit'>Post</button>
+					</div>
+				</form>
+				<div className='entry-list'>
+					{posts.data.map((post) => (
+						<article
+							class='h-entry link-card'
+							lang={post.lang ?? config.lang()}
+						>
+							<h2>
+								<a class='p-name u-url u-uid' href={post.uid!.pathname}>
+									{post.name}
+								</a>
+							</h2>
+							{post.photo.map((photo) => (
+								<figure>
+									<img class='u-photo' src={photo.url} alt={photo.alt} />
+								</figure>
+							))}
+							{post.summary
+								? (
+									<p
+										class='italic'
+										dangerouslySetInnerHTML={{ __html: post.summary }}
+									/>
+								)
+								: post.name
+								? ''
+								: (
+									<div
+										class='e-content'
+										dangerouslySetInnerHTML={{ __html: post.content?.html }}
+									/>
+								)}
+							<p class='<small>'>
+								<a href={post.uid?.pathname} class='card-link'>
+									<time className='dt-published'>
+										{post.published.toLocaleString([
 											...(post.lang ? [post.lang] : []),
 											...config.locales,
 										])}
 									</time>
-								</>
-							)}
-						</p>
-					</article>
-				))}
+								</a>
+								{post.updated && (
+									<>
+										{' '}&middot; Updated on{' '}
+										<time className='dt-updated'>
+											{post.updated.toLocaleString([
+												...(post.lang ? [post.lang] : []),
+												...config.locales,
+											])}
+										</time>
+									</>
+								)}
+							</p>
+						</article>
+					))}
+				</div>
 				{posts.cursor
 					? (
 						<a
@@ -149,10 +171,9 @@ export const get = async (c: hono.Context<Env>) => {
 				{admin
 					? (
 						<div style='display: flex; flex-flow: row wrap; gap: 1em'>
-							<a class='<button>' href='/.denizen/post/new'>+ New Post</a>
 							<a class='<button>' href='/.denizen/console'>Console</a>
 							<form method='POST' action='/.denizen/logout' class='contents'>
-								<button>Logout</button>
+								<button>Log out</button>
 							</form>
 						</div>
 					)

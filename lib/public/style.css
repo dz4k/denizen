@@ -151,6 +151,23 @@ list-input {
     margin-block: 1em;
 }
 
+.quick-post {
+    display: grid;
+    .quick-post-content {
+        margin-block-end: .5em;
+    }
+
+    .quick-post-form-actions {
+        display: flex;
+        justify-content: space-between;
+
+        .quick-post-submit {
+            margin-block-start: auto;
+        }
+    }
+
+}
+
 .entry-list {
     .h-entry {
         border-block-start: 1px solid var(--bg3);
