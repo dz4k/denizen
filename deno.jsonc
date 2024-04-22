@@ -1,6 +1,6 @@
 {
 	"tasks": {
-		"dev": "DENIZEN_KV=dev.sqlite deno task run",
+		"dev": "DENIZEN_KV=dev.sqlite tool/watch.ts",
 		"dev-website": "cd doc && deno task serve",
 		"run": "deno run -A --unstable bin/denizen.ts",
 		"deploy": "deployctl deploy --project=denizen-test bin/denizen.ts --prod",
