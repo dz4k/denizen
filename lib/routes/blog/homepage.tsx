@@ -83,25 +83,27 @@ export const get = async (c: hono.Context<Env>) => {
 					: ''}
 			</header>
 			<main>
-				{admin ? (
-					<form
-						class='quick-post'
-						method='POST'
-						action='/.denizen/post/new'
-					>
-						<textarea
-							name='content'
-							class='quick-post-content'
-							aria-label='What&apos;s on your mind?'
-							placeholder='What&apos;s on your mind?'
+				{admin
+					? (
+						<form
+							class='quick-post'
+							method='POST'
+							action='/.denizen/post/new'
 						>
-						</textarea>
-						<div class='quick-post-form-actions'>
-							<a class='<small>' href='/.denizen/post/new'>Open big editor</a>
-							<button type='submit' class='quick-post-submit'>Post</button>
-						</div>
-					</form>
-				) : ''}
+							<textarea
+								name='content'
+								class='quick-post-content'
+								aria-label='What&apos;s on your mind?'
+								placeholder='What&apos;s on your mind?'
+							>
+							</textarea>
+							<div class='quick-post-form-actions'>
+								<a class='<small>' href='/.denizen/post/new'>Open big editor</a>
+								<button type='submit' class='quick-post-submit'>Post</button>
+							</div>
+						</form>
+					)
+					: ''}
 				<div className='entry-list'>
 					{posts.data.map((post) => (
 						<article
