@@ -5,7 +5,8 @@ import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'
 
-import { db } from '../../db.ts'
+import { db, saveBlogImportJob } from '../../db.ts'
+import { enqueue } from '../../queue.ts'
 
 export const get = (c: hono.Context<Env>) => {
 	return c.html(<ImportForm />)
@@ -13,7 +14,6 @@ export const get = (c: hono.Context<Env>) => {
 
 export const post = async (c: hono.Context<Env>) => {
 	const body = await c.req.parseBody()
-	console.log(body)
 	if (typeof body['feed-url'] !== 'string') {
 		return c.html(<ImportForm error='Please specify an URL' />, 400)
 	}
@@ -23,12 +23,17 @@ export const post = async (c: hono.Context<Env>) => {
 	} catch {
 		return c.html(<ImportForm error='Invalid feed URL' />, 400)
 	}
-	// await enqueue({
-	// 	type: 'import_blog',
-	// 	feedUrl: feedUrl.href,
-	// })
+
+	const job = await saveBlogImportJob({
+		feedUrl: feedUrl.href,
+		status: 'starting',
+	})
+	await enqueue({
+		type: 'import_blog',
+		job,
+	})
 	return c.html(
-		<ImportForm error='Blog importing is not yet implemented' />,
+		<ImportForm error='Importing blog...' />,
 		400,
 	)
 }

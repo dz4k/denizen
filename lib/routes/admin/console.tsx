@@ -27,7 +27,6 @@ export const updateProfile = async (c: hono.Context<Env>) => {
 	// Profile image
 	const photo = formdata.get('photo')
 	if (photo instanceof File) {
-		console.log('photo', photo)
 		const filename = crypto.randomUUID()
 		const oldUrl = user.profile.photo[0]?.url
 		if (oldUrl) {
@@ -106,7 +105,6 @@ export const deleteBadge = async (c: hono.Context<Env>) => {
 	const index = user.profile.denizenBadge.findIndex((badge) =>
 		badge.iid === badgeIid
 	)
-	console.log(badgeIid, user, index)
 	if (index === -1) return c.body(null, 404)
 	user.profile.denizenBadge.splice(index, 1)
 	updateUser(user)

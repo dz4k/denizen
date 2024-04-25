@@ -1,5 +1,11 @@
 import { MF2Object } from './common/mf2.ts'
-import { db } from './db.ts'
+import { db, getPost } from './db.ts'
+import {
+	BlogImportJob,
+	importBlog,
+	importEntry,
+	importMedia,
+} from './import-blog.ts'
 import { Entry } from './model/entry.ts'
 import {
 	receiveWebmention,
@@ -19,6 +25,18 @@ export type QueueMessage = {
 	type: 'recv_webmention'
 	source: string
 	target: string
+} | {
+	type: 'import_blog'
+	job: BlogImportJob
+} | {
+	type: 'import_entry'
+	jobId: string
+	entryId: string
+} | {
+	type: 'import_media'
+	jobId: string
+	oldUrl: string
+	newUrl: string
 }
 
 export const enqueue = (message: QueueMessage) => db.enqueue(message)
@@ -34,5 +52,11 @@ export const listen = () =>
 				return sendWebmention(message.source, message.target)
 			case 'recv_webmention':
 				return receiveWebmention(message.source, message.target)
+			case 'import_blog':
+				return importBlog(message.job)
+			case 'import_entry':
+				return importEntry(message.jobId, message.entryId)
+			case 'import_media':
+				return importMedia(message.jobId, message.oldUrl, message.newUrl)
 		}
 	})

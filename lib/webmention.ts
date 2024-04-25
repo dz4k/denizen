@@ -108,7 +108,6 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 
 export const sendWebmentions = async (post: Entry, oldContent?: string) => {
 	const mentionedPages = findMentions(post, oldContent)
-	console.log(`Found mentioned pages:`, mentionedPages, 'in post', post.uid)
 	await Promise.all(Array.from(mentionedPages, (page) =>
 		enqueue({
 			type: 'send_webmention',
@@ -165,9 +164,7 @@ const findMentionsInContent = function* (
 }
 
 export const sendWebmention = async (source: string, target: string) => {
-	console.log('Sending webmention from', source, 'to', target)
 	const endpoint = await discoverWebmentionEndpoint(new URL(target))
-	console.log('Found webmention endpoint of', target, ':', endpoint)
 	if (!endpoint) return
 	await fetchInternalOrExternal(
 		new Request(endpoint, {
@@ -178,26 +175,26 @@ export const sendWebmention = async (source: string, target: string) => {
 }
 
 const discoverWebmentionEndpoint = async (target: URL) => {
-	const res = await fetchInternalOrExternal(
-		new Request(target, {
-			headers: {
-				'expect': 'text/html',
-			},
-		}),
-	)
-	for (const [header, value] of res.headers.entries()) {
-		console.log(target, header + ':', value)
-		if (header === 'link') {
-			const parsed = parseLinkHeader(value)
-			for (const link of parsed) {
-				const rel = (link.rel as string ?? '').toLowerCase().split(/\s+/g)
-				if (rel.includes('webmention')) {
-					return new URL(link.uri, res.url || target)
+	try {
+		const res = await fetchInternalOrExternal(
+			new Request(target, {
+				headers: {
+					'expect': 'text/html',
+				},
+			}),
+		)
+		for (const [header, value] of res.headers.entries()) {
+			if (header === 'link') {
+				const parsed = parseLinkHeader(value)
+				for (const link of parsed) {
+					const rel = (link.rel as string ?? '').toLowerCase().split(/\s+/g)
+					if (rel.includes('webmention')) {
+						return new URL(link.uri, res.url || target)
+					}
 				}
 			}
 		}
-	}
-	try {
+
 		const html = await res.text()
 		const doc = new DOMParser().parseFromString(html, 'text/html')
 		const link = doc?.querySelector('[rel~="webmention" i][href]')

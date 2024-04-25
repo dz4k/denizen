@@ -4,6 +4,7 @@ import { asyncIteratorToArray } from './common/util.ts'
 import { User } from './model/user.ts'
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 import { enqueue } from './queue.ts'
+import type { BlogImportJob } from './import-blog.ts'
 
 export const db = await Deno.openKv(Deno.env.get('DENIZEN_KV'))
 
@@ -206,7 +207,7 @@ export const completeInitialSetup = async () => {
 	await db.set(['etc.', 'Initial setup done'], true)
 }
 
-// #region
+// #endregion
 
 // #region Config
 
@@ -226,5 +227,69 @@ export const getConfigs = async () => {
 
 export const setConfig = (name: string, value: unknown) =>
 	db.set(['Cfg', name], value)
+
+// #endregion
+
+// #region Blog import
+
+type BlogImportJobParams = Omit<BlogImportJob, 'id'> & Partial<BlogImportJob>
+
+export const saveBlogImportJob = async (job: BlogImportJobParams) => {
+	const key = ['ImportJob', job.id ??= ulid()]
+	await db.atomic()
+		.set(key, job)
+		// .set(['ImportJob.EntryCount', job.id], new Deno.KvU64(0n))
+		// .set(['ImportJob.MediaCount', job.id], new Deno.KvU64(0n))
+		.commit()
+	return job as BlogImportJob
+}
+
+export const getBlogImportJob = async (id: string) => {
+	const res = await db.get(['ImportJob', id])
+	return res.value as BlogImportJob
+}
+
+export const listBlogImportJobs = async () => {
+	const res = await db.list({ prefix: ['ImportJob'] })
+	const jobs = []
+	for await (const { key, value } of res) jobs.push(value as BlogImportJob)
+	return jobs
+}
+
+// TODO: keep track of blog import progress
+
+export const recordEntryImported = async (jobId: string) =>
+	// db.atomic()
+	// 	.sum(['ImportJob.ImportedEntryCount', jobId], 1n)
+	// 	.sum(['ImportJob.EntryCount', jobId], -1n)
+	// 	.commit()
+	void 0
+
+export const recordEntryImportFailed = async (jobId: string) =>
+	// db.atomic()
+	// 	.sum(['ImportJob.FailedEntryCount', jobId, 'failed'], 1n)
+	// 	.sum(['ImportJob.EntryCount', jobId], -1n)
+	// 	.commit()
+	void 0
+
+export const recordMediaToImport = async (jobId: string) =>
+	// db.atomic()
+	// 	.sum(['ImportJob.MediaCount', jobId], 1n)
+	// 	.commit()
+	void 0
+
+export const recordMediaImported = async (jobId: string) =>
+	// db.atomic()
+	// 	.sum(['ImportJob.ImportedMediaCount', jobId], 1n)
+	// 	.sum(['ImportJob.MediaCount', jobId], -1n)
+	// 	.commit()
+	void 0
+
+export const recordMediaImportFailed = async (jobId: string) =>
+	// db.atomic()
+	// 	.sum(['ImportJob.FailedMediaCount', jobId, 'failed'], 1n)
+	// 	.sum(['ImportJob.MediaCount', jobId], -1n)
+	// 	.commit()
+	void 0
 
 // #endregion

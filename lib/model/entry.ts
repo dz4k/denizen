@@ -60,7 +60,7 @@ export class Entry {
 	constructor(props?: Partial<Entry>) {
 		Object.assign(this, props)
 		this.published ??= new Date()
-		this.iid ??= ulid()
+		this.iid ??= ulid(this.published?.getTime())
 	}
 
 	genUrl() {
