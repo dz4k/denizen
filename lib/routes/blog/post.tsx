@@ -35,6 +35,7 @@ export const get = async (c: hono.Context<Env>) => {
 	const siteOwner = await getUser('admin')
 
 	c.header('Link', '</.denizen/webmention>; rel="webmention"')
+	c.header('Last-Modified', (post.updated ?? post.published).toUTCString())
 
 	return c.html(
 		<Layout
