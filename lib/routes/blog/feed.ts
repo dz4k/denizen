@@ -53,7 +53,7 @@ export const json = async (c: hono.Context<Env>) => {
 		200,
 		{
 			'Content-Type': 'application/feed+json',
-			'Last-Modified': new Date(lastModified).toString(),
+			'Last-Modified': new Date(lastModified).toUTCString(),
 		},
 	)
 }
