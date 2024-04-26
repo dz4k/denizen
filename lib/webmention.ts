@@ -107,6 +107,8 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 }
 
 export const sendWebmentions = async (post: Entry, oldContent?: string) => {
+	if (post.deleted) return
+
 	const mentionedPages = findMentions(post, oldContent)
 	await Promise.all(Array.from(mentionedPages, (page) =>
 		enqueue({

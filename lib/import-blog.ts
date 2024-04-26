@@ -96,12 +96,12 @@ export const importEntry = async (jobId: string, entryId: string) => {
 }
 
 const importEntryImpl = async (jobId: string, entry: Entry) => {
-	const href = entry.uid ?? entry.url.values().next().value
-	console.log(`importEntry: ${href}`)
+	const entryUrl = entry.uid!
+	console.log(`importEntry: ${entryUrl}`)
 
 	// Fill in missing content
 	if (!entry.content) {
-		const res = await fetch(href)
+		const res = await fetch(entryUrl)
 		if (!res.ok) {
 			throw new Error(
 				`importEntry: Failed to fetch ${entry.url}: ${res.status} ${res.statusText}`,
@@ -109,16 +109,27 @@ const importEntryImpl = async (jobId: string, entry: Entry) => {
 		}
 
 		const html = await res.text()
-		const mf2 = await parseMicroformats({ html, baseUrl: href })
+		entry.content = { html }
+	}
+
+	// TODO: more heuristics for extracting content
+	if (/<!doctype html/i.test(entry.content!.html)) {
+		const mf2 = parseMicroformats({
+			html: entry.content!.html,
+			baseUrl: entryUrl.href,
+		})
 		const hEntry = mf2.items.find((i) => i.type.includes('h-entry'))
 		if (hEntry) {
-			entry = Entry.fromMF2Json(hEntry)
+			entry.add(hEntry.properties)
+			entry.replace({ content: hEntry.properties.content })
 		} else {
-			// TODO: more heuristics for extracting content
-			const document = new DOMParser().parseFromString(html, 'text/html')!
+			const document = new DOMParser().parseFromString(
+				entry.content!.html,
+				'text/html',
+			)!
 			entry.content = {
 				html: document.querySelector(
-					'main, [id^="post-content"], .post-content, .content',
+					'main, [id^="post-content"], .e-content, .post-content, .content',
 				)!.innerHTML,
 			}
 		}
@@ -133,7 +144,7 @@ const importEntryImpl = async (jobId: string, entry: Entry) => {
 		const el = n as Element
 		const src = el.getAttribute('src')
 		if (src) {
-			const url = new URL(src, href)
+			const url = new URL(src, entryUrl)
 			const newName = crypto.randomUUID()
 			media.set(url.href, newName)
 			el.setAttribute('src', `/.denizen/storage/${newName}`)
