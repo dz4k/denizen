@@ -3,7 +3,7 @@
 		"dev": "DENIZEN_KV=dev.sqlite tool/watch.ts",
 		"dev-website": "cd doc && deno task serve",
 		"run": "deno run -A --unstable bin/denizen.ts",
-		"deploy": "deployctl deploy --project=denizen-test bin/denizen.ts --prod",
+		"deploy": "deno run -A jsr:@deno/deployctl deploy --project=denizen-test bin/denizen.ts --prod",
 		"deploy-website": "cd doc && deno task build && wrangler pages deploy --project-name=denizen-website _site/",
 		"reset-local": "rm -rf dev.sqlite* _blobs"
 	},
@@ -30,8 +30,8 @@
 	},
 	"deploy": {
 		"project": "270e113e-a588-4f91-b2e2-806750028adc",
-		"exclude": ["./lib", "./bin", "./deps"],
-		"include": [],
+		"include": ["./lib", "./bin", "./deps"],
+		"exclude": [],
 		"entrypoint": "bin/denizen.ts"
 	}
 }
