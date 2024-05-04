@@ -14,7 +14,25 @@ import * as blogPost from '../blog/post.tsx'
 import { clientRedirect } from '../../common/util.ts'
 
 export const get = (c: hono.Context<Env>) =>
-	c.html(<PostEditor theme={c.var.theme} title='New post' />)
+	c.html(
+		<PostEditor
+			theme={c.var.theme}
+			title='New post'
+			post={Entry.fromFormData(formDataFromObject(c.req.query()))}
+		/>,
+	)
+
+const formDataFromObject = (obj: Record<string, string | string[]>) => {
+	const formdata = new FormData()
+	for (const [key, value] of Object.entries(obj)) {
+		if (Array.isArray(value)) {
+			for (const v of value) formdata.append(key, v)
+		} else {
+			formdata.append(key, value)
+		}
+	}
+	return formdata
+}
 
 export const getEdit = async (c: hono.Context<Env>) => {
 	let post
@@ -43,6 +61,7 @@ export const postEdit = (c: hono.Context<Env>) => {
 
 export const post = async (c: hono.Context<Env>) => {
 	const formdata = await c.req.formData()
+	console.log(formdata)
 
 	const post = Entry.fromFormData(formdata)
 	post.uid = new URL(
@@ -73,6 +92,33 @@ export const PostEditor = (
 		<main>
 			<script type='module' src='/.denizen/public/post-editor.js'></script>
 			<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
+				{p.post?.inReplyTo
+					? p.post.inReplyTo.map((cite) => (
+						<p class='grid-row'>
+							<label for='edit-in-reply-to'>
+								<span aria-hidden='true'>↪</span> Reply to
+							</label>
+							<input
+								type='url'
+								name='in-reply-to'
+								id='edit-in-reply-to'
+								value={cite.url}
+							/>
+							<span>
+								{cite.author?.map((author) => (
+									<span>
+										{author.name},{' '}
+									</span>
+								))}
+								{cite.name
+									? <cite>{cite.name}</cite>
+									: cite.content
+									? <span>{cite.content.slice(0, 40)}</span>
+									: <span>{cite.url}</span>}
+							</span>
+						</p>
+					))
+					: ''}
 				<p class='grid-row'>
 					<label for='edit-title'>Title</label>
 					<input type='text' name='name' id='edit-title' value={p.post?.name} />

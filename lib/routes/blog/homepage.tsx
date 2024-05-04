@@ -183,6 +183,26 @@ export const get = async (c: hono.Context<Env>) => {
 					)
 					: ''}
 			</footer>
+			{admin
+				? (
+					<script
+						dangerouslySetInnerHTML={{
+							__html: `
+						navigator.registerProtocolHandler(
+							'web+action',
+							${
+								JSON.stringify(
+									new URL('/.denizen/webaction?handler=%s', config.baseUrl)
+										.href,
+								)
+							},
+							'Denizen on ' + location.hostname
+						)
+					`,
+						}}
+					/>
+				)
+				: ''}
 		</Layout>,
 	)
 }

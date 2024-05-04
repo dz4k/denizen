@@ -17,6 +17,7 @@ import * as o5command from './routes/admin/console.tsx'
 import * as initialSetup from './routes/admin/initial-setup.tsx'
 import { requireAdmin } from './routes/admin/middleware.ts'
 import * as posting from './routes/admin/posting.tsx'
+import * as webaction from './routes/admin/webaction.tsx'
 import * as wpAdmin from './routes/admin/wp-admin.ts'
 import * as importBlog from './routes/admin/import-blog.tsx'
 import * as indieauth from './routes/auth/indieauth.ts'
@@ -71,6 +72,7 @@ app
 	.post('/.denizen/post/new', requireAdmin, posting.post)
 	.get('/.denizen/post/edit', posting.getEdit)
 	.post('/.denizen/post/edit', posting.postEdit)
+	.get('/.denizen/webaction', webaction.get)
 	.get('/.denizen/console', requireAdmin, o5command.get)
 	.post('/.denizen/profile', requireAdmin, o5command.updateProfile)
 	.post('/.denizen/profile/badge', requireAdmin, o5command.postBadge)

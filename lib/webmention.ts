@@ -99,10 +99,11 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 		'like-of' in hEntry.properties &&
 		isValidUrl(hEntry.properties['like-of'][0])
 	) return 'like'
-	if (
-		'in-reply-to' in hEntry.properties &&
-		isValidUrl(hEntry.properties['in-reply-to'][0])
-	) return 'reply'
+
+	// TODO: check if it's a reply to the target
+	const entry = Entry.fromMF2Json(hEntry)
+	if (entry.inReplyTo.length) return 'reply'
+
 	return 'mention'
 }
 

@@ -92,6 +92,31 @@ export const get = async (c: hono.Context<Env>) => {
 					{post.summary ? <p class='lede'>{post.summary}</p> : ''}
 				</header>
 				<main>
+					{console.log(post.inReplyTo)}
+					{post.inReplyTo.map((cite) => (
+						// TODO: better reply context
+						<p class='reply-context p-in-reply-to h-cite'>
+							<strong class='tiny-header'>↪ In reply to</strong>
+							{cite.author?.map((author) => (
+								<>
+									<a
+										class='p-author h-card'
+										href={author.url}
+									>
+										{author.name}
+									</a>
+									,{' '}
+								</>
+							))}
+							<a href={cite.uid ?? cite.url[0]} class={cite.uid ? 'u-uid' : ''}>
+								{cite.name
+									? <cite class='p-name'>{cite.name}</cite>
+									: cite.content
+									? <span class='p-content'>{cite.content.slice(0, 40)}</span>
+									: <span>{(cite.uid ?? cite.url[0]).href}</span>}
+							</a>
+						</p>
+					))}
 					{post.photo.map((photo) => (
 						<figure>
 							<img class='u-photo' src={photo.url} alt={photo.alt} />
@@ -137,24 +162,33 @@ export const get = async (c: hono.Context<Env>) => {
 						</p>
 					</div>
 
-					{admin
-						? (
-							<div style='display: flex; flex-flow: row wrap; gap: 1em'>
-								<form action='/.denizen/post/edit' class='contents'>
-									<input type='hidden' name='post' value={post.uid?.pathname} />
-									<button>Edit</button>
-								</form>
-								<form
-									rel='swap-after'
-									method='DELETE'
-									action={post.uid!.pathname}
-									class='contents'
-								>
-									<button>Delete</button>
-								</form>
-							</div>
-						)
-						: ''}
+					<div style='display: flex; flex-flow: row wrap; gap: 1em'>
+						<denizen-webaction action='reply'>
+							<button>Reply</button>
+						</denizen-webaction>
+						{admin
+							? (
+								<>
+									<form action='/.denizen/post/edit' class='contents'>
+										<input
+											type='hidden'
+											name='post'
+											value={post.uid?.pathname}
+										/>
+										<button>Edit</button>
+									</form>
+									<form
+										rel='swap-after'
+										method='DELETE'
+										action={post.uid!.pathname}
+										class='contents'
+									>
+										<button>Delete</button>
+									</form>
+								</>
+							)
+							: ''}
+					</div>
 
 					{await Webmentions({ post })}
 				</footer>

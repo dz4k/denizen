@@ -230,7 +230,9 @@ export class Entry {
 		if (form.has('video')) props.video = getUrls('video')
 		if (form.has('audio')) props.audio = getUrls('audio')
 		if (form.has('in-reply-to')) {
+			console.log('in-reply-to', form.get('in-reply-to'))
 			props.inReplyTo = getUrls('in-reply-to').map((v) => new Citation([v]))
+			console.log('in-reply-to', props.inReplyTo[0].toMF2Json())
 		}
 		if (form.has('bookmark-of')) {
 			props.bookmarkOf = getUrls('bookmark-of').map((v) => new Citation([v]))
@@ -259,8 +261,8 @@ export class Entry {
 				updated: this.updated ? [this.updated.toISOString()] : [],
 				category: this.category,
 				syndication: this.syndication.map(String),
-				inReplyTo: this.inReplyTo.map((cite) => cite.toMF2Json()),
-				bookmarkOf: this.bookmarkOf.map((cite) => cite.toMF2Json()),
+				'in-reply-to': this.inReplyTo.map((cite) => cite.toMF2Json()),
+				'bookmark-of': this.bookmarkOf.map((cite) => cite.toMF2Json()),
 				likeOf: this.likeOf.map((cite) => cite.toMF2Json()),
 				photo: this.photo.map(({ url, alt }) => ({ value: url.href, alt })),
 				audio: this.audio.map(String),
