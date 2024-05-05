@@ -252,7 +252,7 @@ export const getBlogImportJob = async (id: string) => {
 export const listBlogImportJobs = async () => {
 	const res = await db.list({ prefix: ['ImportJob'] })
 	const jobs = []
-	for await (const { key, value } of res) jobs.push(value as BlogImportJob)
+	for await (const { value } of res) jobs.push(value as BlogImportJob)
 	return jobs
 }
 

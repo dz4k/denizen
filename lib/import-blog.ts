@@ -213,23 +213,37 @@ const failJob = async (job: BlogImportJob, error: string) => {
 	await saveBlogImportJob(job)
 }
 
+type JSONFeedItem = {
+	url: string
+	title: string
+	content_html?: string
+	content_text?: string
+	date_published: string
+	date_modified?: string
+	summary?: string
+	image?: string
+	authors?: { name: string; url?: string; avatar?: string }[]
+	tags?: string[]
+	language?: string
+}
+
 const parseJsonFeed = async (res: Response): Promise<Entry[]> => {
 	const feed = await res.json()
-	return feed.items.map((item: any) =>
+	return feed.items.map((item: JSONFeedItem) =>
 		new Entry({
 			uid: new URL(item.url),
 			name: item.title,
 			content: item.content_html
 				? { html: item.content_html }
-				: { html: htmlEscape(item.content_text), value: item.content_text },
+				: { html: htmlEscape(item.content_text!), value: item.content_text },
 			published: new Date(item.date_published),
 			updated: item.date_modified ? new Date(item.date_modified) : undefined,
 			summary: item.summary,
 			photo: item.image ? [{ url: new URL(item.image, res.url) }] : [],
-			author: item.authors?.map((a: any) =>
+			author: item.authors?.map((a) =>
 				new Card(a.name, {
-					url: a.url,
-					photo: a.avatar,
+					url: a.url ? [new URL(a.url)] : [],
+					photo: a.avatar ? [{ url: new URL(a.avatar) }] : [],
 				})
 			) ?? [],
 			category: item.tags ?? [],

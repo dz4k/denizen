@@ -8,6 +8,7 @@ import { toScript } from '../../common/util.ts'
 
 export const get = (c: hono.Context<Env>) =>
 	c.html(toScript(() => {
+		// deno-lint-ignore no-window
 		if (window.parent !== window) {
 			window.parent.postMessage(
 				JSON.stringify({

@@ -13,6 +13,7 @@
 	],
 	"deno.unstable": true,
 	"deno.config": "./deno.jsonc",
+	"deno.lint": true,
 
 	"editor.detectIndentation": true,
 	"svg.preview.background": "editor"
