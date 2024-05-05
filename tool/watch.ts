@@ -1,7 +1,5 @@
 #!/usr/bin/env -S deno run -A
 
-import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
-
 // #region Config
 
 const shouldRestart = (path: string) =>
@@ -30,7 +28,7 @@ const ilog = <T>(...args: [...unknown[], T]): T => {
 let server: Deno.ChildProcess
 let abortCtl: AbortController
 
-const spawn = async () => {
+const spawn = () => {
 	console.log('Starting server')
 	server = new Deno.Command(
 		'bin/denizen.ts',
@@ -46,7 +44,7 @@ const kill = async () => {
 	ilog('Killing server')
 	try {
 		abortCtl?.abort()
-		const output = await server.output()
+		await server.output()
 	} catch {
 		// ignore
 	}
@@ -64,7 +62,7 @@ const debounce = (fn: () => void, ms: number) => {
 	}
 }
 
-let restart = debounce(async () => {
+const restart = debounce(async () => {
 	await kill()
 	await spawn()
 }, 100)
