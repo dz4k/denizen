@@ -1,6 +1,7 @@
 // TODO: Rewrite in Deno KV blob storage when that becomes a thing.
 
 import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
+import { WriteOptions } from './storage-interface.ts'
 
 export const name = 'FSBackend'
 
@@ -15,13 +16,20 @@ export const read = async (
 
 export const write = async (
 	name: string,
-	blob: Blob,
-	cacheControl: string,
+	content: Blob | ReadableStream<Uint8Array>,
+	{ cacheControl, contentType }: WriteOptions,
 ): Promise<void> => {
 	await Deno.mkdir(blobDir, { recursive: true })
-	await Deno.writeTextFile(encode(name) + '.#type', blob.type)
+	await Deno.writeTextFile(
+		encode(name) + '.#type',
+		contentType ??
+			(content instanceof Blob ? content.type : 'application/octet-stream'),
+	)
 	await Deno.writeTextFile(encode(name) + '.#cache-control', cacheControl)
-	return Deno.writeFile(encode(name), blob.stream())
+	return Deno.writeFile(
+		encode(name),
+		content instanceof Blob ? content.stream() : content,
+	)
 }
 
 export const list = async function* () {

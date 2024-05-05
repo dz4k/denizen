@@ -1,4 +1,18 @@
 /**
+ * Options for reading a file.
+ */
+export type WriteOptions = {
+	/**
+	 * Cache control header for the file
+	 */
+	cacheControl: string
+	/**
+	 * Content type for the file
+	 */
+	contentType?: string
+}
+
+/**
  * Interface for file storage backends.
  */
 export type StorageBackend = {
@@ -16,7 +30,11 @@ export type StorageBackend = {
 	 * @param blob File data
 	 * @param cacheControl Cache control header for the file
 	 */
-	write(name: string, blob: Blob, cacheControl: string): Promise<void>
+	write(
+		name: string,
+		blob: Blob | ReadableStream<Uint8Array>,
+		options: WriteOptions,
+	): Promise<void>
 
 	/**
 	 * Delete a file from storage.

@@ -196,8 +196,12 @@ const importMediaImpl = async (
 	}
 	await storage.write(
 		newUrl,
-		await res.blob(),
-		res.headers.get('Cache-Control') ?? 'public, max-age=31536000',
+		res.body!,
+		{
+			cacheControl: res.headers.get('Cache-Control') ??
+				'public, max-age=31536000',
+			contentType: res.headers.get('Content-Type') ?? undefined,
+		},
 	)
 	await recordMediaImported(jobId)
 }
