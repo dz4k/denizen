@@ -256,40 +256,33 @@ export const listBlogImportJobs = async () => {
 	return jobs
 }
 
-// TODO: keep track of blog import progress
+export const recordEntryImported = (jobId: string) =>
+	db.atomic()
+		.sum(['ImportJob.ImportedEntryCount', jobId], 1n)
+		.sum(['ImportJob.EntryCount', jobId], 2n ** 64n - 1n)
+		.commit()
 
-export const recordEntryImported = async (jobId: string) =>
-	// db.atomic()
-	// 	.sum(['ImportJob.ImportedEntryCount', jobId], 1n)
-	// 	.sum(['ImportJob.EntryCount', jobId], -1n)
-	// 	.commit()
-	void 0
+export const recordEntryImportFailed = (jobId: string) =>
+	db.atomic()
+		.sum(['ImportJob.FailedEntryCount', jobId, 'failed'], 1n)
+		.sum(['ImportJob.EntryCount', jobId], 2n ** 64n - 1n)
+		.commit()
 
-export const recordEntryImportFailed = async (jobId: string) =>
-	// db.atomic()
-	// 	.sum(['ImportJob.FailedEntryCount', jobId, 'failed'], 1n)
-	// 	.sum(['ImportJob.EntryCount', jobId], -1n)
-	// 	.commit()
-	void 0
+export const recordMediaToImport = (jobId: string) =>
+	db.atomic()
+		.sum(['ImportJob.MediaCount', jobId], 1n)
+		.commit()
 
-export const recordMediaToImport = async (jobId: string) =>
-	// db.atomic()
-	// 	.sum(['ImportJob.MediaCount', jobId], 1n)
-	// 	.commit()
-	void 0
+export const recordMediaImported = (jobId: string) =>
+	db.atomic()
+		.sum(['ImportJob.ImportedMediaCount', jobId], 1n)
+		.sum(['ImportJob.MediaCount', jobId], 2n ** 64n - 1n)
+		.commit()
 
-export const recordMediaImported = async (jobId: string) =>
-	// db.atomic()
-	// 	.sum(['ImportJob.ImportedMediaCount', jobId], 1n)
-	// 	.sum(['ImportJob.MediaCount', jobId], -1n)
-	// 	.commit()
-	void 0
-
-export const recordMediaImportFailed = async (jobId: string) =>
-	// db.atomic()
-	// 	.sum(['ImportJob.FailedMediaCount', jobId, 'failed'], 1n)
-	// 	.sum(['ImportJob.MediaCount', jobId], -1n)
-	// 	.commit()
-	void 0
+export const recordMediaImportFailed = (jobId: string) =>
+	db.atomic()
+		.sum(['ImportJob.FailedMediaCount', jobId, 'failed'], 1n)
+		.sum(['ImportJob.MediaCount', jobId], 2n ** 64n - 1n)
+		.commit()
 
 // #endregion
