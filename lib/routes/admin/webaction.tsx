@@ -3,12 +3,20 @@
 
 import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+
+import { toScript } from '../../common/util.ts'
 
 export const get = (c: hono.Context<Env>) =>
-	c.html(
-		<Layout theme={c.var.theme} title='Web actions'>
-			<h1>Web+Action handler</h1>
-			<script src='/.denizen/public/webaction-receiver.js' type='module' />
-		</Layout>,
-	)
+	c.html(toScript(() => {
+		if (window.parent !== window) {
+			window.parent.postMessage(
+				JSON.stringify({
+					reply: new URL(
+						'/.denizen/post/new?in-reply-to={url}',
+						window.location.href,
+					).href,
+				}),
+				'*',
+			)
+		}
+	}))
