@@ -117,6 +117,22 @@ export const get = async (c: hono.Context<Env>) => {
 							</a>
 						</p>
 					))}
+					{post.bookmarkOf.map((cite) => (
+						<p class='repost-context p-repost-of h-cite'>
+							<strong class='tiny-header'>🔁 Reposted from</strong>
+							{cite.author?.map((author) => (
+								<>
+									<a
+										class='p-author h-card'
+										href={author.url}
+									>
+										{author.name}
+									</a>
+									,{' '}
+								</>
+							))}
+						</p>
+					))}
 					{post.photo.map((photo) => (
 						<figure>
 							<img class='u-photo' src={photo.url} alt={photo.alt} />

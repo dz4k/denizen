@@ -44,6 +44,7 @@ export class Entry {
 
 	inReplyTo: Citation[] = []
 	bookmarkOf: Citation[] = []
+	repostOf: Citation[] = []
 	likeOf: Citation[] = []
 
 	photo: ImageUrl[] = []
@@ -99,6 +100,9 @@ export class Entry {
 		if ('bookmark-of' in p) {
 			this.bookmarkOf = p['bookmark-of'].map((v) => Citation.fromMF2Json(v))
 		}
+		if ('repost-of' in p) {
+			this.repostOf = p['repost-of'].map((v) => Citation.fromMF2Json(v))
+		}
 		if ('like-of' in p) {
 			this.likeOf = p['like-of'].map((v) => Citation.fromMF2Json(v))
 		}
@@ -124,6 +128,9 @@ export class Entry {
 				...p['bookmark-of'].map((v) => Citation.fromMF2Json(v)),
 			)
 		}
+		if ('repost-of' in p) {
+			this.repostOf.push(...p['repost-of'].map((v) => Citation.fromMF2Json(v)))
+		}
 		if ('like-of' in p) {
 			this.likeOf.push(...p['like-of'].map((v) => Citation.fromMF2Json(v)))
 		}
@@ -144,6 +151,7 @@ export class Entry {
 				if (prop === 'audio') this.audio = []
 				if (prop === 'in-reply-to') this.inReplyTo = []
 				if (prop === 'bookmark-of') this.bookmarkOf = []
+				if (prop === 'repost-of') this.repostOf = []
 				if (prop === 'like-of') this.likeOf = []
 			}
 		} else {
@@ -177,6 +185,11 @@ export class Entry {
 				}
 				if (prop === 'bookmark-of') {
 					this.bookmarkOf = this.bookmarkOf.filter((c) =>
+						!values.includes(c.uid?.href ?? c.url[0].href)
+					)
+				}
+				if (prop === 'repost-of') {
+					this.repostOf = this.repostOf.filter((c) =>
 						!values.includes(c.uid?.href ?? c.url[0].href)
 					)
 				}
@@ -236,6 +249,9 @@ export class Entry {
 		}
 		if (form.has('bookmark-of')) {
 			props.bookmarkOf = getUrls('bookmark-of').map((v) => new Citation([v]))
+		}
+		if (form.has('repost-of')) {
+			props.repostOf = getUrls('repost-of').map((v) => new Citation([v]))
 		}
 		if (form.has('like-of')) {
 			props.likeOf = getUrls('like-of').map((v) => new Citation([v]))
