@@ -10,7 +10,7 @@ import { makeSlug } from '../../common/slug.ts'
 import { parseHashtags } from '../../common/hashtag.ts'
 import * as config from '../../config.ts'
 import { createPost, getPostByURL } from '../../db.ts'
-import * as blogPost from '../blog/post.tsx'
+import * as blogPost from './post.tsx'
 import { clientRedirect } from '../../common/util.ts'
 
 export const get = (c: hono.Context<Env>) =>
