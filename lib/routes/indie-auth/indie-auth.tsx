@@ -153,9 +153,9 @@ export const postAuthorize = async (c: hono.Context<Env>) => {
 }
 
 export const postToken = async (c: hono.Context<Env>) => {
-	const { grant_type, code, redirect_uri, client_id, code_verifier } =
-		await c.req.parseBody()
-	
+	const { grant_type, code, redirect_uri, client_id, code_verifier } = await c
+		.req.parseBody()
+
 	if (
 		grant_type !== 'authorization_code' ||
 		!code ||
@@ -186,9 +186,9 @@ export const postToken = async (c: hono.Context<Env>) => {
 }
 
 export const postAuth = async (c: hono.Context<Env>) => {
-	const { grant_type, code, redirect_uri, client_id, code_verifier } =
-		await c.req.parseBody()
-	
+	const { grant_type, code, redirect_uri, client_id, code_verifier } = await c
+		.req.parseBody()
+
 	if (
 		grant_type !== 'authorization_code' ||
 		!code ||
