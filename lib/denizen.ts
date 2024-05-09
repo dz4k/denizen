@@ -20,7 +20,8 @@ import * as posting from './routes/blog/posting.tsx'
 import * as webaction from './routes/admin/webaction.tsx'
 import * as wpAdmin from './routes/admin/wp-admin.ts'
 import * as importBlog from './routes/admin/import-blog.tsx'
-import * as indieauth from './routes/auth/indieauth.ts'
+import * as indieAuth from './routes/indie-auth/indie-auth.tsx'
+import * as indieauthCb from './routes/auth/indieauth-cb.ts'
 import * as login from './routes/auth/login.tsx'
 import * as feed from './routes/blog/feed.ts'
 import * as homepage from './routes/blog/homepage.tsx'
@@ -83,7 +84,12 @@ app
 	.get('/.denizen/login', login.get)
 	.post('/.denizen/login', login.post)
 	.post('/.denizen/logout', login.logout)
-	.get('/.denizen/indieauth-cb', indieauth.get)
+	.get('/.well-known/oauth-authorization-server', indieAuth.getMetadata)
+	.get('/.denizen/auth', indieAuth.getAuth)
+	.post('/.denizen/auth', indieAuth.postAuth)
+	.post('/.denizen/token', indieAuth.postToken)
+	.get('/.denizen/auth/orize', indieAuth.postAuthorize)
+	.get('/.denizen/indieauth-cb', indieauthCb.get)
 	.get('/.denizen/storage/:filename{.+}', storage.get)
 	.post('/.denizen/storage/:filename{.+}', requireAdmin, storage.post)
 	.post('/.denizen/storage', requireAdmin, storage.postFormdata)
