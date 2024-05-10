@@ -350,6 +350,5 @@ const issueToken = async (params: AuthCodeParams) => {
 export const getTokenData = async (token: string) => {
 	const params = await db.get(['IndieAuth tokens', token])
 	if (!params.versionstamp) return null
-	await db.delete(['IndieAuth tokens', token])
 	return params.value as AuthCodeParams
 }
