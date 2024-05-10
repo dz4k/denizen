@@ -88,7 +88,7 @@ app
 	.get('/.denizen/auth', indieAuth.getAuth)
 	.post('/.denizen/auth', indieAuth.postAuth)
 	.post('/.denizen/token', indieAuth.postToken)
-	.get('/.denizen/auth/orize', indieAuth.postAuthorize)
+	.post('/.denizen/auth/orize', indieAuth.postAuthorize)
 	.get('/.denizen/indieauth-cb', indieauthCb.get)
 	.get('/.denizen/storage/:filename{.+}', storage.get)
 	.post('/.denizen/storage/:filename{.+}', requireAdmin, storage.post)
