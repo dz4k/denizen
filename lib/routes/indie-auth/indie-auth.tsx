@@ -137,7 +137,7 @@ export const postAuthorize = async (c: hono.Context<Env>) => {
 		}
 	}
 
-	const authCode = await issueAuthCode(c, {
+	const authCode = await issueAuthCode({
 		clientId: formdata.get('client_id') as string,
 		redirectUri: formdata.get('redirect_uri') as string,
 		scopes: formdata.getAll('scopes') as string[],
@@ -164,7 +164,7 @@ export const postToken = async (c: hono.Context<Env>) => {
 		!code_verifier
 	) return c.json({ error: 'invalid_request' }, 400)
 
-	const authCode = await getAuthCode(c, String(code))
+	const authCode = await getAuthCode(String(code))
 
 	if (
 		!authCode ||
@@ -174,7 +174,7 @@ export const postToken = async (c: hono.Context<Env>) => {
 		!verifyPKCE(authCode.codeChallenge, String(code_verifier))
 	) return c.json({ error: 'invalid_grant' }, 400)
 
-	const token = await issueToken(c, authCode)
+	const token = await issueToken(authCode)
 
 	return c.json({
 		access_token: token,
@@ -197,7 +197,7 @@ export const postAuth = async (c: hono.Context<Env>) => {
 		!code_verifier
 	) return c.json({ error: 'invalid_request' }, 400)
 
-	const authCode = await getAuthCode(c, String(code))
+	const authCode = await getAuthCode(String(code))
 
 	if (
 		!authCode ||
@@ -312,7 +312,7 @@ type AuthCodeParams = {
 	codeChallenge: string
 }
 
-const issueAuthCode = async (c: hono.Context<Env>, params: AuthCodeParams) => {
+const issueAuthCode = async (params: AuthCodeParams) => {
 	const code = await generateCode()
 	await db.set(['IndieAuth codes', code], params, {
 		expireIn: 10 * 60 * 1000, // 10 minutes
@@ -320,7 +320,7 @@ const issueAuthCode = async (c: hono.Context<Env>, params: AuthCodeParams) => {
 	return code
 }
 
-const getAuthCode = async (c: hono.Context<Env>, code: string) => {
+const getAuthCode = async (code: string) => {
 	const params = await db.get(['IndieAuth codes', code])
 	if (!params.versionstamp) return null
 	await db.delete(['IndieAuth codes', code])
@@ -339,10 +339,17 @@ const verifyPKCE = (codeChallenge: string, codeVerifier: string) => {
 const generateCode = (): string =>
 	encodeBase64Url(crypto.getRandomValues(new Uint8Array(32)))
 
-const issueToken = async (c: hono.Context<Env>, params: AuthCodeParams) => {
+const issueToken = async (params: AuthCodeParams) => {
 	const token = await generateCode()
 	await db.set(['IndieAuth tokens', token], params, {
 		expireIn: 10 * 60 * 1000, // 10 minutes
 	})
 	return token
+}
+
+export const getTokenData = async (token: string) => {
+	const params = await db.get(['IndieAuth tokens', token])
+	if (!params.versionstamp) return null
+	await db.delete(['IndieAuth tokens', token])
+	return params.value as AuthCodeParams
 }

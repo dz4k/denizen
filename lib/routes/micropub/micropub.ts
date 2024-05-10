@@ -14,6 +14,7 @@ import {
 import { Entry } from '../../model/entry.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { makeSlug } from '../../common/slug.ts'
+import { getTokenData } from '../indie-auth/indie-auth.tsx'
 
 /*
     A conforming Micropub server:
@@ -53,18 +54,10 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	} else {
 		if (c.req.header('Authorization')) return badRequest(c)
 	}
-	const auth = await fetch('https://tokens.indieauth.com/token', {
-		method: 'GET',
-		headers: {
-			'Accept': 'application/json',
-			'Authorization': `Bearer ${token}`,
-		},
-	}).then((res) => res.json())
-	const { me, scope } = auth
+	const auth = await getTokenData(token as string)
+	if (!auth) return forbidden(c)
 
-	if (me !== config.baseUrl.href) return forbidden(c)
-
-	c.set('authScopes', (scope as string).split(/\s+/g))
+	c.set('authScopes', auth.scopes)
 
 	return next()
 }
