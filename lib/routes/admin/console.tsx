@@ -35,7 +35,7 @@ export const updateProfile = async (c: hono.Context<Env>) => {
 		await c.var.storage.write(
 			filename,
 			photo,
-			'public, max-age=31536000, immutable',
+			{ cacheControl: 'public, max-age=31536000, immutable' },
 		)
 		user.profile.photo = [{
 			url: new URL(`/.denizen/storage/${filename}`, config.baseUrl),
@@ -83,7 +83,7 @@ export const postBadge = async (c: hono.Context<Env>) => {
 	await c.var.storage.write(
 		filename,
 		photo as File,
-		'public, max-age=31536000, immutable',
+		{ cacheControl: 'public, max-age=31536000, immutable' },
 	)
 	const photoUrl = new URL(`/.denizen/storage/${filename}`, config.baseUrl)
 

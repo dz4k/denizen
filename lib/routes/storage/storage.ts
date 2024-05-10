@@ -19,7 +19,7 @@ export const post = async (c: hono.Context<Env>) => {
 	const filename = c.req.param('filename')
 	const cacheControl = c.req.query('cache-control') ?? 'no-cache'
 
-	await c.var.storage.write(filename, await c.req.blob(), cacheControl)
+	await c.var.storage.write(filename, await c.req.blob(), { cacheControl })
 	return c.redirect('/.denizen/files')
 }
 
@@ -32,7 +32,7 @@ export const postFormdata = async (c: hono.Context<Env>) => {
 
 	const file = formdata.get('file')
 	if (!file || !(file instanceof File)) return c.body('No file!', 400)
-	await c.var.storage.write(file.name, file, cacheControl)
+	await c.var.storage.write(file.name, file, { cacheControl })
 	return c.redirect('/.denizen/files')
 }
 
