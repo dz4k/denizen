@@ -85,6 +85,7 @@ export const getAuth = async (c: hono.Context<Env>) => {
 			redirect_uri={redirect_uri}
 			code_challenge={code_challenge}
 			state={state}
+			scope={scope}
 			authorized={authorized}
 		/>,
 	)
