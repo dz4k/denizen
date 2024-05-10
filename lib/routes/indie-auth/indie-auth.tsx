@@ -247,10 +247,12 @@ const AuthForm = ({
 						<fieldset>
 							<legend>Requested scopes</legend>
 							{scope.split(/\s+/g).map((s) => (
-								<label>
-									<input type='checkbox' name='scopes' value={s} checked />
-									{scope}
-								</label>
+								<p>
+									<label>
+										<input type='checkbox' name='scopes' value={s} checked />
+										{s}
+									</label>
+								</p>
 							))}
 						</fieldset>
 					</>
