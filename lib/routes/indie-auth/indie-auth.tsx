@@ -92,31 +92,32 @@ export const getAuth = async (c: hono.Context<Env>) => {
 }
 
 export const postAuthorize = async (c: hono.Context<Env>) => {
-	const formdata = await c.req.parseBody()
+	const formdata = await c.req.formData()
 
 	// Validate request
 	if (
-		typeof formdata.response !== 'string' ||
-		typeof formdata.client_id !== 'string' ||
-		typeof formdata.redirect_uri !== 'string' ||
-		typeof formdata.code_challenge !== 'string' ||
-		typeof formdata.state !== 'string'
+		typeof formdata.get('response') !== 'string' ||
+		typeof formdata.get('client_id') !== 'string' ||
+		typeof formdata.get('redirect_uri') !== 'string' ||
+		typeof formdata.get('code_challenge') !== 'string' ||
+		typeof formdata.get('state') !== 'string' ||
+		typeof formdata.getAll('scopes').some((s) => typeof s !== 'string')
 	) {
-		const redirect = new URL(String(formdata.redirect_uri))
+		const redirect = new URL(String(formdata.get('redirect_uri')))
 		redirect.searchParams.set('error', 'invalid_request')
-		redirect.searchParams.set('state', String(formdata.state))
+		redirect.searchParams.set('state', String(formdata.get('state')))
 	}
 
-	if (formdata.response !== 'allow') {
-		const redirect = new URL(String(formdata.redirect_uri))
+	if (formdata.get('response') !== 'allow') {
+		const redirect = new URL(String(formdata.get('redirect_uri')))
 		redirect.searchParams.set('error', 'access_denied')
-		redirect.searchParams.set('state', String(formdata.state))
+		redirect.searchParams.set('state', String(formdata.get('state')))
 		return c.redirect(redirect.href, 302)
 	}
 
 	let authorized = isAdmin(c)
 	if (!authorized) {
-		const user = await login('admin', String(formdata.password))
+		const user = await login('admin', String(formdata.get('password')))
 		if (user === null) {
 			return c.html(
 				<Layout
@@ -137,17 +138,15 @@ export const postAuthorize = async (c: hono.Context<Env>) => {
 	}
 
 	const authCode = await issueAuthCode(c, {
-		clientId: String(formdata.client_id),
-		redirectUri: String(formdata.redirect_uri),
-		scopes: Array.isArray(formdata.scopes)
-			? formdata.scopes
-			: [String(formdata.scopes)],
-		codeChallenge: String(formdata.code_challenge),
+		clientId: formdata.get('client_id') as string,
+		redirectUri: formdata.get('redirect_uri') as string,
+		scopes: formdata.getAll('scopes') as string[],
+		codeChallenge: formdata.get('code_challenge') as string,
 	})
 
-	const redirect = new URL(String(formdata.redirect_uri))
+	const redirect = new URL(formdata.get('redirect_uri') as string)
 	redirect.searchParams.set('code', authCode)
-	redirect.searchParams.set('state', String(formdata.state))
+	redirect.searchParams.set('state', formdata.get('state') as string)
 	redirect.searchParams.set('iss', config.baseUrl.href)
 
 	return c.redirect(redirect.href, 302)
