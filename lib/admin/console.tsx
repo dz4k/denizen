@@ -1,6 +1,5 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
-import { Layout } from '../layout.ts'
 
 import * as config from '../config.ts'
 import { User } from '../model/user.ts'
@@ -110,7 +109,7 @@ export const deleteBadge = async (c: hono.Context<Env>) => {
 
 const BadgeItem = ({ badge }: { badge: DenizenBadge }) => (
 	<li id={`badge-item-${badge.iid}`}>
-		<img src={badge.photo?.url} alt={badge.photo?.alt} />
+		<img src={badge.photo?.url.href} alt={badge.photo?.alt} />
 		<form
 			rel='swap-replaceWith'
 			action={`/.denizen/profile/badge/${badge.iid}`}

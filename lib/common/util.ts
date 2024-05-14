@@ -1,5 +1,4 @@
 import { crypto } from 'https://deno.land/std@0.204.0/crypto/mod.ts'
-import { unknown } from '../../deps/zod.ts'
 
 export const asyncIteratorToArray = async <T>(
 	it: AsyncIterable<T>,

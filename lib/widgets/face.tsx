@@ -4,9 +4,9 @@ import { stringToRandNumber } from '../common/util.ts'
 import { Card } from '../model/card.ts'
 
 export const Face = ({ card, link }: { card: Card; link?: string | URL }) => (
-	<a href={link} rel='noopener noreferrer'>
+	<a href={link?.toString()} rel='noopener noreferrer'>
 		<img
-			src={card.photo[0]?.url ?? makeProfileSvg(card)}
+			src={card.photo[0]?.url.href ?? makeProfileSvg(card)}
 			alt={card.name}
 			title={card.name}
 			class='face'

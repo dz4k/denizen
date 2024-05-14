@@ -1,6 +1,5 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
-import { Layout } from '../layout.ts'
 
 import { Entry } from '../model/entry.ts'
 import { makeSlug } from '../common/slug.ts'

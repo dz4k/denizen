@@ -1,5 +1,4 @@
 import * as hono from '../../deps/hono.ts'
-import { Layout } from '../layout.ts'
 
 import * as config from '../config.ts'
 

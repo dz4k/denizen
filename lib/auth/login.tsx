@@ -3,7 +3,7 @@ import type { Env } from '../denizen.ts'
 
 import * as bcrypt from '../../deps/bcrypt.ts'
 
-import { getConfig, getUser } from '../db.ts'
+import { getUser } from '../db.ts'
 import { User } from '../model/user.ts'
 import { LoginForm } from './_login-form.tsx'
 

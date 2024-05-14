@@ -32,6 +32,7 @@ import * as micropub from './micropub/micropub.ts'
 import * as webmentionRecv from './webmention/recv.ts'
 import { StorageBackend } from './storage/storage-interface.ts'
 import * as fsBackend from './storage/fs-backend.ts'
+
 import { Layout } from './layout.ts'
 
 listen()
@@ -55,6 +56,7 @@ app.use('*', async (c, next) => (c.set('theme', await config.theme()), next()))
 app.use('*', async (c, next) => (c.set('lang', await config.lang()), next()))
 
 app
+	// @ts-expect-error weirdness around hono-sessions types
 	.use(
 		'*',
 		sessionMiddleware({

@@ -1,6 +1,5 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
-import { Layout } from '../layout.ts'
 
 import * as config from '../config.ts'
 import { getPosts, getUser } from '../db.ts'
@@ -24,7 +23,7 @@ export const get = async (c: hono.Context<Env>) => {
 			<header class='h-card' lang={config.lang()}>
 				{/* TODO: used this makeprofilesvg in a few places now, factor out to Card. */}
 				<img
-					src={siteOwner.profile.photo[0]?.url ??
+					src={siteOwner.profile.photo[0]?.url.href ??
 						makeProfileSvg(siteOwner.profile)}
 					alt={siteOwner.profile.photo[0]?.alt}
 					class='big face'
@@ -62,7 +61,7 @@ export const get = async (c: hono.Context<Env>) => {
 							{badges.map((badge) => {
 								const img = (
 									<img
-										src={badge.photo?.url}
+										src={badge.photo?.url.href}
 										alt={badge.photo?.alt}
 										class='badge'
 									/>
@@ -118,7 +117,7 @@ export const get = async (c: hono.Context<Env>) => {
 							</h2>
 							{post.photo.map((photo) => (
 								<figure>
-									<img class='u-photo' src={photo.url} alt={photo.alt} />
+									<img class='u-photo' src={photo.url.href} alt={photo.alt} />
 								</figure>
 							))}
 							{post.summary
@@ -130,10 +129,10 @@ export const get = async (c: hono.Context<Env>) => {
 								)
 								: post.name
 								? ''
-								: (
+								: post.content && (
 									<div
 										class='e-content'
-										dangerouslySetInnerHTML={{ __html: post.content?.html }}
+										dangerouslySetInnerHTML={{ __html: post.content.html }}
 									/>
 								)}
 							<p class='<small>'>
