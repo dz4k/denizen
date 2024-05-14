@@ -1,9 +1,9 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../deps/hono.ts'
-import type { Env } from '../denizen.ts'
-import { Layout } from '../layout.ts'
+import * as hono from '../deps/hono.ts'
+import type { Env } from './denizen.ts'
+import { Layout } from './layout.ts'
 
 export const get = (c: hono.Context<Env>) => {
 	if (/application\/(.*\+)?json/i.test(c.req.header('Expect')!)) {

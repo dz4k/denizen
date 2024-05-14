@@ -1,10 +1,10 @@
 import { assert } from 'https://deno.land/std@0.203.0/assert/assert.ts'
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
 
-import * as config from '../../config.ts'
-import { enqueue } from '../../queue.ts'
+import * as config from '../config.ts'
+import { enqueue } from '../queue.ts'
 
 const supportedSchemes = new Set(['http:', 'https:'])
 

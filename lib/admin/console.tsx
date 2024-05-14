@@ -1,16 +1,16 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import { Layout } from '../layout.ts'
 
-import * as config from '../../config.ts'
-import { User } from '../../model/user.ts'
-import { getUser, setConfig, updateUser } from '../../db.ts'
+import * as config from '../config.ts'
+import { User } from '../model/user.ts'
+import { getUser, setConfig, updateUser } from '../db.ts'
 import { ImportForm } from './import-blog.tsx'
-import { Face } from '../../widgets/face.tsx'
-import { DenizenBadge } from '../../model/card.ts'
+import { Face } from '../widgets/face.tsx'
+import { DenizenBadge } from '../model/card.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const user = await getUser(c.var.session.get('user') as string)

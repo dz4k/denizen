@@ -1,5 +1,5 @@
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const filename = c.req.param('filename')

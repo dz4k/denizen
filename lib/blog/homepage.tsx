@@ -1,14 +1,14 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import { Layout } from '../layout.ts'
 
-import * as config from '../../config.ts'
-import { getPosts, getUser } from '../../db.ts'
+import * as config from '../config.ts'
+import { getPosts, getUser } from '../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
-import { makeProfileSvg } from '../../widgets/face.tsx'
+import { makeProfileSvg } from '../widgets/face.tsx'
 
 export const get = async (c: hono.Context<Env>) => {
 	const { cursor } = c.req.query()

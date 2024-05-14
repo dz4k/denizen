@@ -1,21 +1,21 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import { Layout } from '../layout.ts'
 
-import * as bcrypt from '../../../deps/bcrypt.ts'
+import * as bcrypt from '../../deps/bcrypt.ts'
 
 import {
 	completeInitialSetup,
 	createUser,
 	initialSetupDone,
 	setConfig,
-} from '../../db.ts'
-import { User } from '../../model/user.ts'
-import { Card } from '../../model/card.ts'
-import { isValidUrl } from '../../common/util.ts'
+} from '../db.ts'
+import { User } from '../model/user.ts'
+import { Card } from '../model/card.ts'
+import { isValidUrl } from '../common/util.ts'
 
 const signup = async (username: string, pw: string, card: Card) => {
 	const salt = await bcrypt.genSaltSync()

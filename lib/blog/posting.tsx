@@ -1,17 +1,17 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import { Layout } from '../layout.ts'
 
-import { Entry } from '../../model/entry.ts'
-import { makeSlug } from '../../common/slug.ts'
-import { parseHashtags } from '../../common/hashtag.ts'
-import * as config from '../../config.ts'
-import { createPost, getPostByURL } from '../../db.ts'
+import { Entry } from '../model/entry.ts'
+import { makeSlug } from '../common/slug.ts'
+import { parseHashtags } from '../common/hashtag.ts'
+import * as config from '../config.ts'
+import { createPost, getPostByURL } from '../db.ts'
 import * as blogPost from './post.tsx'
-import { clientRedirect } from '../../common/util.ts'
+import { clientRedirect } from '../common/util.ts'
 
 export const get = (c: hono.Context<Env>) =>
 	c.html(

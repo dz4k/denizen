@@ -1,10 +1,10 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import { Layout } from '../layout.ts'
 
-import * as config from '../../config.ts'
+import * as config from '../config.ts'
 
 export const LoginForm = (p: { error?: string; theme: string }) => (
 	<Layout title='Login -- Denizen' theme={p.theme}>

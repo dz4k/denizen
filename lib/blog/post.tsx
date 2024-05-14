@@ -1,22 +1,22 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import { Layout } from '../layout.ts'
 
-import * as config from '../../config.ts'
+import * as config from '../config.ts'
 import {
 	deletePost,
 	getPostByURL,
 	getUser,
 	getWebmentions,
 	updatePost,
-} from '../../db.ts'
+} from '../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
-import { Entry } from '../../model/entry.ts'
-import { Face, makeProfileSvg } from '../../widgets/face.tsx'
-import { clientRedirect } from '../../common/util.ts'
+import { Entry } from '../model/entry.ts'
+import { Face, makeProfileSvg } from '../widgets/face.tsx'
+import { clientRedirect } from '../common/util.ts'
 
 const accessPost = (c: hono.Context<Env>) =>
 	getPostByURL(new URL(c.req.path, config.baseUrl))

@@ -1,12 +1,12 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import { Layout } from '../layout.ts'
 
-import { db, saveBlogImportJob } from '../../db.ts'
-import { enqueue } from '../../queue.ts'
+import { db, saveBlogImportJob } from '../db.ts'
+import { enqueue } from '../queue.ts'
 
 export const get = (c: hono.Context<Env>) => {
 	return c.html(<ImportForm />)

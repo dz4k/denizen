@@ -1,13 +1,13 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
 
-import * as bcrypt from '../../../deps/bcrypt.ts'
+import * as bcrypt from '../../deps/bcrypt.ts'
 
-import { getConfig, getUser } from '../../db.ts'
-import { User } from '../../model/user.ts'
+import { getConfig, getUser } from '../db.ts'
+import { User } from '../model/user.ts'
 import { LoginForm } from './_login-form.tsx'
 
 export const login = async (

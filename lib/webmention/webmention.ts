@@ -1,16 +1,16 @@
-import { DOMParser, Element } from '../deps/dom.ts'
-import { parseLinkHeader } from '../deps/parse-link-header.ts'
+import { DOMParser, Element } from '../../deps/dom.ts'
+import { parseLinkHeader } from '../../deps/parse-link-header.ts'
 
-import { deleteWebmention, getPostByURL, saveWebmention } from './db.ts'
-import { Entry } from './model/entry.ts'
-import { Webmention, WMResponseType } from './model/webmention.ts'
-import { Citation } from './model/citation.ts'
-import { parseMicroformats } from '../deps/microformats-parser.ts'
-import { MF2Object } from './common/mf2.ts'
-import { isValidUrl } from './common/util.ts'
-import { enqueue } from './queue.ts'
-import * as config from './config.ts'
-import { app } from './denizen.ts'
+import { deleteWebmention, getPostByURL, saveWebmention } from '../db.ts'
+import { Entry } from '../model/entry.ts'
+import { Webmention, WMResponseType } from '../model/webmention.ts'
+import { Citation } from '../model/citation.ts'
+import { parseMicroformats } from '../../deps/microformats-parser.ts'
+import { MF2Object } from '../common/mf2.ts'
+import { isValidUrl } from '../common/util.ts'
+import { enqueue } from '../queue.ts'
+import * as config from '../config.ts'
+import { app } from '../denizen.ts'
 
 export const receiveWebmention = async (source: string, target: string) => {
 	const targetPost = await getPostByURL(new URL(target))

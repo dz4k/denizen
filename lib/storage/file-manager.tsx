@@ -1,12 +1,12 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import { Layout } from '../layout.ts'
 
-import { asyncIteratorToArray } from '../../common/util.ts'
-import * as storage from '../../storage/fs-backend.ts'
+import { asyncIteratorToArray } from '../common/util.ts'
+import * as storage from './fs-backend.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const files = await asyncIteratorToArray(c.var.storage.list())

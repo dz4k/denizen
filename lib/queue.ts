@@ -1,5 +1,5 @@
 import { MF2Object } from './common/mf2.ts'
-import { db, getPost } from './db.ts'
+import { db } from './db.ts'
 import {
 	BlogImportJob,
 	importBlog,
@@ -11,7 +11,7 @@ import {
 	receiveWebmention,
 	sendWebmention,
 	sendWebmentions,
-} from './webmention.ts'
+} from './webmention/webmention.ts'
 
 export type QueueMessage = {
 	type: 'send_webmentions'

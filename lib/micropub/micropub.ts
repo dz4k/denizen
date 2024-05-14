@@ -1,20 +1,20 @@
 import * as path from 'https://deno.land/std@0.203.0/path/extname.ts'
 import * as mediaType from 'https://deno.land/std@0.203.0/media_types/mod.ts'
 
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
-import * as config from '../../config.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
+import * as config from '../config.ts'
 import {
 	createPost,
 	deletePost,
 	getPostByURL,
 	undeletePost,
 	updatePost,
-} from '../../db.ts'
-import { Entry } from '../../model/entry.ts'
+} from '../db.ts'
+import { Entry } from '../model/entry.ts'
 import { isAdmin } from '../admin/middleware.ts'
-import { makeSlug } from '../../common/slug.ts'
-import { getTokenData } from '../indie-auth/indie-auth.tsx'
+import { makeSlug } from '../common/slug.ts'
+import { getTokenData } from '../auth/indie-auth/indie-auth.tsx'
 
 /*
     A conforming Micropub server:

@@ -1,7 +1,7 @@
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
 
-import * as config from '../../config.ts'
+import * as config from '../config.ts'
 import { LoginForm } from './_login-form.tsx'
 
 export const get = async (c: hono.Context<Env>) => {

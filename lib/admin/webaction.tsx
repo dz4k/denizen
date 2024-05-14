@@ -1,10 +1,10 @@
 /** @jsx hono.jsx */
 /** @jsxFrag hono.Fragment */
 
-import type * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
+import type * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
 
-import { toScript } from '../../common/util.ts'
+import { toScript } from '../common/util.ts'
 
 export const get = (c: hono.Context<Env>) =>
 	c.html(toScript(() => {

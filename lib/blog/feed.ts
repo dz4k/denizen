@@ -1,10 +1,10 @@
-import * as hono from '../../../deps/hono.ts'
-import type { Env } from '../../denizen.ts'
+import * as hono from '../../deps/hono.ts'
+import type { Env } from '../denizen.ts'
 
-import { stringify } from '../../../deps/xml.ts'
+import { stringify } from '../../deps/xml.ts'
 
-import { getPosts, getUser, lastMod } from '../../db.ts'
-import * as config from '../../config.ts'
+import { getPosts, getUser, lastMod } from '../db.ts'
+import * as config from '../config.ts'
 
 export const json = async (c: hono.Context<Env>) => {
 	const lastModified = await lastMod()
