@@ -18,9 +18,6 @@ export const get = async (c: hono.Context<Env>) => {
 		sesh.set('user', 'admin')
 		return c.redirect('/')
 	} else {
-		return c.html(
-			LoginForm({ error: 'IndieAuth login failed', theme: c.var.theme }),
-			401,
-		)
+		return c.render(<LoginForm error='IndieAuth login failed' />)
 	}
 }

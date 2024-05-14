@@ -14,8 +14,7 @@
 		"reset-local": "rm -rf dev.sqlite* _blobs"
 	},
 	"compilerOptions": {
-		"jsx": "react-jsx",
-		"jsxFactory": "hono.h",
+		"jsxFactory": "hono.jsx",
 		"jsxFragmentFactory": "hono.Fragment"
 	},
 	"fmt": {

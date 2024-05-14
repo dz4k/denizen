@@ -11,7 +11,7 @@ import { DenizenBadge } from '../model/card.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const user = await getUser(c.var.session.get('user') as string)
-	return c.html(<Console user={user} theme={await config.theme()} />)
+	return c.render(<Console user={user} theme={await config.theme()} />)
 }
 
 export const updateProfile = async (c: hono.Context<Env>) => {
@@ -124,162 +124,166 @@ const BadgeItem = ({ badge }: { badge: DenizenBadge }) => (
 	</li>
 )
 
-const Console = ({ user, theme }: { user: User; theme: string }) => (
-	<Layout title='Console' theme={theme}>
-		<script type='module' src='/.denizen/public/list-input.js' />
-		<script type='module' src='/.denizen/public/textarea-autoexpand.js' />
-		<header>
-			<h1>Console</h1>
-		</header>
-		<main>
-			<section>
-				<h2>Profile</h2>
-				<form
-					action='/.denizen/profile'
-					method='POST'
-					enctype='multipart/form-data'
-					class='grid'
-					style='grid: auto-flow / auto 1fr'
-				>
-					<p class='grid-row'>
-						<label for='profile.photo'>Photo</label>
-						<span>
-							<Face card={user.profile} link={undefined} />
-							<input type='file' id='profile.photo' name='photo' />
-						</span>
-					</p>
-					<p class='grid-row'>
-						<label for='profile.name'>Name</label>
-						<input
-							type='text'
-							id='profile.name'
-							name='name'
-							value={user.profile.name}
-						/>
-					</p>
-					<p class='grid-row'>
-						<label for='profile.bio'>Bio</label>
-						<textarea name='note' id='profile.bio' data-autoexpand>
-							{user.profile.note}
-						</textarea>
-					</p>
-					<p class='grid-row'>
-						<label for='profile.socials'>Social links</label>
-						<list-input
-							id='profile.socials'
-							name='me'
-							fields='key=text;Link text&value=url;URL'
-							value={JSON.stringify(Object.entries(user.profile.me))}
-						/>
-					</p>
-					<p class='grid-row'>
-						<span />
-						<span>
-							<button class='big'>Save</button>
-						</span>
-					</p>
-				</form>
-			</section>
-			<section>
-				<h2>Badges</h2>
-				<ul id='badge-list'>
-					{user.profile.denizenBadge.map((badge) => (
-						<BadgeItem
-							badge={badge}
-						/>
-					))}
-				</ul>
-				<button popovertarget='add-badge-dialog'>Add</button>
-				<dialog popover id='add-badge-dialog'>
+const Console = ({ user, theme }: { user: User; theme: string }) => {
+	const c = hono.useRequestContext<Env>()
+	c.set('title', 'Console')
+	return (
+		<>
+			<script type='module' src='/.denizen/public/list-input.js' />
+			<script type='module' src='/.denizen/public/textarea-autoexpand.js' />
+			<header>
+				<h1>Console</h1>
+			</header>
+			<main>
+				<section>
+					<h2>Profile</h2>
 					<form
-						rel='swap-append'
-						action='/.denizen/profile/badge'
+						action='/.denizen/profile'
 						method='POST'
 						enctype='multipart/form-data'
-						target='#badge-list'
 						class='grid'
 						style='grid: auto-flow / auto 1fr'
-						aria-labelledby='add-badge-dialog-title'
 					>
-						<h1 id='add-badge-dialog-title'>Add a badge</h1>
 						<p class='grid-row'>
-							<label for='add-badge.photo'>Image</label>
-							<input type='file' name='photo' id='add-badge.photo' />
+							<label for='profile.photo'>Photo</label>
+							<span>
+								<Face card={user.profile} link={undefined} />
+								<input type='file' id='profile.photo' name='photo' />
+							</span>
 						</p>
 						<p class='grid-row'>
-							<label for='add-badge.photo.alt'>Alt text</label>
-							<input type='text' name='photo.alt' id='add-badge.photo.alt' />
+							<label for='profile.name'>Name</label>
+							<input
+								type='text'
+								id='profile.name'
+								name='name'
+								value={user.profile.name}
+							/>
 						</p>
 						<p class='grid-row'>
-							<label for='add-badge.url'>Link</label>
-							<input type='url' name='photo' id='add-badge.url' />
+							<label for='profile.bio'>Bio</label>
+							<textarea name='note' id='profile.bio' data-autoexpand>
+								{user.profile.note}
+							</textarea>
 						</p>
-						<button onclick='this.closest("dialog").close()'>Add</button>
+						<p class='grid-row'>
+							<label for='profile.socials'>Social links</label>
+							<list-input
+								id='profile.socials'
+								name='me'
+								fields='key=text;Link text&value=url;URL'
+								value={JSON.stringify(Object.entries(user.profile.me))}
+							/>
+						</p>
+						<p class='grid-row'>
+							<span />
+							<span>
+								<button class='big'>Save</button>
+							</span>
+						</p>
 					</form>
-				</dialog>
-			</section>
-			<section>
-				<h2>Site</h2>
-				<form
-					action='/.denizen/site-settings'
-					method='POST'
-					class='grid'
-					style='grid: auto-flow / auto 1fr'
-				>
-					<p class='grid-row'>
-						<label for='edit-site-url'>Site URL</label>
-						<input
-							type='url'
-							name='site-url'
-							id='edit-site-url'
-							value={config.baseUrl}
-						/>
-					</p>
-					<p class='grid-row'>
-						<label for='edit-lang'>Language</label>
-						{/* TODO: actual language picker */}
-						<input
-							type='text'
-							name='lang'
-							id='edit-lang'
-							value={config.lang()}
-						/>
-					</p>
-					<p class='grid-row'>
-						<span />
-						<span>
-							<button class='big'>Save</button>
-						</span>
-					</p>
-				</form>
-			</section>
-			<section>
-				<h2>Theme</h2>
-				<form
-					action='/.denizen/theme-settings'
-					method='POST'
-					class='grid'
-					style='grid: auto-flow / auto 1fr'
-				>
-					<p class='grid-row'>
-						<label for='edit-theme'>Theme</label>
-						<select name='theme' id='edit-theme'>
-							{Object.entries(config.themes).map(([id, themeData]) => (
-								<option value={id} selected={theme === id}>
-									{themeData.name}
-								</option>
-							))}
-						</select>
-					</p>
-					<p class='grid-row'>
-						<span />
-						<span>
-							<button class='big'>Save</button>
-						</span>
-					</p>
-				</form>
-			</section>
-			<ImportForm />
-		</main>
-	</Layout>
-)
+				</section>
+				<section>
+					<h2>Badges</h2>
+					<ul id='badge-list'>
+						{user.profile.denizenBadge.map((badge) => (
+							<BadgeItem
+								badge={badge}
+							/>
+						))}
+					</ul>
+					<button popovertarget='add-badge-dialog'>Add</button>
+					<dialog popover id='add-badge-dialog'>
+						<form
+							rel='swap-append'
+							action='/.denizen/profile/badge'
+							method='POST'
+							enctype='multipart/form-data'
+							target='#badge-list'
+							class='grid'
+							style='grid: auto-flow / auto 1fr'
+							aria-labelledby='add-badge-dialog-title'
+						>
+							<h1 id='add-badge-dialog-title'>Add a badge</h1>
+							<p class='grid-row'>
+								<label for='add-badge.photo'>Image</label>
+								<input type='file' name='photo' id='add-badge.photo' />
+							</p>
+							<p class='grid-row'>
+								<label for='add-badge.photo.alt'>Alt text</label>
+								<input type='text' name='photo.alt' id='add-badge.photo.alt' />
+							</p>
+							<p class='grid-row'>
+								<label for='add-badge.url'>Link</label>
+								<input type='url' name='photo' id='add-badge.url' />
+							</p>
+							<button onclick='this.closest("dialog").close()'>Add</button>
+						</form>
+					</dialog>
+				</section>
+				<section>
+					<h2>Site</h2>
+					<form
+						action='/.denizen/site-settings'
+						method='POST'
+						class='grid'
+						style='grid: auto-flow / auto 1fr'
+					>
+						<p class='grid-row'>
+							<label for='edit-site-url'>Site URL</label>
+							<input
+								type='url'
+								name='site-url'
+								id='edit-site-url'
+								value={config.baseUrl.href}
+							/>
+						</p>
+						<p class='grid-row'>
+							<label for='edit-lang'>Language</label>
+							{/* TODO: actual language picker */}
+							<input
+								type='text'
+								name='lang'
+								id='edit-lang'
+								value={config.lang()}
+							/>
+						</p>
+						<p class='grid-row'>
+							<span />
+							<span>
+								<button class='big'>Save</button>
+							</span>
+						</p>
+					</form>
+				</section>
+				<section>
+					<h2>Theme</h2>
+					<form
+						action='/.denizen/theme-settings'
+						method='POST'
+						class='grid'
+						style='grid: auto-flow / auto 1fr'
+					>
+						<p class='grid-row'>
+							<label for='edit-theme'>Theme</label>
+							<select name='theme' id='edit-theme'>
+								{Object.entries(config.themes).map(([id, themeData]) => (
+									<option value={id} selected={theme === id}>
+										{themeData.name}
+									</option>
+								))}
+							</select>
+						</p>
+						<p class='grid-row'>
+							<span />
+							<span>
+								<button class='big'>Save</button>
+							</span>
+						</p>
+					</form>
+				</section>
+				<ImportForm />
+			</main>
+		</>
+	)
+}

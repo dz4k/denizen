@@ -31,12 +31,10 @@ export const getAuth = async (c: hono.Context<Env>) => {
 		state,
 	} = c.req.query()
 
-	const invalidRequest = () =>
-		c.html(
-			<Layout
-				title='Invalid request'
-				theme={c.var.theme}
-			>
+	const invalidRequest = () => {
+		c.set('title', 'Invalid request')
+		return c.render(
+			<>
 				<h1>Invalid request</h1>
 				<p>
 					The app at {client_id}{' '}
@@ -44,8 +42,9 @@ export const getAuth = async (c: hono.Context<Env>) => {
 					might be a bug in their app, or in Denizen, or an attempt to hack your
 					site (it's probably not, but if it is, it failed)
 				</p>
-			</Layout>,
+			</>,
 		)
+	}
 
 	if (
 		response_type !== 'code' ||
@@ -74,9 +73,8 @@ export const getAuth = async (c: hono.Context<Env>) => {
 
 	const authorized = isAdmin(c)
 
-	return c.html(
+	return c.render(
 		<AuthForm
-			context={c}
 			clientInfo={clientInfo}
 			client_id={client_id}
 			redirect_uri={redirect_uri}
@@ -116,17 +114,15 @@ export const postAuthorize = async (c: hono.Context<Env>) => {
 	if (!authorized) {
 		const user = await login('admin', String(formdata.get('password')))
 		if (user === null) {
-			return c.html(
-				<Layout
-					title='Invalid password'
-					theme={c.var.theme}
-				>
+			c.set('title', 'Invalid password')
+			c.status(401)
+			return c.render(
+				<>
 					<h1>Invalid password</h1>
 					<p>
 						The password you entered is incorrect. Please try again.
 					</p>
-				</Layout>,
-				401,
+				</>,
 			)
 		} else {
 			c.var.session.set('user', user)
@@ -207,7 +203,6 @@ export const postAuth = async (c: hono.Context<Env>) => {
 }
 
 type AuthFormProps = {
-	context: hono.Context<Env>
 	clientInfo: ClientInfo
 	client_id: string
 	redirect_uri: string
@@ -218,7 +213,6 @@ type AuthFormProps = {
 }
 
 const AuthForm = ({
-	context: c,
 	clientInfo,
 	client_id,
 	redirect_uri,
@@ -226,11 +220,10 @@ const AuthForm = ({
 	state,
 	scope,
 	authorized,
-}: AuthFormProps) => (
-	<Layout
-		title={`Authorize ${clientInfo.name ?? client_id}`}
-		theme={c.var.theme}
-	>
+}: AuthFormProps) => {
+	const c = hono.useRequestContext()
+	c.set('title', `Authorize ${clientInfo.name ?? client_id}`)
+	return (
 		<form action='/.denizen/auth/orize' method='POST'>
 			{scope
 				? (
@@ -273,8 +266,8 @@ const AuthForm = ({
 			<input type='hidden' name='code_challenge' value={code_challenge} />
 			<input type='hidden' name='state' value={state} />
 		</form>
-	</Layout>
-)
+	)
+}
 
 type ClientInfo = {
 	name?: string

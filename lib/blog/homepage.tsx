@@ -15,8 +15,12 @@ export const get = async (c: hono.Context<Env>) => {
 
 	const socials = Object.entries(siteOwner.profile.me)
 	const badges = siteOwner.profile.denizenBadge
-	return c.html(
-		<Layout theme={c.var.theme} title={siteOwner.profile.name}>
+
+	c.set('title', siteOwner.profile.name)
+	c.set('theme', c.var.theme)
+
+	return c.render(
+		<>
 			<header class='h-card' lang={config.lang()}>
 				{/* TODO: used this makeprofilesvg in a few places now, factor out to Card. */}
 				<img
@@ -200,6 +204,6 @@ export const get = async (c: hono.Context<Env>) => {
 					/>
 				)
 				: ''}
-		</Layout>,
+		</>,
 	)
 }

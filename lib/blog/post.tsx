@@ -27,21 +27,19 @@ export const get = async (c: hono.Context<Env>) => {
 		return c.json(post.toMF2Json())
 	}
 
-	if (post.deleted) return c.html(<PostDeleted theme={c.var.theme} />, 410) // "Gone"
+	if (post.deleted) return c.render(<PostDeleted theme={c.var.theme} />)
 	const admin = isAdmin(c)
 	const siteOwner = await getUser('admin')
 
 	c.header('Link', '</.denizen/webmention>; rel="webmention"')
 	c.header('Last-Modified', (post.updated ?? post.published).toUTCString())
 
-	return c.html(
-		<Layout
-			theme={c.var.theme}
-			title={post.name ?? post.summary ??
-				post.published.toLocaleString()}
-			lang={post.lang ?? config.lang()}
-		>
-			<meta property='og:url' content={post.uid} />
+	c.set('title', post.name ?? post.summary ?? post.published.toLocaleString())
+	c.set('lang', post.lang ?? config.lang())
+
+	return c.render(
+		<>
+			<meta property='og:url' content={post.uid!.href} />
 			<meta property='og:site_name' content={siteOwner.profile.name} />
 			{post.name ? <meta property='og:title' content={post.name} /> : ''}
 			{post.summary
@@ -55,18 +53,18 @@ export const get = async (c: hono.Context<Env>) => {
 				: ''}
 			{post.photo.map((photo) => (
 				<>
-					<meta property='og:image' content={photo.url} />
+					<meta property='og:image' content={photo.url.href} />
 					<meta property='og:image:alt' content={photo.alt} />
 				</>
 			))}
 			{post.video.map((video) => (
 				<>
-					<meta property='og:video' content={video} />
+					<meta property='og:video' content={video.href} />
 				</>
 			))}
 			{post.audio.map((audio) => (
 				<>
-					<meta property='og:audio' content={audio} />
+					<meta property='og:audio' content={audio.href} />
 				</>
 			))}
 			<article class='h-entry'>
@@ -74,7 +72,7 @@ export const get = async (c: hono.Context<Env>) => {
 					<nav>
 						<a href='/' class='p-author h-card author-card unlink'>
 							<img
-								src={siteOwner.profile.photo[0]?.url ??
+								src={siteOwner.profile.photo[0]?.url.href ??
 									makeProfileSvg(siteOwner.profile)}
 								alt={siteOwner.profile.photo[0]?.alt}
 								class='photo'
@@ -98,14 +96,17 @@ export const get = async (c: hono.Context<Env>) => {
 								<>
 									<a
 										class='p-author h-card'
-										href={author.url}
+										href={author.url[0].href}
 									>
 										{author.name}
 									</a>
 									,{' '}
 								</>
 							))}
-							<a href={cite.uid ?? cite.url[0]} class={cite.uid ? 'u-uid' : ''}>
+							<a
+								href={(cite.uid ?? cite.url[0]).href}
+								class={cite.uid ? 'u-uid' : ''}
+							>
 								{cite.name
 									? <cite class='p-name'>{cite.name}</cite>
 									: cite.content
@@ -121,7 +122,7 @@ export const get = async (c: hono.Context<Env>) => {
 								<>
 									<a
 										class='p-author h-card'
-										href={author.url}
+										href={author.url[0].href}
 									>
 										{author.name}
 									</a>
@@ -132,18 +133,18 @@ export const get = async (c: hono.Context<Env>) => {
 					))}
 					{post.photo.map((photo) => (
 						<figure>
-							<img class='u-photo' src={photo.url} alt={photo.alt} />
+							<img class='u-photo' src={photo.url.href} alt={photo.alt} />
 						</figure>
 					))}
 					<div
 						class='e-content'
-						dangerouslySetInnerHTML={{ __html: post.content?.html }}
+						dangerouslySetInnerHTML={{ __html: post.content?.html! }}
 					/>
 				</main>
 				<footer>
 					<div class='<small>'>
 						<p>
-							<a href={post.uid} class='u-url u-uid'>
+							<a href={post.uid!.href} class='u-url u-uid'>
 								<time class='dt-published'>
 									{post.published.toLocaleString([
 										...(post.lang ? [post.lang] : []),
@@ -206,7 +207,7 @@ export const get = async (c: hono.Context<Env>) => {
 					{await Webmentions({ post })}
 				</footer>
 			</article>
-		</Layout>,
+		</>,
 	)
 }
 
@@ -265,7 +266,7 @@ const Webmentions = async (props: { post: Entry }) => {
 										<Face card={wm.content.author[0]} />
 										<a
 											class='p-author h-card'
-											href={wm.content.author[0].url}
+											href={wm.content.author[0].url[0].href}
 										>
 											{wm.content.author[0].name}
 										</a>
@@ -273,7 +274,7 @@ const Webmentions = async (props: { post: Entry }) => {
 									<a class='u-url <small> card-link' href={wm.source}>
 										<time
 											class='dt-published'
-											datetime={wm.content.published}
+											datetime={wm.content.published.toISOString()}
 										>
 											{wm.content.published.toLocaleString([
 												...(post.lang ? [post.lang] : []),
@@ -336,8 +337,11 @@ export const del = async (c: hono.Context<Env>) => {
 	return c.redirect('/', 303)
 }
 
-const PostDeleted = (p: { theme: string }) => (
-	<Layout title='Deleted post' theme={p.theme}>
+const PostDeleted = () => {
+	const c = hono.useRequestContext()
+	c.status(410)
+	c.set('title', 'Deleted post')
+	return (
 		<main>
 			<h1>HTTP 410</h1>
 			<p>
@@ -347,5 +351,5 @@ const PostDeleted = (p: { theme: string }) => (
 				<a href='/'>&gt; Go back home.</a>
 			</p>
 		</main>
-	</Layout>
-)
+	)
+}

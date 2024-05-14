@@ -29,8 +29,7 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 	} else await next()
 }
 
-export const get = (c: hono.Context<Env>) =>
-	c.html(<InitialSetup theme={c.var.theme} />)
+export const get = (c: hono.Context<Env>) => c.render(<InitialSetup />)
 
 export const post = async (c: hono.Context<Env>) => {
 	if (await initialSetupDone()) return c.status(403)
@@ -39,17 +38,15 @@ export const post = async (c: hono.Context<Env>) => {
 	const form = await c.req.formData()
 	const pw = form.get('pw')
 	if (typeof pw !== 'string') {
-		return c.html(
-			<InitialSetup theme={c.var.theme} error='Missing username or password' />,
-			400,
+		return c.render(
+			<InitialSetup error='Missing username or password' />,
 		)
 	}
 
 	const displayName = form.get('name')
 	if (typeof displayName !== 'string') {
-		return c.html(
-			<InitialSetup theme={c.var.theme} error='Please enter a name' />,
-			400,
+		return c.render(
+			<InitialSetup error='Please enter a name' />,
 		)
 	}
 
@@ -58,18 +55,16 @@ export const post = async (c: hono.Context<Env>) => {
 		typeof siteUrl !== 'string' ||
 		!isValidUrl(siteUrl)
 	) {
-		return c.html(
-			<InitialSetup
-				theme={c.var.theme}
-				error='Site URL should be a valid URL'
-			/>,
-			400,
+		return c.render(
+			<InitialSetup error='Site URL should be a valid URL' />,
 		)
 	}
 
 	const locale = form.get('lang')
 	if (typeof locale !== 'string') {
-		return c.html('Please choose a language for your blog')
+		return c.render(
+			<InitialSetup error='Please choose a language for your blog' />,
+		)
 	}
 
 	// Do setup
@@ -86,11 +81,16 @@ export const post = async (c: hono.Context<Env>) => {
 	return c.redirect('/', 303)
 }
 
-const InitialSetup = (p: { error?: string; theme: string }) => (
-	<Layout title='Initial Setup -- Denizen' theme={p.theme}>
-		<header>
-			<h1 style='white-space:nowrap'>Welcome to Denizen</h1>
-			{hono.html`<script>
+const InitialSetup = (p: { error?: string }) => {
+	const c = hono.useRequestContext()
+	c.set('title', 'Initial Setup -- Denizen')
+	if (p.error) c.status(400)
+
+	return (
+		<>
+			<header>
+				<h1 style='white-space:nowrap'>Welcome to Denizen</h1>
+				{hono.html`<script>
 				const welcomes = [
 					'Welcome to Denizen',
 					'Denizen’e hoş geldiniz',
@@ -109,57 +109,58 @@ const InitialSetup = (p: { error?: string; theme: string }) => (
 					await h1.animate({ opacity: [0, 1] }, { duration: 500, easing: 'ease-in-out' })
 				}, 3000)
 			</script>`}
-		</header>
-		<main>
-			{p.error && <div class='bad box'>{p.error}</div>}
-			<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
-				<p class='grid-row'>
-					<label for='edit-lang'>🌐 Site language</label>
-					<select name='lang' id='edit-lang'>
-						<option value='en'>[af] Afrikaans</option>
-						<option value='en' selected>[en] English</option>
-						<option value='en'>[es] Esperanto</option>
-						<option value='en'>[tok] Toki Pona</option>
-						<option value='en'>[tr] Türkçe</option>
-					</select>
-				</p>
-				<p class='grid-row'>
-					<label for='edit-name'>Name</label>
-					<span class='grid'>
-						<input
-							type='text'
-							name='name'
-							id='edit-name'
-							required
-							aria-describedby='desc-edit-name'
-						/>
-						<span id='desc-edit-name' class='<small> italic'>
-							Not a login username -- the name that will be displayed on your
-							homepage.
+			</header>
+			<main>
+				{p.error && <div class='bad box'>{p.error}</div>}
+				<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
+					<p class='grid-row'>
+						<label for='edit-lang'>🌐 Site language</label>
+						<select name='lang' id='edit-lang'>
+							<option value='en'>[af] Afrikaans</option>
+							<option value='en' selected>[en] English</option>
+							<option value='en'>[es] Esperanto</option>
+							<option value='en'>[tok] Toki Pona</option>
+							<option value='en'>[tr] Türkçe</option>
+						</select>
+					</p>
+					<p class='grid-row'>
+						<label for='edit-name'>Name</label>
+						<span class='grid'>
+							<input
+								type='text'
+								name='name'
+								id='edit-name'
+								required
+								aria-describedby='desc-edit-name'
+							/>
+							<span id='desc-edit-name' class='<small> italic'>
+								Not a login username -- the name that will be displayed on your
+								homepage.
+							</span>
 						</span>
-					</span>
-				</p>
-				<p class='grid-row'>
-					<label for='edit-site-url'>Site URL</label>
-					<input type='url' name='site-url' id='edit-site-url' />
-					{hono.html`<script>
+					</p>
+					<p class='grid-row'>
+						<label for='edit-site-url'>Site URL</label>
+						<input type='url' name='site-url' id='edit-site-url' />
+						{hono.html`<script>
 						document.getElementById('edit-site-url').value = location.origin
 					</script>`}
-				</p>
-				<p class='grid-row'>
-					<label for='edit-pw'>Password</label>
-					<input type='password' name='pw' id='edit-pw' required />
-				</p>
-				<p class='grid-row'>
-					<button
-						type='submit'
-						class='big'
-						style='grid-column: 2; justify-self: start'
-					>
-						Get started
-					</button>
-				</p>
-			</form>
-		</main>
-	</Layout>
-)
+					</p>
+					<p class='grid-row'>
+						<label for='edit-pw'>Password</label>
+						<input type='password' name='pw' id='edit-pw' required />
+					</p>
+					<p class='grid-row'>
+						<button
+							type='submit'
+							class='big'
+							style='grid-column: 2; justify-self: start'
+						>
+							Get started
+						</button>
+					</p>
+				</form>
+			</main>
+		</>
+	)
+}

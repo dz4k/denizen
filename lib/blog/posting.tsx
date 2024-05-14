@@ -10,14 +10,12 @@ import { createPost, getPostByURL } from '../db.ts'
 import * as blogPost from './post.tsx'
 import { clientRedirect } from '../common/util.ts'
 
-export const get = (c: hono.Context<Env>) =>
-	c.html(
-		<PostEditor
-			theme={c.var.theme}
-			title='New post'
-			post={Entry.fromFormData(formDataFromObject(c.req.query()))}
-		/>,
+export const get = (c: hono.Context<Env>) => {
+	c.set('title', 'New post')
+	return c.render(
+		<PostEditor post={Entry.fromFormData(formDataFromObject(c.req.query()))} />,
 	)
+}
 
 const formDataFromObject = (obj: Record<string, string | string[]>) => {
 	const formdata = new FormData()
@@ -40,13 +38,8 @@ export const getEdit = async (c: hono.Context<Env>) => {
 		// invalid URL given
 	}
 	if (!post) return c.notFound()
-	return c.html(
-		<PostEditor
-			theme={c.var.theme}
-			title='Edit'
-			post={post}
-		/>,
-	)
+	c.set('title', 'Edit')
+	return c.render(<PostEditor post={post} />)
 }
 
 export const postEdit = (c: hono.Context<Env>) => {
@@ -80,80 +73,88 @@ export const post = async (c: hono.Context<Env>) => {
 }
 
 export const PostEditor = (
-	p: { title: string; post?: Entry; theme: string },
-) => (
-	<Layout title={p.title} theme={p.theme}>
-		<header>
-			<h1>{p.title}</h1>
-		</header>
-		<main>
-			<script type='module' src='/.denizen/public/post-editor.js'></script>
-			<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
-				{p.post?.inReplyTo
-					? p.post.inReplyTo.map((cite) => (
-						<p class='grid-row'>
-							<label for='edit-in-reply-to'>
-								<span aria-hidden='true'>↪</span> Reply to
-							</label>
-							<input
-								type='url'
-								name='in-reply-to'
-								id='edit-in-reply-to'
-								value={cite.url}
-							/>
-							<span>
-								{cite.author?.map((author) => (
-									<span>
-										{author.name},{' '}
-									</span>
-								))}
-								{cite.name
-									? <cite>{cite.name}</cite>
-									: cite.content
-									? <span>{cite.content.slice(0, 40)}</span>
-									: <span>{cite.url}</span>}
-							</span>
-						</p>
-					))
-					: ''}
-				<p class='grid-row'>
-					<label for='edit-title'>Title</label>
-					<input type='text' name='name' id='edit-title' value={p.post?.name} />
-				</p>
-				<p class='grid-row'>
-					<label for='edit-content'>Content</label>
-					<textarea name='content' id='edit-content'>
-						{p.post?.content?.html}
-					</textarea>
-				</p>
-				<details style='grid-column: 1 / 3' open={!!p.post?.summary}>
-					<summary>Add summary</summary>
-					<p class='grid' style='grid: auto-flow / auto 1fr'>
-						<label for='edit-summary'>Summary</label>
+	p: { post?: Entry },
+) => {
+	const c = hono.useRequestContext()
+	return (
+		<>
+			<header>
+				<h1>{c.var.title}</h1>
+			</header>
+			<main>
+				<script type='module' src='/.denizen/public/post-editor.js'></script>
+				<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
+					{p.post?.inReplyTo
+						? p.post.inReplyTo.map((cite) => (
+							<p class='grid-row'>
+								<label for='edit-in-reply-to'>
+									<span aria-hidden='true'>↪</span> Reply to
+								</label>
+								<input
+									type='url'
+									name='in-reply-to'
+									id='edit-in-reply-to'
+									value={cite.url[0].href}
+								/>
+								<span>
+									{cite.author?.map((author) => (
+										<span>
+											{author.name},{' '}
+										</span>
+									))}
+									{cite.name
+										? <cite>{cite.name}</cite>
+										: cite.content
+										? <span>{cite.content.slice(0, 40)}</span>
+										: <span>{cite.url}</span>}
+								</span>
+							</p>
+						))
+						: ''}
+					<p class='grid-row'>
+						<label for='edit-title'>Title</label>
 						<input
 							type='text'
-							name='summary'
-							id='edit-summary'
-							value={p.post?.summary}
+							name='name'
+							id='edit-title'
+							value={p.post?.name}
 						/>
 					</p>
-				</details>
-				<details style='grid-column: 1 / 3'>
-					<summary>Advanced</summary>
-					<p class='grid' style='grid: auto-flow / auto 1fr'>
-						<label for='edit-lang'>Language</label>
-						{/* TODO: Make this a <select> when multiple site locales is impld. */}
-						<input
-							name='lang'
-							id='edit-lang'
-							value={p.post?.lang ?? config.lang()}
-						/>
+					<p class='grid-row'>
+						<label for='edit-content'>Content</label>
+						<textarea name='content' id='edit-content'>
+							{p.post?.content?.html}
+						</textarea>
 					</p>
-				</details>
-				<p class='grid-row'>
-					<button type='submit'>Post</button>
-				</p>
-			</form>
-		</main>
-	</Layout>
-)
+					<details style='grid-column: 1 / 3' open={!!p.post?.summary}>
+						<summary>Add summary</summary>
+						<p class='grid' style='grid: auto-flow / auto 1fr'>
+							<label for='edit-summary'>Summary</label>
+							<input
+								type='text'
+								name='summary'
+								id='edit-summary'
+								value={p.post?.summary}
+							/>
+						</p>
+					</details>
+					<details style='grid-column: 1 / 3'>
+						<summary>Advanced</summary>
+						<p class='grid' style='grid: auto-flow / auto 1fr'>
+							<label for='edit-lang'>Language</label>
+							{/* TODO: Make this a <select> when multiple site locales is impld. */}
+							<input
+								name='lang'
+								id='edit-lang'
+								value={p.post?.lang ?? config.lang()}
+							/>
+						</p>
+					</details>
+					<p class='grid-row'>
+						<button type='submit'>Post</button>
+					</p>
+				</form>
+			</main>
+		</>
+	)
+}

@@ -1,4 +1,4 @@
-import { Hono, serveStatic } from '../deps/hono.ts'
+import { Hono, jsxRenderer, serveStatic } from '../deps/hono.ts'
 import {
 	DenoKvStore,
 	Session,
@@ -21,7 +21,7 @@ import * as webaction from './admin/webaction.tsx'
 import * as wpAdmin from './admin/wp-admin.ts'
 import * as importBlog from './admin/import-blog.tsx'
 import * as indieAuth from './auth/indie-auth/indie-auth.tsx'
-import * as indieauthCb from './auth/indieauth-cb.ts'
+import * as indieauthCb from './auth/indieauth-cb.tsx'
 import * as login from './auth/login.tsx'
 import * as feed from './blog/feed.ts'
 import * as homepage from './blog/homepage.tsx'
@@ -32,6 +32,7 @@ import * as micropub from './micropub/micropub.ts'
 import * as webmentionRecv from './webmention/recv.ts'
 import { StorageBackend } from './storage/storage-interface.ts'
 import * as fsBackend from './storage/fs-backend.ts'
+import { Layout } from './layout.ts'
 
 listen()
 
@@ -41,6 +42,9 @@ export type Env = {
 		session_key_rotation: boolean
 		authScopes: string[]
 		storage: StorageBackend
+
+		lang: string
+		title: string
 		theme: string
 	}
 }
@@ -48,9 +52,9 @@ export const app = new Hono<Env>()
 
 app.use('*', (c, next) => (c.set('storage', fsBackend), next()))
 app.use('*', async (c, next) => (c.set('theme', await config.theme()), next()))
+app.use('*', async (c, next) => (c.set('lang', await config.lang()), next()))
 
 app
-	// @ts-expect-error session middleware types wrong?
 	.use(
 		'*',
 		sessionMiddleware({
@@ -66,6 +70,7 @@ app
 			rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
 		}),
 	)
+	.use('*', jsxRenderer(Layout))
 	.use('*', initialSetup.middleware)
 	.get('/.denizen/initial-setup', initialSetup.get)
 	.post('/.denizen/initial-setup', initialSetup.post)

@@ -1,21 +1,18 @@
-import { FC, html } from '../deps/hono.ts'
+import { FC, html, useRequestContext } from '../deps/hono.ts'
 
-import * as config from './config.ts'
+import { Env } from './denizen.ts'
 
-export const Layout: FC<{
-	lang?: string
-	title: string
-	theme: string
-}> = (p) =>
-	html`
+export const Layout: FC = (p) => {
+	const c = useRequestContext<Env>()
+	return html`
 <!doctype html>
-<html lang="${p.lang ?? config.lang}">
+<html lang="${c.var.lang}">
 <meta charset=utf-8 name=viewport content=width=device-width>
 
-<title>${p.title}</title>
+<title>${c.var.title}</title>
 
 <link rel=stylesheet href="/.denizen/public/style.css">
-<link rel=stylesheet href="/.denizen/public/theme-${p.theme}.css">
+<link rel=stylesheet href="/.denizen/public/theme-${c.var.theme}.css">
 
 <script src="/.denizen/public/webaction-button.js"></script>
 <script>
@@ -35,3 +32,4 @@ const e=(e,t,r)=>{if(!t)return;let a=[...t.relList].find(e=>e.startsWith("swap")
 
 ${p.children}
 `
+}
