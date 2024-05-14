@@ -1,6 +1,3 @@
-/** @jsx hono.jsx */
-/** @jsxFrag hono.fragment */
-
 import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 import { Layout } from '../../layout.ts'

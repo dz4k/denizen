@@ -1,6 +1,3 @@
-/** @jsx hono.jsx */
-/** @jsxFrag hono.Fragment */
-
 import * as hono from '../../deps/hono.ts'
 import { stringToRandNumber } from '../common/util.ts'
 

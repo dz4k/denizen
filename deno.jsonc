@@ -13,6 +13,11 @@
 		"deploy-website": "cd doc && deno task build && wrangler pages deploy --project-name=denizen-website _site/",
 		"reset-local": "rm -rf dev.sqlite* _blobs"
 	},
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"jsxFactory": "hono.h",
+		"jsxFragmentFactory": "hono.Fragment"
+	},
 	"fmt": {
 		"semiColons": false,
 		"useTabs": true,
