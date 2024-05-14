@@ -25,8 +25,9 @@ const e=(e,t,r)=>{if(!t)return;let a=[...t.relList].find(e=>e.startsWith("swap")
 
 <link rel=alternate type=application/feed+json href=/feed.json>
 
-<link rel=authorization_endpoint href="https://indieauth.com/auth">
-<link rel=token_endpoint href="https://tokens.indieauth.com/token">
+<link rel=indieauth-metadata href="/.well-known/oauth-authorization-server">
+<link rel=authorization_endpoint href="/.denizen/auth">
+<link rel=token_endpoint href="/.denizen/token">
 
 <link rel=micropub href="/.denizen/micropub">
 

@@ -10,7 +10,7 @@ import { getConfig, getUser } from '../../db.ts'
 import { User } from '../../model/user.ts'
 import { LoginForm } from './_login-form.tsx'
 
-const login = async (
+export const login = async (
 	username: string,
 	pw: string,
 ): Promise<User | null> => {
