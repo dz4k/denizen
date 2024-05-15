@@ -7,6 +7,22 @@ import { isAdmin } from '../admin/middleware.ts'
 import { makeProfileSvg } from '../widgets/face.tsx'
 
 export const get = async (c: hono.Context<Env>) => {
+	const requestedLanguages = c.req.queries('lang') ??
+		c.req.header('Accept-Language')
+			?.split(',')
+			.map((tag) => {
+				const [lang, q] = tag.split(';q=')
+				return { lang, q: q ? parseFloat(q) : 1 }
+			})
+			.sort((a, b) => b.q - a.q)
+			.map(({ lang }) => lang) ??
+		[]
+	const lang =
+		requestedLanguages.find((lang) => config.locales.includes(lang)) ??
+			config.lang()
+	
+	c.set('lang', lang)
+
 	const { cursor } = c.req.query()
 	const siteOwner = await getUser('admin')
 	const posts = await getPosts({ cursor })
@@ -140,7 +156,7 @@ export const get = async (c: hono.Context<Env>) => {
 									<time className='dt-published'>
 										{post.published.toLocaleString([
 											...(post.lang ? [post.lang] : []),
-											...config.locales,
+											lang,
 										])}
 									</time>
 								</a>
@@ -150,7 +166,7 @@ export const get = async (c: hono.Context<Env>) => {
 										<time className='dt-updated'>
 											{post.updated.toLocaleString([
 												...(post.lang ? [post.lang] : []),
-												...config.locales,
+												lang,
 											])}
 										</time>
 									</>

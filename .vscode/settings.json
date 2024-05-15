@@ -11,6 +11,7 @@
 		"lib",
 		"bin",
 		"deps",
+		"test",
 		"tool",
 		"config.ts"
 	],

@@ -1,5 +1,5 @@
 import { DOMParser, Element } from '../../deps/dom.ts'
-import { parseLinkHeader } from '../../deps/parse-link-header.ts'
+import { parseLinkHeader } from '../common/parse-link-header.ts'
 
 import { deleteWebmention, getPostByURL, saveWebmention } from '../db.ts'
 import { Entry } from '../model/entry.ts'
