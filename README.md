@@ -27,12 +27,15 @@ deno task dev
   - [ ] Edit code files (CSS, JS etc.) in the web UI
   - [X] File metadata (MIME type, date created/changed)
   - [ ] Wait for Deno KV blob storage
-- [ ] Import from RSS feed
+- [X] Import from RSS feed
+  - [ ] Test on multiple blogs
+  - [ ] Show import progress
 - [X] Webmention sending
 - [X] Webmention receiving
 - [X] IndieAuth
 - [X] Micropub
-  - [ ] Media endpoint (waiting on blob storage)
+  - [X] Media endpoint ~~(waiting on blob storage)~~
+- [ ] Media processing (image resizing, etc.)
 - [ ] Fetching link embeds
 - [ ] Syndication to social media silos
 - [ ] ActivityPub maybe?
