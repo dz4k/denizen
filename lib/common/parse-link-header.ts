@@ -45,7 +45,7 @@ export const parseLinkHeader = (header: string): LinkHeader[] => {
 			if (c && regex.test(c)) result += consumeChar()!
 			else break
 		}
-    return result
+		return result
 	}
 
 	const quotedString = () => {
@@ -77,10 +77,10 @@ export const parseLinkHeader = (header: string): LinkHeader[] => {
 		// link-param = token BWS [ "=" BWS ( token / quoted-string ) ]
 		const key = token()
 		if (!key) {
-      throw new Error('expected token at position ' + pos)
+			throw new Error('expected token at position ' + pos)
 		}
 
-    let value
+		let value
 		bws()
 		if (consumeChar() === '=') {
 			bws()

@@ -20,7 +20,7 @@ export const get = async (c: hono.Context<Env>) => {
 	const lang =
 		requestedLanguages.find((lang) => config.locales.includes(lang)) ??
 			config.lang()
-	
+
 	c.set('lang', lang)
 
 	const { cursor } = c.req.query()
