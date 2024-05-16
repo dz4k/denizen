@@ -1,8 +1,5 @@
 import { Hono, jsxRenderer, serveStatic } from '../deps/hono.ts'
-import {
-	Session,
-	sessionMiddleware,
-} from './common/session.ts'
+import { Session, sessionMiddleware } from './common/session.ts'
 
 import './config.ts'
 import './webmention/webmention.ts'
