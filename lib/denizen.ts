@@ -1,9 +1,8 @@
 import { Hono, jsxRenderer, serveStatic } from '../deps/hono.ts'
 import {
-	DenoKvStore,
 	Session,
 	sessionMiddleware,
-} from '../deps/hono_sessions.ts'
+} from './common/session.ts'
 
 import './config.ts'
 import './webmention/webmention.ts'
@@ -56,13 +55,12 @@ app.use('*', async (c, next) => (c.set('theme', await config.theme()), next()))
 app.use('*', async (c, next) => (c.set('lang', await config.lang()), next()))
 
 app
-	// @ts-expect-error weirdness around hono-sessions types
 	.use(
 		'*',
 		sessionMiddleware({
-			store: new DenoKvStore(db, 'Sessions'),
-			expireAfterSeconds: 60 * 60 * 24 * 7, // 1 week
-			cookieOptions: { sameSite: 'Lax' },
+			db,
+			namespace: ['Sessions'],
+			expireSeconds: 60 * 60 * 24 * 7, // 1 week
 		}),
 	)
 	.use(

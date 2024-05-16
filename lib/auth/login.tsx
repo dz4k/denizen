@@ -39,6 +39,6 @@ export const post = async (c: hono.Context<Env>) => {
 
 export const logout = (c: hono.Context<Env>) => {
 	const sesh = c.get('session')
-	sesh.deleteSession()
+	sesh.delete()
 	return c.redirect('/')
 }
