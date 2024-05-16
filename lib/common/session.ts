@@ -11,8 +11,8 @@ export class Session {
 	changed = false
 	deleted = false
 
-	constructor(data: Record<string, unknown> = {}) {
-		this.data = data
+	constructor(data: Record<string, unknown>) {
+		this.data = data ?? {}
 	}
 
 	get(key: string): unknown {
