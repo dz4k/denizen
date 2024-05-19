@@ -10,7 +10,7 @@ import {
 	MF2Object,
 	MF2PropertyValue,
 } from '../common/mf2.ts'
-import { Document, DOMParser, Element, Node, Text } from '../../deps/dom.ts'
+import { Document, DOMParser, Element, Text } from '../../deps/dom.ts'
 
 export type MF2Options = {
 	baseUrl: string

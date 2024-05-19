@@ -4,7 +4,7 @@ import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
 import { crypto } from 'https://deno.land/std@0.204.0/crypto/mod.ts'
-import { parseMicroformats } from '../../../deps/microformats-parser.ts'
+import parseMicroformats from '../../mf2/mf2-parser.ts'
 import { isAdmin } from '../../admin/middleware.ts'
 import { mf2String } from '../../common/mf2.ts'
 import { login } from '../login.tsx'
@@ -282,7 +282,7 @@ const fetchClientInfo = async (clientId: URL): Promise<ClientInfo> => {
 		method: 'GET',
 	})
 	const html = await res.text()
-	const mf2 = parseMicroformats({ html, baseUrl: res.url ?? clientId.href })
+	const mf2 = parseMicroformats(html, { baseUrl: res.url ?? clientId.href })
 	const hApp = mf2.items.find((item) => item.type.includes('h-app'))
 	const name = hApp?.properties?.name && mf2String(hApp?.properties?.name[0])
 	const logo = hApp?.properties?.logo && mf2String(hApp?.properties?.logo[0])

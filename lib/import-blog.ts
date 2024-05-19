@@ -12,7 +12,7 @@ import {
 import { Entry } from './model/entry.ts'
 import { Card } from './model/card.ts'
 import { enqueue } from './queue.ts'
-import { parseMicroformats } from '../deps/microformats-parser.ts'
+import parseMicroformats from './mf2/mf2-parser.ts'
 import { Document, DOMParser, Element } from '../deps/dom.ts'
 import * as storage from './storage/fs-backend.ts'
 
@@ -114,8 +114,7 @@ const importEntryImpl = async (jobId: string, entry: Entry) => {
 
 	// TODO: more heuristics for extracting content
 	if (/<!doctype html/i.test(entry.content!.html)) {
-		const mf2 = parseMicroformats({
-			html: entry.content!.html,
+		const mf2 = parseMicroformats(entry.content!.html, {
 			baseUrl: entryUrl.href,
 		})
 		const hEntry = mf2.items.find((i) => i.type.includes('h-entry'))

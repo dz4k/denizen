@@ -5,7 +5,7 @@ import { deleteWebmention, getPostByURL, saveWebmention } from '../db.ts'
 import { Entry } from '../model/entry.ts'
 import { Webmention, WMResponseType } from '../model/webmention.ts'
 import { Citation } from '../model/citation.ts'
-import { parseMicroformats } from '../../deps/microformats-parser.ts'
+import parseMicroformats from '../mf2/mf2-parser.ts'
 import { MF2Object } from '../common/mf2.ts'
 import { isValidUrl } from '../common/util.ts'
 import { enqueue } from '../queue.ts'
@@ -42,8 +42,8 @@ export const receiveWebmention = async (source: string, target: string) => {
 	}
 
 	const sourceContent = await sourceRes.text()
-	const doc = new DOMParser().parseFromString(sourceContent, 'text/html')
-	const mentioningElement = doc?.querySelector(
+	const doc = new DOMParser().parseFromString(sourceContent, 'text/html')!
+	const mentioningElement = doc.querySelector(
 		`[href=${JSON.stringify(target)}]`,
 	)
 	if (!mentioningElement) {
@@ -56,10 +56,7 @@ export const receiveWebmention = async (source: string, target: string) => {
 		return
 	}
 
-	const mf2doc = await parseMicroformats({
-		// TODO: The HTML is parsed twice.
-		// Write own MF2 parser that works with deno_dom to avoid this.
-		html: sourceContent,
+	const mf2doc = await parseMicroformats(doc, {
 		baseUrl: sourceRes.url || source,
 	})
 	const hEntry = mf2doc.items.find((item) => item.type.includes('h-entry'))
