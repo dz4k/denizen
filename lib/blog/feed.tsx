@@ -1,8 +1,6 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
-import { stringify } from '../../deps/xml.ts'
-
 import { getPosts, getUser, lastMod } from '../db.ts'
 import * as config from '../config.ts'
 
@@ -72,30 +70,23 @@ export const xml = async (c: hono.Context<Env>) => {
 		cursor: c.req.query('cursor'),
 	})
 	return c.body(
-		stringify({
-			feed: {
-				'@xmlns': 'http://www.w3.org/2005/Atom',
-				title: siteOwner.profile.name,
-				link: { '@href': config.baseUrl.href },
-				updated: new Date(lastModified).toISOString(),
-				generator: {
-					'@uri': 'https://codeberg.org/dz4k/denizen',
-					'#text': 'Denizen',
-				},
-				entry: posts.data.map((post) => ({
-					id: post.uid,
-					title: post.name,
-					updated: post.updated ?? post.published,
-					content: {
-						'@type': 'html',
-						'#text': post.content?.html,
-					},
-					summary: post.summary,
-					published: post.published,
-					category: post.category.map((cat) => ({ '@term': cat })),
-				})),
-			},
-		}),
+		(<feed xmlns='http://www.w3.org/2005/Atom'>
+			<title>{siteOwner.profile.name}</title>
+			<link href={config.baseUrl.href} />
+			<updated>{new Date(lastModified).toISOString()}</updated>
+			<generator uri='https://codeberg.org/dz4k/denizen'>Denizen</generator>
+			{posts.data.map((post) => (
+				<entry>
+					<id>{post.uid}</id>
+					<title>{post.name}</title>
+					<updated>{post.updated ?? post.published}</updated>
+					<content type='html'>{post.content?.html}</content>
+					<summary>{post.summary}</summary>
+					<published>{post.published}</published>
+					{post.category.map((cat) => <category term={cat} />)}
+				</entry>
+			))}
+		</feed>).toString(),
 		200,
 		{
 			'Content-Type': 'application/atom+xml',
