@@ -3,9 +3,7 @@ html {
     --page-width: min(var(--max-width), calc(100vw - 2rem));
     width: var(--page-width);
     margin: 3em auto;
-    --font: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif
-        /* see: https://modernfontstacks.com/ 'neo-grotesque' */
-    ;
+    --font: system-ui;
     font: 1.2em/1.4em var(--font);
     --accent: #287;
 
@@ -43,6 +41,12 @@ h6 {
 
 img {
     display: block;
+
+    &.inline {
+        display: inline;
+        height: 1em;
+        vertical-align: middle;
+    }
 }
 
 a {
@@ -82,12 +86,20 @@ pre::after {
     ;
 }
 
-.unlink:not(:hover, :focus-visible) {
-    text-decoration: none;
+.logotype {
+    /* TODO: custom font */
+    font-family: monospace, monospace;
+    font-size: 4em;
+    font-weight: 400;
+    color: #517f60;
+    
+    @media (prefers-color-scheme: dark) {
+        color: #8acaa1;
+    }
 }
 
-.lede {
-    font: bold 2em/1em var(--font);
+.unlink:not(:hover, :focus-visible) {
+    text-decoration: none;
 }
 
 .warn {
