@@ -91,11 +91,8 @@ pre::after {
     font-family: monospace, monospace;
     font-size: 4em;
     font-weight: 400;
-    color: #517f60;
-    
-    @media (prefers-color-scheme: dark) {
-        color: #8acaa1;
-    }
+    background: linear-gradient(#8acaa1, #5a946e) text;
+    color: transparent;
 }
 
 .unlink:not(:hover, :focus-visible) {
