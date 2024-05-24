@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 26 26">
     <view id="padded" viewBox="0 0 32 32" />
 
+    <path id="tail-fold" d="M23,21 v-6 l3,3 z" fill="#649878" />
+
     <rect id="body" x="6" y="10" width="18" height="16" fill="#5a946e" />
 
     <path id="tail" d="M26,18 v-12 h-8 v8 h4 z" fill="#8acaa1" />
-    <path id="tail-fold" d="M24,20 v-4 l2,2 z" fill="#649878" />
     
     <g id="face" fill="#bde6cc">
         <rect id="eye" x="9" y="14" width="2" height="4" />
