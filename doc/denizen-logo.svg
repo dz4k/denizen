@@ -12,8 +12,11 @@
         <path id="mouth" d="M9,21 h9 v-2 h2 v2 l-2,2 h-9 z" />
     </g>
     
-    <mask id="body-mask"><use href="#body" fill="white" /></mask>
-    <g mask="url(#body-mask)">
+    <mask id="shadow-mask">
+        <use href="#body" fill="white" />
+        <use href="#tail-fold" fill="white" />
+    </mask>
+    <g mask="url(#shadow-mask)">
         <!-- without this rect the mask doesn't mask properly-->
         <rect width="32" height="32" fill="none" />
         <use id="tail-shadow" href="#tail" filter="drop-shadow(0 0 5 #000c)" />
