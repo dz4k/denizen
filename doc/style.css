@@ -41,12 +41,6 @@ h6 {
 
 img {
     display: block;
-
-    &.inline {
-        display: inline;
-        height: 1em;
-        vertical-align: middle;
-    }
 }
 
 a {
@@ -93,6 +87,13 @@ pre::after {
     font-weight: 400;
     background: linear-gradient(#8acaa1, #5a946e) text;
     color: transparent;
+
+    img {
+        display: inline;
+        height: 1.5ex;
+        vertical-align: baseline;
+        margin-inline-end: .1em;
+    }
 }
 
 .unlink:not(:hover, :focus-visible) {
