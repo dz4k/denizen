@@ -233,8 +233,12 @@ const parseJsonFeed = async (res: Response): Promise<Entry[]> => {
 			uid: new URL(item.url),
 			name: item.title,
 			content: item.content_html
-				? { html: item.content_html }
-				: { html: htmlEscape(item.content_text!), value: item.content_text },
+				? { html: item.content_html, lang: item.language }
+				: {
+					html: htmlEscape(item.content_text!),
+					value: item.content_text,
+					lang: item.language,
+				},
 			published: new Date(item.date_published),
 			updated: item.date_modified ? new Date(item.date_modified) : undefined,
 			summary: item.summary,
@@ -246,7 +250,6 @@ const parseJsonFeed = async (res: Response): Promise<Entry[]> => {
 				})
 			) ?? [],
 			category: item.tags ?? [],
-			lang: item.language,
 		})
 	)
 }

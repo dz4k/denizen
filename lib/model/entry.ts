@@ -27,11 +27,10 @@ export class Entry {
 	 */
 	iid: string
 	deleted: boolean = false
-	lang?: string
 
 	name?: string
 	summary?: string
-	content?: { html: string; value?: string }
+	content?: { html: string; value?: string; lang?: string }
 
 	published: Date = new Date()
 	updated?: Date
@@ -71,6 +70,17 @@ export class Entry {
 			}`,
 			config.baseUrl,
 		)
+	}
+
+	get language(): string | null {
+		return this.content?.lang ?? null
+	}
+
+	set language(value) {
+		if (this.content) {
+			if (value !== null) this.content.lang = value
+			else delete this.content.lang
+		}
 	}
 
 	replace(p: MF2Properties) {
@@ -207,7 +217,10 @@ export class Entry {
 		const { properties: p } = mf2
 		const rv = new Entry({})
 		rv.replace(p)
-		if (mf2.lang) rv.lang = mf2.lang
+
+		// LEGACY: we used to store the language as a property
+		if (mf2.lang) rv.language = mf2.lang
+
 		return rv
 	}
 
@@ -260,14 +273,13 @@ export class Entry {
 		// TODO configurable URL pattern
 
 		const rv = new Entry(props)
-		if (form.has('lang')) rv.lang = get('lang')
+		if (form.has('lang')) rv.language = get('lang')
 		return rv
 	}
 
 	toMF2Json(): MF2Object {
 		return removeEmptyProperties({
 			type: ['h-entry'],
-			lang: this.lang,
 			properties: {
 				name: this.name ? [this.name] : [],
 				summary: this.summary ? [this.summary] : [],

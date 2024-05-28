@@ -124,7 +124,7 @@ export const get = async (c: hono.Context<Env>) => {
 					{posts.data.map((post) => (
 						<article
 							class='h-entry link-card'
-							lang={post.lang ?? config.lang()}
+							lang={post.language ?? config.lang()}
 						>
 							<h2>
 								<a class='p-name u-url u-uid' href={post.uid!.pathname}>
@@ -155,7 +155,7 @@ export const get = async (c: hono.Context<Env>) => {
 								<a href={post.uid?.pathname} class='card-link'>
 									<time className='dt-published'>
 										{post.published.toLocaleString([
-											...(post.lang ? [post.lang] : []),
+											...(post.language ? [post.language] : []),
 											lang,
 										])}
 									</time>
@@ -165,7 +165,7 @@ export const get = async (c: hono.Context<Env>) => {
 										{' '}&middot; Updated on{' '}
 										<time className='dt-updated'>
 											{post.updated.toLocaleString([
-												...(post.lang ? [post.lang] : []),
+												...(post.language ? [post.language] : []),
 												lang,
 											])}
 										</time>

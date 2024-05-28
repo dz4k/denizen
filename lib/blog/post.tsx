@@ -34,7 +34,7 @@ export const get = async (c: hono.Context<Env>) => {
 	c.header('Last-Modified', (post.updated ?? post.published).toUTCString())
 
 	c.set('title', post.name ?? post.summary ?? post.published.toLocaleString())
-	c.set('lang', post.lang ?? config.lang())
+	c.set('lang', post.language ?? config.lang())
 
 	return c.render(
 		<>
@@ -146,7 +146,7 @@ export const get = async (c: hono.Context<Env>) => {
 							<a href={post.uid!.href} class='u-url u-uid'>
 								<time class='dt-published'>
 									{post.published.toLocaleString([
-										...(post.lang ? [post.lang] : []),
+										...(post.language ? [post.language] : []),
 										...config.locales,
 									])}
 								</time>
@@ -157,7 +157,7 @@ export const get = async (c: hono.Context<Env>) => {
 										, last updated on{' '}
 										<time class='dt-updated'>
 											{post.updated.toLocaleString([
-												...(post.lang ? [post.lang] : []),
+												...(post.language ? [post.language] : []),
 												...config.locales,
 											])}
 										</time>
@@ -276,7 +276,7 @@ const Webmentions = async (props: { post: Entry }) => {
 											datetime={wm.content.published.toISOString()}
 										>
 											{wm.content.published.toLocaleString([
-												...(post.lang ? [post.lang] : []),
+												...(post.language ? [post.language] : []),
 												...config.locales,
 											])}
 										</time>

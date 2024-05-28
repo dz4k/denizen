@@ -145,7 +145,7 @@ export const PostEditor = (
 							<input
 								name='lang'
 								id='edit-lang'
-								value={p.post?.lang ?? config.lang()}
+								value={p.post?.language ?? config.lang()}
 							/>
 						</p>
 					</details>
