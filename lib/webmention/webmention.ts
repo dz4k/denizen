@@ -189,7 +189,7 @@ const discoverWebmentionEndpoint = async (target: URL) => {
 				for (const link of parsed) {
 					const rel = (link.rel as string ?? '').toLowerCase().split(/\s+/g)
 					if (rel.includes('webmention')) {
-						return new URL(link.uri, res.url || target)
+						return new URL(link.href, res.url || target)
 					}
 				}
 			}

@@ -1,7 +1,7 @@
 // https://github.com/bryik/deno-parse-link-header/tree/v0.1.1/parseLinkHeader.ts
 
 type LinkHeader = {
-	uri: string
+	href: string
 	[key: string]: string
 }
 
