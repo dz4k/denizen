@@ -38,6 +38,15 @@ deno task dev
 - [ ] Media processing (image resizing, etc.)
 - [ ] Fetching link embeds
 - [ ] Syndication to social media silos
+- [ ] Microsub
+  - [ ] Collecting subscriptions
+  - [ ] Fetching posts
+    - [ ] RSS
+    - [ ] JSON Feed
+    - [ ] Microformats
+    - [ ] ActivityStreams?
+    - [ ] WebSub
+- [ ] WebSub publishing
 - [ ] ActivityPub maybe?
 - [X] Settings UI (instead of config.ts)
 - [ ] Intl
