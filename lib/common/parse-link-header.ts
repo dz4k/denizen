@@ -99,8 +99,8 @@ export const parseLinkHeader = (header: string): LinkHeader[] => {
 		consumeChar()
 
 		// cheat on URI-Reference and just grab everything until the next '>'
-		const uri = until('>')
-		if (!uri) return null
+		const href = until('>')
+		if (!href) return null
 		if (consumeChar() !== '>') {
 			throw new Error('expected ">" at position ' + pos)
 		}
@@ -118,7 +118,7 @@ export const parseLinkHeader = (header: string): LinkHeader[] => {
 			if (!param) break
 			params.push(param)
 		}
-		return { uri, ...Object.fromEntries(params) }
+		return { href, ...Object.fromEntries(params) }
 	}
 
 	// Link       = #link-value
