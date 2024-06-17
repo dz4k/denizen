@@ -30,6 +30,9 @@ const textContent = (el: Element): string => {
 	return el.textContent
 }
 
+const resolveUrl = (url: string, options: MF2Options): string =>
+	new URL(url, options.baseUrl).href
+
 const isMicroformatRootClass = (className: string): boolean =>
 	className.startsWith('h-')
 
@@ -132,8 +135,11 @@ const tryParseUrlProperty = (el: Element): MF2PropertyValue | null =>
 		getAttributeIfTag(el, 'input', 'value') ??
 		getAttributeIfTag(el, 'meta', 'content')
 
-const parseUrlProperty = (el: Element): MF2PropertyValue =>
-	tryParseUrlProperty(el) ?? textContent(el)
+const parseUrlProperty = (el: Element, options: MF2Options): MF2PropertyValue =>
+	resolveUrl(
+		(tryParseUrlProperty(el) ?? textContent(el)) as string,
+		options,
+	)
 
 const parseImage = (el: Element): MF2Img | null =>
 	el.tagName === 'IMG'
@@ -166,10 +172,11 @@ const parseContentProperty = (el: Element): MF2PropertyValue => ({
 const parseMicroformatProperty = (
 	prop: string,
 	el: Element,
+	options: MF2Options,
 ): MF2PropertyValue => {
-	if (isMicroformatRoot(el)) return parseMicroformat(el)
+	if (isMicroformatRoot(el)) return parseMicroformat(el, options)
 	if (prop.startsWith('p-')) return parseTextProperty(el)
-	if (prop.startsWith('u-')) return parseUrlProperty(el)
+	if (prop.startsWith('u-')) return parseUrlProperty(el, options)
 	if (prop.startsWith('dt-')) return parseDatetimeProperty(el)
 	if (prop.startsWith('e-')) return parseContentProperty(el)
 	throw new Error(`Unknown microformat property kind: ${prop}`)
@@ -201,7 +208,16 @@ const implyName = (node: Element): MF2PropertyValue[] => {
 	return [textContent(node)]
 }
 
-const implyPhoto = (node: Element): MF2PropertyValue[] | null => {
+const implyPhoto = (
+	node: Element,
+	options: MF2Options,
+): MF2PropertyValue[] | null => {
+	const raw = implyPhotoRaw(node)
+	if (!raw) return null
+	return raw.map((url) => resolveUrl(url as string, options))
+}
+
+const implyPhotoRaw = (node: Element): MF2PropertyValue[] | null => {
 	if (node.tagName === 'IMG') return [parseImage(node)!]
 	if (node.tagName === 'OBJECT' && node.hasAttribute('data')) {
 		return [node.getAttribute('data')!]
@@ -223,7 +239,16 @@ const implyPhoto = (node: Element): MF2PropertyValue[] | null => {
 	return null
 }
 
-const implyUrl = (node: Element): MF2PropertyValue[] | null => {
+const implyUrl = (
+	node: Element,
+	options: MF2Options,
+): MF2PropertyValue[] | null => {
+	const raw = implyUrlRaw(node)
+	if (!raw) return null
+	return raw.map((url) => resolveUrl(url as string, options))
+}
+
+const implyUrlRaw = (node: Element): MF2PropertyValue[] | null => {
 	if (node.tagName === 'A' && node.hasAttribute('href')) {
 		return [node.getAttribute('href')!]
 	}
@@ -251,6 +276,7 @@ const implyProperties = (
 	node: Element,
 	classes: string[],
 	props: MF2Object['properties'],
+	options: MF2Options,
 ) => {
 	const noneWithPrefixes = (prefixes: string[]) =>
 		!classes.some((el) => prefixes.some((p) => el.startsWith(p)))
@@ -258,11 +284,11 @@ const implyProperties = (
 		props.name = implyName(node)
 	}
 	if (!props.photo && noneWithPrefixes(['u-'])) {
-		const photo = implyPhoto(node)
+		const photo = implyPhoto(node, options)
 		if (photo) props.photo = photo
 	}
 	if (!props.url && noneWithPrefixes(['u-'])) {
-		const url = implyUrl(node)
+		const url = implyUrl(node, options)
 		if (url) props.url = url
 	}
 }
@@ -270,13 +296,14 @@ const implyProperties = (
 const parseMicroformatProperties = (
 	node: Element,
 	children: MF2Object[],
+	options: MF2Options,
 ) => {
 	const properties = {} as MF2Object['properties']
 	const propertyElements = findMicroformatPropertyElements(node)
 	Object.entries(propertyElements).forEach(([prop, elements]) => {
 		const baseProp = prop.replace(/^(p-|u-|dt-|e-)/, '')
 		properties[baseProp] = elements.map((el) =>
-			parseMicroformatProperty(prop, el)
+			parseMicroformatProperty(prop, el, options)
 		)
 	})
 	if (
@@ -284,24 +311,24 @@ const parseMicroformatProperties = (
 			el.startsWith('p-') || el.startsWith('e-')
 		) && !children.length
 	) {
-		implyProperties(node, Object.keys(propertyElements), properties)
+		implyProperties(node, Object.keys(propertyElements), properties, options)
 	}
 	return properties
 }
 
-const parseMicroformat = (node: Element): MF2Object => {
+const parseMicroformat = (node: Element, options: MF2Options): MF2Object => {
 	const classes = Array.from(node.classList)
 	const type = classes.filter(isMicroformatRootClass)
 	const children = findMicroformatRoots(node, { includeSelf: false })
-		.map(parseMicroformat)
-	const properties = parseMicroformatProperties(node, children)
+		.map((child) => parseMicroformat(child, options))
+	const properties = parseMicroformatProperties(node, children, options)
 	return { type, properties, children }
 }
 
-const parseMicroformats = (root: Element): MF2Object[] =>
-	findMicroformatRoots(root).map(parseMicroformat)
+const parseMicroformats = (root: Element, options: MF2Options): MF2Object[] =>
+	findMicroformatRoots(root).map((root) => parseMicroformat(root, options))
 
-const parseRels = (html: Document) => {
+const parseRels = (html: Document, options: MF2Options) => {
 	const rels = {} as MF2Document['rels']
 	const relUrls = {} as MF2Document['rel-urls']
 
@@ -309,7 +336,7 @@ const parseRels = (html: Document) => {
 		const link = n as Element
 		const rel = link.getAttribute('rel')!
 		const relList = rel.trim().split(/\s+/)
-		const href = link.getAttribute('href')!
+		const href = resolveUrl(link.getAttribute('href')!, options)
 		for (const r of relList) {
 			if (!rels[r]) {
 				rels[r] = []
@@ -327,10 +354,7 @@ const parseRels = (html: Document) => {
 	return { rels, relUrls }
 }
 
-const mf2 = (
-	html: string | Document,
-	{ baseUrl }: MF2Options,
-): MF2Document => {
+const mf2 = (html: string | Document, options: MF2Options): MF2Document => {
 	if (typeof html === 'string') {
 		const parsed = new DOMParser().parseFromString(html, 'text/html')
 		if (!parsed) {
@@ -339,8 +363,8 @@ const mf2 = (
 		html = parsed
 	}
 
-	const items = parseMicroformats(html.documentElement!)
-	const { rels, relUrls } = parseRels(html)
+	const items = parseMicroformats(html.documentElement!, options)
+	const { rels, relUrls } = parseRels(html, options)
 
 	return {
 		items,
