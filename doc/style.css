@@ -3,13 +3,9 @@ html {
     --page-width: min(var(--max-width), calc(100vw - 2rem));
     width: var(--page-width);
     margin: 3em auto;
-    --font: system-ui;
+    --font: DINishPreview, Grandview, sans-serif;
     font: 1.2em/1.4em var(--font);
-    --accent: #287;
-
-    @media (prefers-color-scheme: dark) {
-        --accent: #3b9;
-    }
+    --accent: light-dark(#287, #8bcba2);
 
     accent-color: var(--accent);
     color-scheme: light dark;
@@ -45,6 +41,7 @@ img {
 
 a {
     color: var(--accent);
+    filter: drop-shadow(0 0 .5em currentcolor);
 }
 
 kbd {
@@ -81,19 +78,13 @@ pre::after {
 }
 
 .logotype {
-    /* TODO: custom font */
-    font-family: monospace, monospace;
-    font-size: 4em;
-    font-weight: 400;
-    background: linear-gradient(#8acaa1, #5a946e) text;
-    color: transparent;
-
-    img {
-        display: inline;
-        height: 1.5ex;
-        vertical-align: baseline;
-        margin-inline-end: .1em;
-    }
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font: 6em picnic, sans-serif;
+    font-weight: normal;
+    color: #8baa96;
+    filter: drop-shadow(0 0 1.5em #8baa96aa);
 }
 
 .unlink:not(:hover, :focus-visible) {
