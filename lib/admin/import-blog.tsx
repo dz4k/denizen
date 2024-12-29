@@ -1,8 +1,11 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
-import { saveBlogImportJob } from '../db.ts'
+import { getBlogImportJob, saveBlogImportJob } from '../db.ts'
 import { enqueue } from '../queue.ts'
+import { clientRedirect } from '../common/util.ts'
+import { Layout } from '../layout.ts'
+import { BlogImportJob } from '../import-blog.ts'
 
 export const get = (c: hono.Context<Env>) => {
 	return c.render(<ImportForm />)
@@ -28,9 +31,13 @@ export const post = async (c: hono.Context<Env>) => {
 		type: 'import_blog',
 		job,
 	})
-	return c.render(
-		<ImportForm error='Importing blog...' />,
-	)
+	return c.html(clientRedirect(`/.denizen/import-blog/${job.id}`))
+}
+
+export const getJob = async (c: hono.Context<Env>) => {
+  const jobId = c.req.param("id")
+  const job = await getBlogImportJob(jobId)
+  return c.render(<JobPage job={job} />)
 }
 
 export const ImportForm = (p: { error?: string }) => {
@@ -83,4 +90,41 @@ export const ImportForm = (p: { error?: string }) => {
 			</main>
 		</section>
 	)
+}
+
+export const JobPage = (p: { job: BlogImportJob }) => {
+  const job = p.job
+  return (
+    <>
+      <h1>Blog import</h1>
+      <table>
+        <tr>
+          <th scope="row">Importing from</th>
+          <td>{job.feedUrl}</td>
+        </tr>
+        <tr>
+          <th scope="row">Posts to import</th>
+          <td>{job.totalPosts}</td>
+        </tr>
+        <tr>
+          <th scope="row">Posts imported</th>
+          <td>{job.importedPosts}</td>
+        </tr>
+        <tr>
+          <th scope="row">Posts failed</th>
+          <td>{job.failedPosts}</td>
+        </tr>
+      </table>
+      {job.errors ?
+        <div class="bad">
+          <h2>Errors</h2>
+          <ul>
+            {job.errors.map(err => (
+              <li>{err}</li>
+            ))}
+          </ul>
+        </div>
+      : ""}
+    </>
+  )
 }

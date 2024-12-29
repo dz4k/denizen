@@ -2,6 +2,7 @@ import { escape as htmlEscape } from 'https://deno.land/std@0.203.0/html/mod.ts'
 import {
 	createPost,
 	getPost,
+	recordEntryImported,
 	recordEntryImportFailed,
 	recordMediaImported,
 	recordMediaImportFailed,
@@ -89,6 +90,7 @@ export const importEntry = async (jobId: string, entryId: string) => {
 	if (!entry) throw new Error(`importEntry: Entry not found: ${entryId}`)
 	try {
 		await importEntryImpl(jobId, entry)
+		await recordEntryImported(jobId)
 	} catch (e) {
 		console.error(`importEntry: ${e}`)
 		await recordEntryImportFailed(jobId)
@@ -175,6 +177,7 @@ export const importMedia = async (
 ) => {
 	try {
 		await importMediaImpl(jobId, oldUrl, newUrl)
+		await recordMediaImported(jobId)
 	} catch (e) {
 		console.error(`importMedia: ${e}`)
 		await recordMediaImportFailed(jobId)

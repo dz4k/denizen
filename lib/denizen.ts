@@ -83,6 +83,7 @@ app
 	.post('/.denizen/site-settings', requireAdmin, o5command.updateSettings)
 	.post('/.denizen/theme-settings', requireAdmin, o5command.updateTheme)
 	.post('/.denizen/import-blog', requireAdmin, importBlog.post)
+	.get('/.denizen/import-blog/:id', requireAdmin, importBlog.getJob)
 	.get('/.denizen/login', login.get)
 	.post('/.denizen/login', login.post)
 	.post('/.denizen/logout', login.logout)
