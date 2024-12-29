@@ -5,6 +5,7 @@ import { User } from './model/user.ts'
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
 import { enqueue } from './queue.ts'
 import type { BlogImportJob } from './import-blog.ts'
+import { findMentions } from './webmention/webmention.ts'
 
 export const db = await Deno.openKv(Deno.env.get('DENIZEN_KV'))
 
@@ -58,18 +59,21 @@ export const createPost = async (post: Entry): Promise<string> => {
 	tx.set(myPostKey, post.toMF2Json())
 	myUrlKey && tx.set(myUrlKey, post.iid)
 	bump(tx)
-	await tx.commit()
+	const { ok } = await tx.commit()
+	if (!ok) throw new Error("Couldn't save post. Likely, a post with same URL or IID already exists.")
 
 	// TODO: this doesn't feel like it belongs here
 	await enqueue({
 		type: 'send_webmentions',
-		post: post.toMF2Json(),
+		source: post.uid!.href,
+		targets: findMentions(post),
 	})
 	return post.iid
 }
 
 export const updatePost = async (post: Entry): Promise<string> => {
 	const oldPost = await getPost(post.iid)
+	const oldContent = oldPost?.content?.html
 
 	post.updated = new Date()
 
@@ -82,8 +86,8 @@ export const updatePost = async (post: Entry): Promise<string> => {
 	// TODO: this doesn't feel like it belongs here
 	await enqueue({
 		type: 'send_webmentions',
-		post: post.toMF2Json(),
-		oldHtml: oldPost?.content?.html,
+		source: post.uid!.href,
+		targets: findMentions(post, oldContent),
 	})
 
 	return post.iid!

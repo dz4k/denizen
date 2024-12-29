@@ -104,17 +104,15 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 	return 'mention'
 }
 
-export const sendWebmentions = async (post: Entry, oldContent?: string) => {
-	if (post.deleted) return
-
-	const mentionedPages = findMentions(post, oldContent)
-	await Promise.all(Array.from(mentionedPages, (page) =>
+export const sendWebmentions = (source: string, targets: Set<string>) =>
+  Promise.all(targets.values().map((target) =>
 		enqueue({
 			type: 'send_webmention',
-			source: post.uid!.href,
-			target: page,
-		})))
-}
+			source,
+			target,
+		})
+  )).then((res) => void res)
+// const mentionedPages = findMentions(post, oldContent)
 
 export const findMentions = (post: Entry, oldContent?: string) => {
 	const urls = new Set<string>()
