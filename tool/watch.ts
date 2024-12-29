@@ -4,10 +4,10 @@
 
 const shouldRestart = (path: string) =>
 	[
-		/^build\//,
-		/^doc\//,
-		/^_blobs\//,
-		/^\.git\//,
+		/build\//,
+		/doc\//,
+		/_blobs\//,
+		/\.git\//,
 		/\.sqlite/,
 	].every((re) => !re.test(path))
 
