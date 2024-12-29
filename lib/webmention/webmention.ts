@@ -153,7 +153,9 @@ const findMentionsInContent = function* (
 		const el = node as Element
 		if (el.getAttribute('rel')?.includes('nomention')) return
 		try {
-			yield new URL(el.getAttribute('href')!, baseUrl)
+			const url = new URL(el.getAttribute('href')!, baseUrl)
+			url.hash = ""
+			yield url
 		} catch {
 			// invalid URL
 			// TODO: maybe post a warning?
