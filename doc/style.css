@@ -17,8 +17,9 @@ html {
     background: var(--bg);
     accent-color: var(--accent);
     color-scheme: dark;
-    overflow-y: scroll;
-    scrollbar-gutter: both-edges stable;
+
+    /* i give up */
+    overflow-x: hidden;
 }
 
 body {
