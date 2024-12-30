@@ -11,6 +11,7 @@ const site = lume()
 
 site.loadPages(['.html'])
 site.copy(['.css', '.svg'])
+site.copy('/fonts')
 site.data('layout', 'layout.vto')
 
 site.use(code_highlight())

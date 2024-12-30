@@ -1,6 +1,18 @@
 <title>Denizen</title>
+<style>
+  html {
+    background:
+      radial-gradient(100vw 100%,
+        var(--bg) 20%,
+        rgb(from var(--bg) r g b / 84%) 80%
+      ) center local no-repeat border-box,
+      url(/pattern.svg) center fixed,
+      var(--bg)
+    ;
+  }
+</style>
 
-<img src="denizen-logo.svg#no-padding" alt="" height="40" class="inline">
+<img src="/denizen-logo.svg#no-padding" alt="" height="40" class="inline">
 
 <h1 class="logotype">
     denizen
@@ -13,32 +25,25 @@
         <a href="https://codeberg.org/dz4k/denizen#todo">to-do list</a>.
 </div>
 
-<p> <strong>Denizen</strong> is <del>yet another blog CMS</del>
+<p class=lede>
+    <span class="fun-font">Denizen</span> is <del>yet another blog CMS</del>
     a personal website engine that connects you
-    to the <a href="https://indieweb.org">IndieWeb</a>
-    with no configuration, no connection strings, and hopefully for free.
-    Find it on
-    <a href=https://codeberg.org/dz4k/denizen>Codeberg</a>.
+    to the <a class="fun-font" href="https://indieweb.org">IndieWeb</a>.
+    No configuration, no connection strings, and hopefully for free.
 
-<p> <strong><a href="/get-started/" class="unlink">&gt; Get started</a></strong>
+<p class="box-grid" style="--box-link-pattern: linear-gradient(#0000,#0000)">
+  <strong style="grid-column-end: span 2">
+    <a href="/about/get-started/" class="box-link">
+      Get<span class="br"></span>started
+    </a>
+  </strong>
+  <a href="https://codeberg.org/dz4k/denizen" class="box-link">Source code</a>
+  <a href="https://codeberg.org/dz4k/denizen/issues" class="box-link">Bug tracker</a>
+  <a href="/about/" class="box-link">Docs</a>
+  <a href="/about/protocols/" class="box-link">Proto&shy;cols</a>
+</p>
 
 <p> Denizen is written in JavaScript for Deno,
     and can be deployed on Deno Deploy or on any server &mdash;
     lowering the barrier of having a personal website
     without the limitations of static blog generators.
-
-
-<h2>Supported protocols and what they do</h2>
-
-<ul>
-<li><strong>Webmention</strong>: liking and commenting across websites
-<li><strong>Webactions</strong>: interact with other websites with a single click
-<li><strong>Micropub</strong>: post from a variety of web, mobile, desktop and
-    command-line apps
-<li><strong>IndieAuth</strong>: log in to apps with your own website
-<li><s><strong>Microsub</strong>: follow other people's websites</s> not yet!
-</ul>
-
-<footer>
-    Made with {{emotion}} by <a href=https://denizaksimsek.com>Deniz</a>
-</footer>
