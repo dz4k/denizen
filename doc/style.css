@@ -24,13 +24,13 @@ html {
 
 body {
   width: var(--page-width);
-  margin: 3em auto;
+  margin: 1em auto;
 }
 
 header,
 main,
 footer {
-    margin-block: 2em;
+    margin-block: 1em;
 }
 
 footer {
@@ -39,7 +39,7 @@ footer {
 }
 
 h1 {
-  font-size: 4em;
+  font-size: clamp(2em, 9vw, 4em);
   line-height: 1;
   text-wrap: balance;
 }
@@ -114,17 +114,18 @@ details {
     text-align: center;
     text-transform: uppercase;
     letter-spacing: .1em;
-    font: 6em var(--brand-font);
+    font: min(6em, 15vw) var(--brand-font);
     font-weight: normal;
 
     color: var(--text-accent);
     filter: drop-shadow(0 0 1.5em rgb(from var(--text-accent) r g b / 70%));
 }
 
-.home-link {
-  display: block;
-  margin-block-end: 2em;
+.nav-bar {
+  --:;
+}
 
+.home-link {
   font-family: var(--brand-font);
   text-transform: uppercase;
   font-size: 1.3em;
@@ -241,7 +242,7 @@ details {
 }
 
 .lede {
-  font-size: 1.8em;
+  font-size: min(1.8em, 7vw);
   line-height: 1.2;
 }
 
@@ -261,4 +262,13 @@ details {
 .fun-font {
   font-family: var(--brand-font);
   font-weight: normal;
+}
+
+@media (min-width: 40rem) {
+  body,
+  header,
+  main,
+  footer {
+    margin-block: 2em;
+  }
 }

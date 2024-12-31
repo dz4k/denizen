@@ -4,13 +4,19 @@ layout: layout.vto
 
 <title>{{ title }}&mdash;Denizen</title>
 
-<a href="/" class="home-link">
-  <img src="/denizen-logo.svg#no-padding" alt="" height="40" class="inline">
-  Denizen
-</a>
-
-<header class="flourished-header">
-  <h1>{{ title }}</h1>
+<header class="nav-bar">
+  <nav>
+    <a href="/" class="home-link">
+      <img src="/denizen-logo.svg#no-padding" alt="" height="40" class="inline">
+      Denizen
+    </a>
+  </nav>
 </header>
 
-{{ content }}
+<main>
+  <header class="flourished-header">
+    <h1>{{ title }}</h1>
+  </header>
+
+  {{ content }}
+</main>
