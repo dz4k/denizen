@@ -82,7 +82,7 @@ pre, code, samp {
 }
 
 pre {
-    overflow-x: scroll;
+    overflow-x: auto;
     margin-block: 1em;
     padding: .5em;
 
@@ -104,6 +104,26 @@ details {
 
   summary {
     font-weight: bold;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    interpolate-size: allow-keywords;
+  }
+
+  &::details-content {
+    display: flow-root;
+    opacity: 0;
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      content-visibility .2s allow-discrete,
+      opacity .2s,
+      block-size .2s;
+  }
+
+  &[open]::details-content {
+    opacity: 1;
+    block-size: auto;
   }
 }
 
