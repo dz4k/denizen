@@ -19,4 +19,18 @@ layout: layout.vto
   </header>
 
   {{ content }}
+
+  <footer>
+    <p class="meta">
+      <cite>{{ title }}</cite>.
+      First published
+      <time datetime="{{ date |> date }}">
+        {{- date |> date("yyyy MMM dd") -}}
+      </time>.
+      Last modified
+      <time datetime="{{ modified |> date }}">
+        {{- modified |> date("yyyy MMM dd, HH:mm (x)") -}}
+      </time>.
+    </p>
+  </footer>
 </main>

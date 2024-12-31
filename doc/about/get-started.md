@@ -53,7 +53,7 @@ After you click <kbd>Get started</kbd>, you will be redirected to your site's ho
 ##      Login
 
 If you are logged out of the admin account, go to
-`http://&lt;your Denizen site>/.denizen/login`
+`http://<your Denizen site>/.denizen/login`
 to log in.
 
 
