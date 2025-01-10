@@ -132,6 +132,9 @@ const Console = ({ user, theme }: { user: User; theme: string }) => {
 			<script type='module' src='/.denizen/public/textarea-autoexpand.js' />
 			<header>
 				<h1>Console</h1>
+				<p>
+				  <a href={config.baseUrl.href}>{config.baseUrl.host}</a>
+				</p>
 			</header>
 			<main>
 				<section>
