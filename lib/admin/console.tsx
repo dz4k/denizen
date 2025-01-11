@@ -219,7 +219,8 @@ const Console = ({ user, theme }: { user: User; theme: string }) => {
 								<label for='add-badge.url'>Link</label>
 								<input type='url' name='photo' id='add-badge.url' />
 							</p>
-							<button onclick='this.closest("dialog").close()'>Add</button>
+							<button type='button' popovertarget='add-badge-dialog'>Add</button>
+							<button type='reset' popovertarget='add-badge-dialog'>Close</button>
 						</form>
 					</dialog>
 				</section>
