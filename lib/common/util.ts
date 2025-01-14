@@ -42,3 +42,7 @@ export const toScript = <TArgs extends unknown[] = []>(
 
 export const clientRedirect = (path: string | URL) =>
 	toScript((path) => location.assign(path), path.toString())
+
+export const htmlStripTags = (html: string) => html
+    .replace(/<(?!\/?( )\\b)[^<>]+>/gm, "")
+    .replace(/([\r\n]+ +)+/gm, "")

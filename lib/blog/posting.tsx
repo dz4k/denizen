@@ -50,7 +50,6 @@ export const postEdit = (c: hono.Context<Env>) => {
 
 export const post = async (c: hono.Context<Env>) => {
 	const formdata = await c.req.formData()
-	console.log(formdata)
 
 	const post = Entry.fromFormData(formdata)
 	post.uid = new URL(
@@ -81,7 +80,8 @@ export const PostEditor = (
 				<h1>{c.var.title}</h1>
 			</header>
 			<main>
-				<script type='module' src='/.denizen/public/post-editor.js'></script>
+			  <script type='module' src='/.denizen/public/post-editor.js'></script>
+				<script type='module' src='/.denizen/public/dependent-input.js'></script>
 				<form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
 					{p.post?.inReplyTo
 						? p.post.inReplyTo.map((cite) => (
@@ -120,10 +120,55 @@ export const PostEditor = (
 						/>
 					</p>
 					<p class='grid-row'>
-						<label for='edit-content'>Content</label>
-						<textarea name='content' id='edit-content'>
+					  {/* HTML doesn't have a way for one <label> to label multiple elements */}
+					  <label aria-hidden='true'>Content</label>
+						<textarea
+						  name='content[html]'
+							id='edit-content-html'
+							aria-label='Content, HTML'
+							placeholder='Content (HTML)'
+							hidden={p.post?.contentType && p.post?.contentType !== 'html'}
+							disabled={p.post?.contentType && p.post?.contentType !== 'html'}
+						>
 							{p.post?.content?.html}
 						</textarea>
+						<textarea
+						  name='content'
+							id='edit-content-text'
+							hidden={p.post?.contentType !== 'text'}
+							disabled={p.post?.contentType !== 'text'}
+							aria-label='Content'
+							placeholder='Content'
+						>
+							{p.post?.content?.value}
+						</textarea>
+					</p>
+					<p class='grid-row'>
+					  <label for='edit-content-type'>Content type</label>
+						<dependent-input>
+						  <select id='edit-content-type' name='x-content-type'>
+								<option
+								  value='html'
+									selected={p.post?.contentType === 'html'}
+									data-controls='edit-content-html'
+								>HTML</option>
+								<option
+								  value='text'
+									selected={p.post?.contentType === 'text'}
+									data-controls='edit-content-text'
+								>Text</option>
+								<option
+								  disabled value='markdown'
+									// selected={p.post?.contentType === 'markdown'}
+									data-controls='edit-content-markdown'
+								>Markdown</option>
+								<option
+								  disabled value='wysiwyg'
+									// selected={p.post?.contentType === 'wysiwyg'}
+									data-controls='edit-content-wysiwyg'
+								>Rich text</option>
+							</select>
+						</dependent-input>
 					</p>
 					<details style='grid-column: 1 / 3' open={!!p.post?.summary}>
 						<summary>Add summary</summary>

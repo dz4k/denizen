@@ -1,5 +1,5 @@
 import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
-import { escape as htmlEscape } from 'https://deno.land/std@0.203.0/html/mod.ts'
+import { escape as htmlEscape, unescape as htmlUnescape } from 'https://deno.land/std@0.203.0/html/mod.ts'
 import {
 	ImageUrl,
 	mf2Date,
@@ -17,6 +17,8 @@ import { makeSlug } from '../common/slug.ts'
 import * as config from '../config.ts'
 import { Card } from './card.ts'
 import { Citation } from './citation.ts'
+import { htmlStripTags } from '../common/util.ts'
+import { contentType } from 'https://deno.land/std@0.203.0/media_types/mod.ts'
 
 /**
  * @see http://microformats.org/wiki/h-entry
@@ -30,7 +32,9 @@ export class Entry {
 
 	name?: string
 	summary?: string
+
 	content?: { html: string; value?: string; lang?: string }
+	contentType?: 'text' | 'html'
 
 	published: Date = new Date()
 	updated?: Date
@@ -95,8 +99,15 @@ export class Entry {
 			const content = p.content[0]
 			if (typeof content === 'string') {
 				this.content = { html: htmlEscape(content) }
-			} else if ('html' in content) this.content = content as MF2Html
-			else if (content.value) this.content = { html: htmlEscape(content.value) }
+			} else if ('html' in content) {
+			  this.content = content
+				this.content.value = htmlUnescape(htmlStripTags(content.html))
+			} else if (content.value) {
+			  this.content = { html: htmlEscape(content.value) }
+			}
+		}
+		if ('x-content-type' in p) {
+		  this.contentType = mf2String(p['x-content-type'][0]) as 'html' | 'text'
 		}
 		if ('author' in p) this.author = p.author.map((v) => Card.fromMf2Json(v))
 		if ('category' in p) this.category = mf2StringArray(p.category)
@@ -244,7 +255,15 @@ export class Entry {
 
 		if (form.has('name')) props.name = get('name')
 		if (form.has('summary')) props.summary = get('summary')
-		if (form.has('content')) props.content = { html: get('content') }
+		if (form.has('content[html]')) props.content = { html: get('content[html]') }
+		else if (form.has('content')) props.content = {
+		  value: get('content'),
+			html: htmlEscape(get('content')),
+		}
+		if (form.has('x-content-type')) {
+		  const type = get('x-content-type')
+			if (type === 'html' || type === 'text') props.contentType = type
+		}
 		if (form.has('category')) props.category = getAll('category')
 		if (form.has('syndication')) {
 			props.syndication = getUrls('syndication')
@@ -298,6 +317,7 @@ export class Entry {
 				url: Array.from(this.url, String),
 				uid: this.uid ? [this.uid.toString()] : [],
 				'x-deleted': [String(this.deleted)],
+				'x-content-type': this.contentType ? [this.contentType] : [],
 			},
 		})
 	}
