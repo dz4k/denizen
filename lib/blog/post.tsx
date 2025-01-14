@@ -75,21 +75,36 @@ export const get = async (c: hono.Context<Env>) => {
 									makeProfileSvg(siteOwner.profile)}
 								alt={siteOwner.profile.photo[0]?.alt}
 								class='photo'
+								style='view-transition-name: owner-pfp'
 							/>
-							<strong class='p-name'>
+							<strong class='p-name' style='view-transition-name: owner-name'>
 								{siteOwner.profile.name}
 							</strong>
 							<span>{config.baseUrl.hostname}</span>
 						</a>
 					</nav>
-					{post.name ? <h1 class='p-name'>{post.name}</h1> : ''}
-					{post.summary ? <p class='lede'>{post.summary}</p> : ''}
+					{post.name ? (
+					  <h1
+							class='p-name'
+							style={`view-transition-name: post-${post.iid}-name`}
+						>
+						  {post.name}
+						</h1>
+					) : ''}
+					{post.summary ? (
+					  <p class='lede' style={`view-transition-name: post-${post.iid}-summary`}>
+							{post.summary}
+						</p>
+					) : ''}
 				</header>
 				<main>
 					{console.log(post.inReplyTo)}
-					{post.inReplyTo.map((cite) => (
+					{post.inReplyTo.map((cite, index) => (
 						// TODO: better reply context
-						<p class='reply-context p-in-reply-to h-cite'>
+						<p
+						  class='reply-context p-in-reply-to h-cite'
+							style={`view-transition-name: post-${post.iid}-reply-context-${index}`}
+						>
 							<strong class='tiny-header'>↪ In reply to</strong>
 							{cite.author?.map((author) => (
 								<>
@@ -114,8 +129,11 @@ export const get = async (c: hono.Context<Env>) => {
 							</a>
 						</p>
 					))}
-					{post.bookmarkOf.map((cite) => (
-						<p class='repost-context p-repost-of h-cite'>
+					{post.bookmarkOf.map((cite, index) => (
+						<p
+						  class='repost-context p-repost-of h-cite'
+							style={`view-transition-name: post-${post.iid}-repost-of-${index}`}
+						>
 							<strong class='tiny-header'>🔁 Reposted from</strong>
 							{cite.author?.map((author) => (
 								<>
@@ -130,17 +148,22 @@ export const get = async (c: hono.Context<Env>) => {
 							))}
 						</p>
 					))}
-					{post.photo.map((photo) => (
-						<figure>
+					{post.photo.map((photo, index) => (
+						<figure
+						  style={`view-transition-name: post-${post.iid}-photo-${index}`}
+						>
 							<img class='u-photo' src={photo.url.href} alt={photo.alt} />
 						</figure>
 					))}
 					<div
 						class='e-content'
+						style={`view-transition-name: post-${post.iid}-content`}
 						dangerouslySetInnerHTML={{ __html: post.content?.html! }}
 					/>
 				</main>
-				<footer>
+				<footer
+				  style={`view-transition-name: post-${post.iid}-footer`}
+				>
 					<div class='<small>'>
 						<p>
 							<a href={post.uid!.href} class='u-url u-uid'>

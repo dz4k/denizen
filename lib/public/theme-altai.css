@@ -20,6 +20,10 @@
     font-family: var(--text);
 }
 
+@view-transition {
+  navigation: auto;
+}
+
 header:has(+ main),
 main+footer {
     margin: 3em 0;

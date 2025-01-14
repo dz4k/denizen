@@ -42,9 +42,10 @@ export const get = async (c: hono.Context<Env>) => {
 					src={siteOwner.profile.photo[0]?.url.href ??
 						makeProfileSvg(siteOwner.profile)}
 					alt={siteOwner.profile.photo[0]?.alt}
+					style='view-transition-name: owner-pfp'
 					class='big face'
 				/>
-				<h1>
+				<h1 style='view-transition-name: owner-name'>
 					<a href='/' class='u-url u-uid p-name'>
 						{siteOwner.profile.name}
 					</a>
@@ -126,13 +127,17 @@ export const get = async (c: hono.Context<Env>) => {
 							class='h-entry link-card'
 							lang={post.language ?? config.lang()}
 						>
-							<h2>
+							<h2
+							  style={`view-transition-name: post-${post.iid}-name`}
+							>
 								<a class='p-name u-url u-uid' href={post.uid!.pathname}>
 									{post.name}
 								</a>
 							</h2>
-							{post.photo.map((photo) => (
-								<figure>
+							{post.photo.map((photo, index) => (
+								<figure
+								  style={`view-transition-name: post-${post.iid}-photo-${index}`}
+								>
 									<img class='u-photo' src={photo.url.href} alt={photo.alt} />
 								</figure>
 							))}
@@ -140,6 +145,7 @@ export const get = async (c: hono.Context<Env>) => {
 								? (
 									<p
 										class='italic'
+										style={`view-transition-name: post-${post.iid}-summary`}
 										dangerouslySetInnerHTML={{ __html: post.summary }}
 									/>
 								)
@@ -148,10 +154,14 @@ export const get = async (c: hono.Context<Env>) => {
 								: post.content && (
 									<div
 										class='e-content'
+										style={`view-transition-name: post-${post.iid}-content`}
 										dangerouslySetInnerHTML={{ __html: post.content.html }}
 									/>
 								)}
-							<p class='<small>'>
+							<p
+							  class='<small>'
+							  style={`view-transition-name: post-${post.iid}-footer`}
+							>
 								<a href={post.uid?.pathname} class='card-link'>
 									<time className='dt-published'>
 										{post.published.toLocaleString([
