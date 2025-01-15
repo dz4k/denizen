@@ -3,7 +3,6 @@ import { escape as htmlEscape, unescape as htmlUnescape } from 'https://deno.lan
 import {
 	ImageUrl,
 	mf2Date,
-	MF2Html,
 	mf2ImgArray,
 	MF2Object,
 	MF2Properties,
@@ -18,7 +17,6 @@ import * as config from '../config.ts'
 import { Card } from './card.ts'
 import { Citation } from './citation.ts'
 import { htmlStripTags } from '../common/util.ts'
-import { contentType } from 'https://deno.land/std@0.203.0/media_types/mod.ts'
 
 /**
  * @see http://microformats.org/wiki/h-entry

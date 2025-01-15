@@ -14,7 +14,7 @@ import {
 import { Entry } from '../model/entry.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { makeSlug } from '../common/slug.ts'
-import { getTokenData } from '../auth/indie-auth/indie-auth.tsx'
+import { getTokenData } from '../auth/indie-auth/indie-auth.ts'
 
 /*
     A conforming Micropub server:

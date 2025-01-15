@@ -12,11 +12,7 @@
 		"deploy": "deno run -A jsr:@deno/deployctl deploy --project=denizen-test bin/denizen.ts --prod",
 		"deploy-website": "cd doc && deno task build && wrangler pages deploy --project-name=denizen-website _site/",
 		"reset-local": "rm -rf dev.sqlite* _blobs",
-		"compile": "deno compile --include lib/public/ --unstable-kv -A --no-check bin/denizen.ts"
-	},
-	"compilerOptions": {
-		"jsxFactory": "hono.jsx",
-		"jsxFragmentFactory": "hono.Fragment"
+		"compile": "deno compile --include lib/public/ --include lib/views/ --unstable-kv -A --no-check bin/denizen.ts"
 	},
 	"fmt": {
 		"semiColons": false,

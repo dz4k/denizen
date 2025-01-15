@@ -2,7 +2,6 @@ import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
 import * as config from '../config.ts'
-import { LoginForm } from './_login-form.tsx'
 
 export const get = async (c: hono.Context<Env>) => {
 	const validate = await fetch('https://indieauth.com/auth', {
@@ -18,6 +17,6 @@ export const get = async (c: hono.Context<Env>) => {
 		sesh.set('user', 'admin')
 		return c.redirect('/')
 	} else {
-		return c.render(<LoginForm error='IndieAuth login failed' />)
+		return c.var.render('login.vto', { error: 'IndieAuth login failed' })
 	}
 }

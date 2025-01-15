@@ -1,13 +1,12 @@
 import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
-import { Layout } from '../../layout.ts'
 
 import * as config from '../../config.ts'
 import { crypto } from 'https://deno.land/std@0.204.0/crypto/mod.ts'
 import parseMicroformats from '../../mf2/mf2-parser.ts'
 import { isAdmin } from '../../admin/middleware.ts'
 import { mf2String } from '../../common/mf2.ts'
-import { login } from '../login.tsx'
+import { login } from '../login.ts'
 import { db } from '../../db.ts'
 import { encodeBase64Url } from 'https://deno.land/std@0.204.0/encoding/base64url.ts'
 
@@ -33,17 +32,7 @@ export const getAuth = async (c: hono.Context<Env>) => {
 
 	const invalidRequest = () => {
 		c.set('title', 'Invalid request')
-		return c.render(
-			<>
-				<h1>Invalid request</h1>
-				<p>
-					The app at {client_id}{' '}
-					made an invalid request to authorize with your Denizen site. This
-					might be a bug in their app, or in Denizen, or an attempt to hack your
-					site (it's probably not, but if it is, it failed)
-				</p>
-			</>,
-		)
+		return c.var.render('indieauth-invalid-request.vto', { client_id })
 	}
 
 	if (
@@ -73,17 +62,16 @@ export const getAuth = async (c: hono.Context<Env>) => {
 
 	const authorized = isAdmin(c)
 
-	return c.render(
-		<AuthForm
-			clientInfo={clientInfo}
-			client_id={client_id}
-			redirect_uri={redirect_uri}
-			code_challenge={code_challenge}
-			state={state}
-			scope={scope}
-			authorized={authorized}
-		/>,
-	)
+	c.set('title', `Authorize ${clientInfo.name ?? client_id}`)
+	return c.var.render('indieauth-form.vto', {
+		clientInfo,
+		client_id,
+		redirect_uri,
+		code_challenge,
+		state,
+		scope,
+		authorized,
+	})
 }
 
 export const postAuthorize = async (c: hono.Context<Env>) => {
@@ -116,14 +104,7 @@ export const postAuthorize = async (c: hono.Context<Env>) => {
 		if (user === null) {
 			c.set('title', 'Invalid password')
 			c.status(401)
-			return c.render(
-				<>
-					<h1>Invalid password</h1>
-					<p>
-						The password you entered is incorrect. Please try again.
-					</p>
-				</>,
-			)
+			return c.var.render('indieauth-invalid-password.vto')
 		} else {
 			c.var.session.set('user', user)
 			authorized = true
@@ -200,73 +181,6 @@ export const postAuth = async (c: hono.Context<Env>) => {
 	) return c.json({ error: 'invalid_grant' }, 400)
 
 	return c.json({ me: config.baseUrl.href })
-}
-
-type AuthFormProps = {
-	clientInfo: ClientInfo
-	client_id: string
-	redirect_uri: string
-	code_challenge: string
-	state: string
-	scope?: string
-	authorized: boolean
-}
-
-const AuthForm = ({
-	clientInfo,
-	client_id,
-	redirect_uri,
-	code_challenge,
-	state,
-	scope,
-	authorized,
-}: AuthFormProps) => {
-	const c = hono.useRequestContext()
-	c.set('title', `Authorize ${clientInfo.name ?? client_id}`)
-	return (
-		<form action='/.denizen/auth/orize' method='POST'>
-			{scope
-				? (
-					<>
-						<h1>Authorize {clientInfo.name ?? client_id}?</h1>
-						<p>
-							The app at {client_id}{' '}
-							wants to access the following on your Denizen site:
-						</p>
-						<fieldset>
-							<legend>Requested scopes</legend>
-							{scope.split(/\s+/g).map((s) => (
-								<p>
-									<label>
-										<input type='checkbox' name='scopes' value={s} checked />
-										{s}
-									</label>
-								</p>
-							))}
-						</fieldset>
-					</>
-				)
-				: (
-					<h1>
-						Log in to {client_id} with your Denizen site
-					</h1>
-				)}
-			{!authorized
-				? (
-					<label>
-						Password
-						<input type='password' name='password' required />
-					</label>
-				)
-				: ''}
-			<button type='submit' name='response' value='allow'>Allow</button>
-			<button type='submit' name='response' value='deny'>Deny</button>
-			<input type='hidden' name='client_id' value={client_id} />
-			<input type='hidden' name='redirect_uri' value={redirect_uri} />
-			<input type='hidden' name='code_challenge' value={code_challenge} />
-			<input type='hidden' name='state' value={state} />
-		</form>
-	)
 }
 
 type ClientInfo = {

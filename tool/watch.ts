@@ -29,7 +29,7 @@ let server: Deno.ChildProcess
 let abortCtl: AbortController
 
 const spawn = () => {
-	console.log('Starting server')
+	ilog('Starting server')
 	server = new Deno.Command(
 		'bin/denizen.ts',
 		{

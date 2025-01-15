@@ -5,7 +5,6 @@ import * as bcrypt from '../../deps/bcrypt.ts'
 
 import { getUser } from '../db.ts'
 import { User } from '../model/user.ts'
-import { LoginForm } from './_login-form.tsx'
 
 export const login = async (
 	username: string,
@@ -16,18 +15,25 @@ export const login = async (
 	else return null
 }
 
-export const get = (c: hono.Context<Env>) => c.render(<LoginForm />)
+export const get = (c: hono.Context<Env>) => {
+ 	c.set('title', 'Log in to Denizen')
+  return c.var.render('login.vto')
+}
 
 export const post = async (c: hono.Context<Env>) => {
-	const form = await c.req.formData()
+ 	c.set('title', 'Log in to Denizen')
+
+  const form = await c.req.formData()
 	const username = form.get('username')
 	const pw = form.get('pw')
 	if (typeof username !== 'string' || typeof pw !== 'string') {
-		return c.render(<LoginForm error='Missing username or password' />)
+	  c.status(400)
+		return c.var.render('login.vto', { error: 'Missing username or password' })
 	}
 	const user = login(username, pw)
 	if (!user) {
-		return c.render(<LoginForm error='Incorrect username or password' />)
+    c.status(400)
+		return c.var.render('login.vto', { error: 'Incorrect username or password' })
 	}
 
 	// Login successful

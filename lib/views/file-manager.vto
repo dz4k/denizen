@@ -1,0 +1,60 @@
+{{ layout 'includes/layout.vto' }}
+
+<header>
+	<h1>Files</h1>
+</header>
+<main>
+  {{ if files.length > 0 }}
+		<table style='width: 100%'>
+			<col />
+			<col width='0.1%' />
+			<thead>
+				<tr>
+					<th>Filename</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			{{ for file of files }}
+			  {{ set ufile = file |> encodeURIComponent }}
+				<tr id='file-{{ ufile }}'>
+					<td>{{ file }}</td>
+					<td style='white-space: nowrap'>
+						<a
+							download='{{ file }}'
+							href='/.denizen/storage?filename={{ ufile }}'
+							class='<button>'
+						>
+							Download
+						</a>
+						<form
+							rel='swap-replaceWith'
+							target='file-{{ ufile }}'
+							method='DELETE'
+							action='/.denizen/storage?filename={{ ufile }}'
+						>
+							<button>Delete</button>
+						</form>
+					</td>
+				</tr>
+			{{ /for }}
+		</table>
+	{{ else }}
+		<p class='center big'>No files</p>
+	{{ /if }}
+
+	<h2>Add file</h2>
+	<form
+		action='/.denizen/storage'
+		method='POST'
+		enctype='multipart/form-data'
+		class='table rows'
+	>
+		<label>
+			<span>File</span>
+			<input type='file' name='file' />
+		</label>
+		<button type='submit'>Upload</button>
+	</form>
+</main>
+
+{{ /layout }}

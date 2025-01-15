@@ -35,7 +35,8 @@ export const write = async (
 export const list = async function* () {
 	await Deno.mkdir(blobDir, { recursive: true })
 	for await (const entry of Deno.readDir(blobDir)) {
-		if (entry.name.endsWith('.#type')) continue
+	  if (entry.name.endsWith('.#type')) continue
+		if (entry.name.endsWith('.#cache-control')) continue
 		yield decodeURIComponent(entry.name)
 	}
 }

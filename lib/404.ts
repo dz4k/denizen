@@ -1,4 +1,5 @@
 import * as hono from '../deps/hono.ts'
+import render from './common/vento.ts'
 import type { Env } from './denizen.ts'
 
 export const get = (c: hono.Context<Env>) => {
@@ -8,13 +9,5 @@ export const get = (c: hono.Context<Env>) => {
 
 	c.status(404)
 	c.set('title', 'Not found')
-	return c.render(
-		<main>
-			<h1>HTTP 404</h1>
-			<p>There's nothing here... and never was.</p>
-			<p>
-				<a href='/'>&gt; Go back home.</a>
-			</p>
-		</main>,
-	)
+	return c.var.render("404.vto")
 }

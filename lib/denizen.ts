@@ -8,28 +8,29 @@ import { listen } from './queue.ts'
 import { db } from './db.ts'
 import * as config from './config.ts'
 
-import * as fourOhFour from './404.tsx'
-import * as o5command from './admin/console.tsx'
-import * as initialSetup from './admin/initial-setup.tsx'
+import * as fourOhFour from './404.ts'
+import * as o5command from './admin/console.ts'
+import * as initialSetup from './admin/initial-setup.ts'
 import { requireAdmin } from './admin/middleware.ts'
-import * as posting from './blog/posting.tsx'
-import * as webaction from './admin/webaction.tsx'
+import * as posting from './blog/posting.ts'
+import * as webaction from './admin/webaction.ts'
 import * as wpAdmin from './admin/wp-admin.ts'
-import * as importBlog from './admin/import-blog.tsx'
-import * as indieAuth from './auth/indie-auth/indie-auth.tsx'
-import * as indieauthCb from './auth/indieauth-cb.tsx'
-import * as login from './auth/login.tsx'
-import * as feed from './blog/feed.tsx'
-import * as homepage from './blog/homepage.tsx'
-import * as post from './blog/post.tsx'
+import * as importBlog from './admin/import-blog.ts'
+import * as indieAuth from './auth/indie-auth/indie-auth.ts'
+import * as indieauthCb from './auth/indieauth-cb.ts'
+import * as login from './auth/login.ts'
+import * as feed from './blog/feed.ts'
+import * as homepage from './blog/homepage.ts'
+import * as post from './blog/post.ts'
 import * as storage from './storage/storage-routes.ts'
-import * as fileManager from './storage/file-manager.tsx'
+import * as fileManager from './storage/file-manager.ts'
 import * as micropub from './micropub/micropub.ts'
 import * as webmentionRecv from './webmention/recv.ts'
 import { StorageBackend } from './storage/storage-interface.ts'
 import * as fsBackend from './storage/fs-backend.ts'
 
 import { Layout } from './layout.ts'
+import render from './common/vento.ts'
 
 listen()
 
@@ -40,16 +41,27 @@ export type Env = {
 		authScopes: string[]
 		storage: StorageBackend
 
+		locales: string[]
 		lang: string
 		title: string
 		theme: string
+		baseUrl: URL
+
+		render: (template: string, data?: Record<string, unknown>) => Response | Promise<Response>
 	}
 }
 export const app = new Hono<Env>()
 
 app.use('*', (c, next) => (c.set('storage', fsBackend), next()))
 app.use('*', async (c, next) => (c.set('theme', await config.theme()), next()))
-app.use('*', async (c, next) => (c.set('lang', await config.lang()), next()))
+app.use('*', (c, next) => (c.set('locales', config.locales), next()))
+app.use('*', (c, next) => (c.set('lang', config.lang()), next()))
+app.use('*', (c, next) => (c.set('baseUrl', config.baseUrl), next()))
+app.use('*', async (c, next) => {
+  c.set('render', async (template: string, data?: Record<string, unknown>) =>
+    c.html(await render(c, template, data)));
+  await next();
+})
 
 app
 	.use(
@@ -65,7 +77,6 @@ app
 		serveStatic({
 			root: import.meta.dirname + '/public',
 			rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
-			allowAbsoluteRoot: true,
 		}),
 	)
 	.use('*', jsxRenderer(Layout))

@@ -1,0 +1,32 @@
+{{ layout 'includes/layout.vto' }}
+<h1>Blog import</h1>
+<table>
+  <tr>
+    <th scope="row">Importing from</th>
+    <td>{{ job.feedUrl }}</td>
+  </tr>
+  <tr>
+    <th scope="row">Posts to import</th>
+    <td>{{ job.totalPosts }}</td>
+  </tr>
+  <tr>
+    <th scope="row">Posts imported</th>
+    <td>{{ job.importedPosts }}</td>
+  </tr>
+  <tr>
+    <th scope="row">Posts failed</th>
+    <td>{{ job.failedPosts }}</td>
+  </tr>
+</table>
+{{ if job.errors }}
+  <div class="bad">
+    <h2>Errors</h2>
+    <ul>
+      {{ for err of job.errors }}
+        <li>{{ err }}</li>
+      {{ /for }}
+    </ul>
+  </div>
+{{ /if }}
+
+{{ /layout }}

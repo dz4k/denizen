@@ -1,0 +1,19 @@
+<feed xmlns='http://www.w3.org/2005/Atom'>
+	<title>{{siteOwner.profile.name}}</title>
+	<link href='{{ c.var.baseUrl.href }}' />
+	<updated>{{ new Date(lastModified) |> toISOString }}</updated>
+	<generator uri='https://codeberg.org/dz4k/denizen'>Denizen</generator>
+	{{ for post of posts.data }}
+		<entry>
+			<id>{{ post.uid }}</id>
+			<title>{{ post.name ?? post.content?.value }}</title>
+			<updated>{{ post.updated ?? post.published }}</updated>
+			<content type='html'>{{ post.content?.html }}</content>
+			<summary>{{ post.summary }}</summary>
+			<published>{{ post.published }}</published>
+			{{ for cat of post.category }}
+			  <category term='{{ cat }}' />
+			{{ /for }}
+		</entry>
+	{{ /for }}
+</feed>

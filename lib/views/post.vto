@@ -1,0 +1,165 @@
+{{ layout 'includes/layout.vto' }}
+
+<!-- Metadata -->
+<meta property='og:url' content='{{ post.uid.href }}'>
+<meta property='og:site_name' content='{{ siteOwner.profile.name }}'>
+{{ if post.name }}<meta property='og:title' content='{{ post.name }}'>{{ /if }}
+{{ if post.summary }}
+	<meta
+		name='description'
+		property='og:description'
+		content='{{ post.summary }}'
+	>
+{{ /if }}
+{{ for photo of post.photo }}
+		<meta property='og:image' content='{{ photo.url.href }}'>
+		<meta property='og:image:alt' content='{{ photo.alt }}'>
+{{ /for }}
+{{ for video of post.video }}
+		<meta property='og:video' content='{{ video.href }}'>
+{{ /for }}
+{{ for audio of post.audio }}
+		<meta property='og:audio' content='{{ audio.href }}'>
+{{ /for }}
+
+<article class='h-entry'>
+	<header class='container padding-block-start'>
+		<nav>
+			<a href='/' class='p-author h-card author-card unlink'>
+			  {{ import { makeProfileSvg } from 'includes/make-profile-svg.vto' }}
+				<img
+					src='{{ siteOwner.profile.photo[0]?.url.href ?? await makeProfileSvg(siteOwner.profile) }}'
+					alt='{{ siteOwner.profile.photo[0]?.alt }}'
+					class='photo'
+					style='view-transition-name: owner-pfp'
+				>
+				<strong class='p-name' style='view-transition-name: owner-name'>
+					{{ siteOwner.profile.name }}
+				</strong>
+				<span>{{ c.var.baseUrl.hostname }}</span>
+			</a>
+		</nav>
+		{{ if post.name }}
+		  <h1 class='p-name' style='view-transition-name: post-{{ post.iid }}-name'>
+			  {{ post.name }}
+			</h1>
+		{{ /if }}
+		{{ if post.summary }}
+		  <p class='lede' style='view-transition-name: post-{{ post.iid }}-summary'>
+				{{ post.summary }}
+			</p>
+		{{ /if }}
+	</header>
+	<main>
+		{{ for index, cite of post.inReplyTo }}
+			<!-- TODO: better reply context -->
+			<p
+			  class='reply-context p-in-reply-to h-cite'
+				style='view-transition-name: post-{{ post.iid }}-reply-context-{{ index }}'
+			>
+				<strong class='tiny-header'>↪ In reply to</strong>
+				{{ for author of cite.author }}
+					<a class='p-author h-card' href='{{ author.url[0].href }}'>
+					  {{- author.name -}}
+					</a>,
+				{{ /for }}
+				<a
+					href='{{ (cite.uid ?? cite.url[0]).href }}'
+					class='{{cite.uid ? 'u-uid u-url' : 'u-url'}}'
+				>
+  				{{ if cite.name }}
+  					<cite>{{ cite.name }}</cite>
+  				{{ else if cite.content }}
+  					<span>{{ cite.content |> slice(0, 40) }}</span>
+  				{{ else }}
+  					<span>{{ cite.url }}</span>
+  				{{ /if }}
+				</a>
+			</p>
+		{{ /for }}
+		{{ for index, cite of post.repostOf }}
+			<p
+			  class='repost-context p-repost-of h-cite'
+				style='view-transition-name: post-{{ post.iid }}-repost-of-{{ index }}'
+			>
+				<strong class='tiny-header'>🔁 Reposted from</strong>
+				{{ for author of cite.author }}
+					<a class='p-author h-card' href='{{ author.url[0].href }}'>
+					  {{- author.name -}}
+					</a>,
+				{{ /for }}
+			</p>
+		{{ /for }}
+		{{ for index, photo of post.photo }}
+			<figure
+			  style='view-transition-name: post-{{ post.iid }}-photo-{{ index }}'
+			>
+				<img class='u-photo' src='{{ photo.url.href }}' alt='{{ photo.alt }}'>
+			</figure>
+		{{ /for }}
+		<div
+			class='e-content'
+			style='view-transition-name: post-{{ post.iid }}-content'
+		>
+			{{- post.content?.html |> safe -}}
+		</div>
+	</main>
+	<footer
+	  style='view-transition-name: post-{{ post.iid }}-footer'
+	>
+		<div class='<small>'>
+			<p>
+				<a href='{{ post.uid.href }}' class='u-url u-uid'>
+					<time class='dt-published' datetime='{{ post.published |> toISOString }}'>
+						{{ post.published.toLocaleString([
+							...(post.language ? [post.language] : []),
+							...c.var.locales,
+						]) }}
+					</time>
+				</a>
+				{{- if post.updated -}}
+					, last updated on
+					<time class='dt-updated' datetime='{{ post.updated |> toISOString }}'>
+						{{ post.updated.toLocaleString([
+							...(post.language ? [post.language] : []),
+							...c.var.locales,
+						]) }}
+					</time>
+				{{ /if }}
+			</p>
+			<p>
+				{{ for category of post.category }}
+					#<span class='p-category'>{{ category }}</span>
+				{{ /for }}
+			</p>
+		</div>
+
+		<div style='display: flex; flex-flow: row wrap; gap: 1em'>
+			<denizen-webaction action='reply'>
+				<button>Reply</button>
+			</denizen-webaction>
+			{{ if admin }}
+				<form action='/.denizen/post/edit' class='contents'>
+					<input
+						type='hidden'
+						name='post'
+						value='{{ post.uid?.pathname }}'
+					/>
+					<button>Edit</button>
+				</form>
+				<form
+					rel='swap-after'
+					method='DELETE'
+					action='{{ post.uid?.pathname }}'
+					class='contents'
+				>
+					<button>Delete</button>
+				</form>
+			{{ /if }}
+		</div>
+
+		{{ include 'includes/webmentions.vto' { ...webmentions } }}
+	</footer>
+</article>
+
+{{ /layout }}

@@ -1,0 +1,43 @@
+<section id='sect-import-form'>
+	<h2>Import blog to Denizen</h2>
+	<main>
+		<form
+			rel='swap-replaceWith'
+			target='#sect-import-form'
+			method='POST'
+			action='/.denizen/import-blog'
+			class='grid'
+			style='grid: auto-flow / auto 1fr'
+		>
+		  {{ if error }}
+  			<div class='bad' style='grid-column: 1/span 2'>
+  				<p>{{ error }}</p>
+  			</div>
+      {{ /if }}
+			<p class='grid-row'>
+				<label for='feed-url'>Feed URL</label>
+				<span class='grid'>
+					<input
+						type='url'
+						name='feed-url'
+						id='feed-url'
+						aria-describedby='feed-url-desc'
+					/>
+					<span id='feed-url-desc' class='<small>'>
+						Enter a RSS, Atom or JSONFeed URL for your old blog.
+					</span>
+				</span>
+			</p>
+			<p class='grid-row'>
+				<span></span>
+				<span>
+					<button class='big'>Import</button>
+				</span>
+			</p>
+		</form>
+		<p>
+			Denizen can import your posts from an old blog using an RSS, Atom or
+			JSONFeed feed.
+		</p>
+	</main>
+</section>

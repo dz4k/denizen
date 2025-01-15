@@ -3,13 +3,14 @@ import type { Env } from '../denizen.ts'
 
 import { getPosts, getUser, lastMod } from '../db.ts'
 import * as config from '../config.ts'
+import render from '../common/vento.ts'
 
 export const json = async (c: hono.Context<Env>) => {
 	const lastModified = await lastMod()
 	const ifModSince = c.req.header('If-Modified-Since')
 	if (ifModSince) {
 		const ifModSinceDate = new Date(ifModSince).getTime()
-		if (lastModified < ifModSinceDate) return c.body('', 304)
+		if (lastModified < ifModSinceDate) return c.body(null, 304)
 	}
 
 	const siteOwner = await getUser('admin')
@@ -61,7 +62,7 @@ export const xml = async (c: hono.Context<Env>) => {
 	const ifModSince = c.req.header('If-Modified-Since')
 	if (ifModSince) {
 		const ifModSinceDate = new Date(ifModSince).getTime()
-		if (lastModified < ifModSinceDate) return c.body('', 304)
+		if (lastModified < ifModSinceDate) return c.body(null, 304)
 	}
 
 	const siteOwner = await getUser('admin')
@@ -70,23 +71,7 @@ export const xml = async (c: hono.Context<Env>) => {
 		cursor: c.req.query('cursor'),
 	})
 	return c.body(
-		(<feed xmlns='http://www.w3.org/2005/Atom'>
-			<title>{siteOwner.profile.name}</title>
-			<link href={config.baseUrl.href} />
-			<updated>{new Date(lastModified).toISOString()}</updated>
-			<generator uri='https://codeberg.org/dz4k/denizen'>Denizen</generator>
-			{posts.data.map((post) => (
-				<entry>
-					<id>{post.uid}</id>
-					<title>{post.name}</title>
-					<updated>{post.updated ?? post.published}</updated>
-					<content type='html'>{post.content?.html}</content>
-					<summary>{post.summary}</summary>
-					<published>{post.published}</published>
-					{post.category.map((cat) => <category term={cat} />)}
-				</entry>
-			))}
-		</feed>).toString(),
+		await render(c, 'atom.vto', { siteOwner, posts, lastModified }),
 		200,
 		{
 			'Content-Type': 'application/atom+xml',
