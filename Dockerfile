@@ -1,6 +1,6 @@
 # Based on https://github.com/denoland/deno_docker/blob/main/alpine.dockerfile
 
-ARG DENO_VERSION=1.39.1
+ARG DENO_VERSION=2.1.5
 ARG BIN_IMAGE=denoland/deno:bin-${DENO_VERSION}
 FROM ${BIN_IMAGE} AS bin
 
@@ -28,4 +28,4 @@ RUN deno cache bin/denizen.ts
 ENV DENIZEN_KV=/var/denizen/kv.sqlite
 ENV DENIZEN_BLOBS=/var/denizen/blobs
 
-ENTRYPOINT ["deno", "run", "-A", "--unstable", "bin/denizen.ts"]
+ENTRYPOINT ["deno", "run", "-A", "--unstable-kv", "bin/denizen.ts"]
