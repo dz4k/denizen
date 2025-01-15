@@ -20,7 +20,7 @@ export const get = async (c: hono.Context<Env>) => {
 	const post = await accessPost(c)
 	if (post === null) return c.notFound()
 
-	if (/application\/(mf2\+)json/i.test(c.req.header('Expect')!)) {
+	if (/application\/(mf2\+)json/i.test(c.req.header('Accept')!)) {
 		if (post.deleted) return c.json({ deleted: true }, 410)
 		return c.json(post.toMF2Json())
 	}

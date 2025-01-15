@@ -179,7 +179,7 @@ const discoverWebmentionEndpoint = async (target: URL) => {
 		const res = await fetchInternalOrExternal(
 			new Request(target, {
 				headers: {
-					'expect': 'text/html',
+					'Accept': 'text/html',
 				},
 			}),
 		)
