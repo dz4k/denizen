@@ -1,6 +1,6 @@
 {{ layout 'includes/layout.vto' }}
 
-<script type='module' src='/.denizen/public/post-editor.js'></script>
+<script type='module' src='/.denizen/public/textarea-autoexpand.js'></script>
 <script type='module' src='/.denizen/public/dependent-input.js'></script>
 
 <header>
@@ -52,6 +52,7 @@
 				id='edit-content-html'
 				aria-label='Content, HTML'
 				placeholder='Content (HTML)'
+				data-autoexpand
 				{{ if post?.contentType && post.contentType !== 'html' }}
 				  hidden disabled
 				{{ /if }}
@@ -63,6 +64,7 @@
 				id='edit-content-text'
 				aria-label='Content'
 				placeholder='Content'
+				data-autoexpand
 				{{ if post.contentType !== 'text' }}
 				  hidden disabled
 				{{ /if }}
