@@ -56,7 +56,7 @@
 				  hidden disabled
 				{{ /if }}
 			>
-				{{ post?.content?.html }}
+				{{- post?.content?.html -}}
 			</textarea>
 			<textarea
 			  name='content'
@@ -67,7 +67,7 @@
 				  hidden disabled
 				{{ /if }}
 			>
-				{{ post?.content?.value }}
+				{{- post?.content?.value -}}
 			</textarea>
 		</p>
 		<p class='grid-row'>
