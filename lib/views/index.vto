@@ -45,9 +45,9 @@
 
 				<span className='p-x-denizen-badge h-x-denizen-badge'>
 					{{ if badge.url }}
-						<a href='{{ badge.url.href }}' class='u-url'>{{ img }}</a>
+						<a href='{{ badge.url.href }}' class='u-url'>{{ img |> safe }}</a>
 					{{ else }}
-				    {{ img }}
+				    {{ img |> safe }}
 					{{ /if }}
 				</span>
 			{{ /for }}
