@@ -63,8 +63,9 @@ app
 	.use(
 		'/.denizen/public/*',
 		serveStatic({
-			root: './lib/public',
+			root: import.meta.dirname + '/public',
 			rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
+			allowAbsoluteRoot: true,
 		}),
 	)
 	.use('*', jsxRenderer(Layout))
