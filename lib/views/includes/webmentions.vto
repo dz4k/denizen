@@ -49,7 +49,7 @@
               >
                 {{ wm.content.published.toLocaleString([
                   ...(post.language ? [post.language] : []),
-                  ...config.locales,
+                  ...c.var.locales,
                 ]) }}
               </time>
             </a>
