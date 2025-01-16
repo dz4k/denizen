@@ -5,167 +5,167 @@
 <script type='module' src='/.denizen/public/textarea-autoexpand.js'></script>
 
 <header class='h-card' lang={{ c.var.lang }}>
-	{{# TODO: used this makeprofilesvg in a few places now, factor out to Card. #}}
-	<img
-		src='{{ siteOwner.profile.photo[0]?.url.href ?? makeProfileSvg(siteOwner.profile) }}'
-		alt='{{ siteOwner.profile.photo[0]?.alt }}'
-		style='view-transition-name: owner-pfp'
-		class='big face'
-	>
-	<h1 style='view-transition-name: owner-name'>
-		<a href='/' class='u-url u-uid p-name'>
-			{{ siteOwner.profile.name }}
-		</a>
-	</h1>
+  {{# TODO: used this makeprofilesvg in a few places now, factor out to Card. #}}
+  <img
+    src='{{ siteOwner.profile.photo[0]?.url.href ?? makeProfileSvg(siteOwner.profile) }}'
+    alt='{{ siteOwner.profile.photo[0]?.alt }}'
+    style='view-transition-name: owner-pfp'
+    class='big face'
+  >
+  <h1 style='view-transition-name: owner-name'>
+    <a href='/' class='u-url u-uid p-name'>
+      {{ siteOwner.profile.name }}
+    </a>
+  </h1>
   {{ if siteOwner.profile.note.length }}
-		<p class='p-note'>{{ siteOwner.profile.note }}</p>
-	{{ /if }}
-	{{ if socials.length }}
-		<p>
-		  {{ for social of socials }}
-				{{> const [name, value] = social }}
-				<a
-					rel='me'
-					class='<button> {{ value.startsWith('mailto') ? 'u-email' : '' }}'
-					href='{{ value }}'
-				>
-					{{ name }}
-				</a>
-			{{ /for }}
-		</p>
-	{{ /if }}
+    <p class='p-note'>{{ siteOwner.profile.note }}</p>
+  {{ /if }}
+  {{ if socials.length }}
+    <p>
+      {{ for social of socials }}
+        {{> const [name, value] = social }}
+        <a
+          rel='me'
+          class='<button> {{ value.startsWith('mailto') ? 'u-email' : '' }}'
+          href='{{ value }}'
+        >
+          {{ name }}
+        </a>
+      {{ /for }}
+    </p>
+  {{ /if }}
 
-	{{ if badges.length }}
-		<p class='denizen-badges'>
-		  {{ for badge of badges }}
-				{{ set img }}
-					<img
-						src='{{ badge.photo?.url.href }}'
-						alt='{{ badge.photo?.alt }}'
-						class='badge'>
-				{{ /set }}
+  {{ if badges.length }}
+    <p class='denizen-badges'>
+      {{ for badge of badges }}
+        {{ set img }}
+          <img
+            src='{{ badge.photo?.url.href }}'
+            alt='{{ badge.photo?.alt }}'
+            class='badge'>
+        {{ /set }}
 
-				<span className='p-x-denizen-badge h-x-denizen-badge'>
-					{{ if badge.url }}
-						<a href='{{ badge.url.href }}' class='u-url'>{{ img |> safe }}</a>
-					{{ else }}
-				    {{ img |> safe }}
-					{{ /if }}
-				</span>
-			{{ /for }}
-		</p>
-	{{ /if }}
+        <span className='p-x-denizen-badge h-x-denizen-badge'>
+          {{ if badge.url }}
+            <a href='{{ badge.url.href }}' class='u-url'>{{ img |> safe }}</a>
+          {{ else }}
+            {{ img |> safe }}
+          {{ /if }}
+        </span>
+      {{ /for }}
+    </p>
+  {{ /if }}
 </header>
 <main>
   {{ if admin }}
-		<form
-			class='quick-post'
-			method='POST'
-			action='/.denizen/post/new'
-		>
-			<textarea
-				name='content'
-				class='quick-post-content'
-				aria-label='What&apos;s on your mind?'
-				placeholder='What&apos;s on your mind?'
-				data-autoexpand
-			></textarea>
-			<div class='quick-post-form-actions'>
-				<a class='<small>' href='/.denizen/post/new'>Open big editor</a>
-				<button type='submit' class='quick-post-submit'>Post</button>
-			</div>
-		</form>
-	{{ /if }}
-	<div className='entry-list'>
-	  {{ for post of posts.data }}
-			<article
-				class='h-entry link-card'
-				lang='{{ post.language ?? c.var.lang }}'
-			>
-				<h2
-				  style='view-transition-name: post-{{ post.iid }}-name'
-				>
-					<a class='p-name u-url u-uid' href='{{ post.uid.pathname }}'>
-						{{ post.name }}
-					</a>
-				</h2>
-				{{ for index, photo of post.photo }}
-					<figure
-					  style='view-transition-name: post-{{ post.iid }}-photo-{{ index }}'
-					>
-						<img class='u-photo' src='{{ photo.url.href }}' alt='{{ photo.alt }}' />
-					</figure>
-				{{ /for }}
-				{{ if post.summary }}
-					<p
-						class='italic'
-						style='view-transition-name: post-{{ post.iid }}-summary'
-					>
-						{{- post.summary |> safe -}}
-					</p>
-				{{ else if post.name }}
-				  {{# -- #}}
-				{{ else if post.content }}
-					<div
-						class='e-content'
-						style='view-transition-name: post-{{ post.iid }}-content'
-					/>
-						{{- post.content.html |> safe -}}
-					</div>
-				{{ /if }}
-				<p
-				  class='<small>'
-				  style='view-transition-name: post-{{ post.iid }}-footer'
-				>
-					<a href='{{ post.uid?.pathname }}' class='card-link'>
-						<time className='dt-published' datetime='{{ post.published |> toISOString }}'>
-							{{ post.published.toLocaleString([
-								...(post.language ? [post.language] : []),
-								...c.var.locales,
-							]) }}
-						</time>
-					</a>
-					{{ if post.updated }}
-						&middot; Updated on
-						<time className='dt-updated' datetime='{{ post.updated |> toISOString }}'>
-							{{ post.updated.toLocaleString([
-								...(post.language ? [post.language] : []),
-								...c.var.locales,
-							]) }}
-						</time>
-					{{ /if }}
-				</p>
-			</article>
-		{{ /for }}
-	</div>
-	{{ if posts.cursor }}
-		<a
-			rel='next swap-replaceWith'
-			href='/?cursor={{ posts.cursor |> encodeURIComponent }}#:~:selector=main :is(.h-entry,[rel=next])'
-		>
-			Load more
-		</a>
-	{{ /if }}
+    <form
+      class='quick-post'
+      method='POST'
+      action='/.denizen/post/new'
+    >
+      <textarea
+        name='content'
+        class='quick-post-content'
+        aria-label='What&apos;s on your mind?'
+        placeholder='What&apos;s on your mind?'
+        data-autoexpand
+      ></textarea>
+      <div class='quick-post-form-actions'>
+        <a class='<small>' href='/.denizen/post/new'>Open big editor</a>
+        <button type='submit' class='quick-post-submit'>Post</button>
+      </div>
+    </form>
+  {{ /if }}
+  <div className='entry-list'>
+    {{ for post of posts.data }}
+      <article
+        class='h-entry link-card'
+        lang='{{ post.language ?? c.var.lang }}'
+      >
+        <h2
+          style='view-transition-name: post-{{ post.iid }}-name'
+        >
+          <a class='p-name u-url u-uid' href='{{ post.uid.pathname }}'>
+            {{ post.name }}
+          </a>
+        </h2>
+        {{ for index, photo of post.photo }}
+          <figure
+            style='view-transition-name: post-{{ post.iid }}-photo-{{ index }}'
+          >
+            <img class='u-photo' src='{{ photo.url.href }}' alt='{{ photo.alt }}' />
+          </figure>
+        {{ /for }}
+        {{ if post.summary }}
+          <p
+            class='italic'
+            style='view-transition-name: post-{{ post.iid }}-summary'
+          >
+            {{- post.summary |> safe -}}
+          </p>
+        {{ else if post.name }}
+          {{# -- #}}
+        {{ else if post.content }}
+          <div
+            class='e-content'
+            style='view-transition-name: post-{{ post.iid }}-content'
+          />
+            {{- post.content.html |> safe -}}
+          </div>
+        {{ /if }}
+        <p
+          class='<small>'
+          style='view-transition-name: post-{{ post.iid }}-footer'
+        >
+          <a href='{{ post.uid?.pathname }}' class='card-link'>
+            <time className='dt-published' datetime='{{ post.published |> toISOString }}'>
+              {{ post.published.toLocaleString([
+                ...(post.language ? [post.language] : []),
+                ...c.var.locales,
+              ]) }}
+            </time>
+          </a>
+          {{ if post.updated }}
+            &middot; Updated on
+            <time className='dt-updated' datetime='{{ post.updated |> toISOString }}'>
+              {{ post.updated.toLocaleString([
+                ...(post.language ? [post.language] : []),
+                ...c.var.locales,
+              ]) }}
+            </time>
+          {{ /if }}
+        </p>
+      </article>
+    {{ /for }}
+  </div>
+  {{ if posts.cursor }}
+    <a
+      rel='next swap-replaceWith'
+      href='/?cursor={{ posts.cursor |> encodeURIComponent }}#:~:selector=main :is(.h-entry,[rel=next])'
+    >
+      Load more
+    </a>
+  {{ /if }}
 </main>
 <footer>
   {{ if admin }}
-		<div style='display: flex; flex-flow: row wrap; gap: 1em'>
-			<a class='<button>' href='/.denizen/console'>Console</a>
-			<form method='POST' action='/.denizen/logout' class='contents'>
-				<button>Log out</button>
-			</form>
-		</div>
-	{{ /if }}
+    <div style='display: flex; flex-flow: row wrap; gap: 1em'>
+      <a class='<button>' href='/.denizen/console'>Console</a>
+      <form method='POST' action='/.denizen/logout' class='contents'>
+        <button>Log out</button>
+      </form>
+    </div>
+  {{ /if }}
 </footer>
 
 {{ if admin }}
   <script>
-		navigator.registerProtocolHandler(
-			'web+action',
-			{{ new URL('/.denizen/webaction?handler=%s', c.var.baseUrl).href |> JSON.stringify }},
-			'Denizen on ' + location.hostname
-		)
-	</script>
+    navigator.registerProtocolHandler(
+      'web+action',
+      {{ new URL('/.denizen/webaction?handler=%s', c.var.baseUrl).href |> JSON.stringify }},
+      'Denizen on ' + location.hostname
+    )
+  </script>
 {{ /if }}
 
 {{ /layout }}

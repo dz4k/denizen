@@ -1,69 +1,69 @@
 <div id='webmentions'>
   {{ if likes.data.length }}
-		<p>
-			<!-- TODO: "load more" buttons and total number on each -->
-			<strong class='tiny-header'>Likes</strong>
-			{{ for wm of likes.data }}
-			  {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
-			{{ /for }}
-		</p>
-	{{ /if }}
+    <p>
+      <!-- TODO: "load more" buttons and total number on each -->
+      <strong class='tiny-header'>Likes</strong>
+      {{ for wm of likes.data }}
+        {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
+      {{ /for }}
+    </p>
+  {{ /if }}
   {{ if reposts.data.length }}
-  	<p>
-  		<strong class='tiny-header'>Reposts</strong>
-  		{{ for like of reposts.data }}
-  		  {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
-  		{{ /for }}
-  	</p>
+    <p>
+      <strong class='tiny-header'>Reposts</strong>
+      {{ for like of reposts.data }}
+        {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
+      {{ /for }}
+    </p>
   {{ /if }}
   {{ if mentions.data.length }}
-   	<p>
-   		<strong class='tiny-header'>Mentions</strong>
-   		{{ for like of mentions.data }}
-   		  {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
-   		{{ /for }}
-   	</p>
+     <p>
+       <strong class='tiny-header'>Mentions</strong>
+       {{ for like of mentions.data }}
+         {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
+       {{ /for }}
+     </p>
   {{ /if }}
   {{ if replies.data.length }}
-  	<div>
-  		<p>
-  			<strong class='tiny-header'>Replies</strong>
-  		</p>
+    <div>
+      <p>
+        <strong class='tiny-header'>Replies</strong>
+      </p>
       {{ for wm of replies.data }}
-  			<article class='p-comment h-entry link-card'>
-  				<!-- MAYBE TODO: replies with multiple authors? -->
-  				<header>
-  					<strong>
-     		      {{ include 'includes/face.vto' { card: wm.content.author[0] } }}
-  						<a
-  							class='p-author h-card'
-  							href='{{ wm.content.author[0].url[0] }}'
-  						>
-  							{{ wm.content.author[0].name }}
-  						</a>
-  					</strong>
-  					<a class='u-url <small> card-link' href='{{ wm.source }}'>
-  						<time
-  							class='dt-published'
-  							datetime='{{ wm.content.published |> toISOString }}'
-  						>
-  							{{ wm.content.published.toLocaleString([
-  								...(post.language ? [post.language] : []),
-  								...config.locales,
-  							]) }}
-  						</time>
-  					</a>
-  				</header>
-  				{{ if wm.content.name }}
-  					<strong>
-  						<cite class='p-name'>{{ wm.content.name }}</cite>
-  					</strong>
-  				{{ /if }}
-  				<span class='p-content'>
-  					{{ wm.content.content?.value }}
-  				</span>
-  			</article>
-  		{{ /for }}
-  	</div>
-	{{ /if }}
+        <article class='p-comment h-entry link-card'>
+          <!-- MAYBE TODO: replies with multiple authors? -->
+          <header>
+            <strong>
+               {{ include 'includes/face.vto' { card: wm.content.author[0] } }}
+              <a
+                class='p-author h-card'
+                href='{{ wm.content.author[0].url[0] }}'
+              >
+                {{ wm.content.author[0].name }}
+              </a>
+            </strong>
+            <a class='u-url <small> card-link' href='{{ wm.source }}'>
+              <time
+                class='dt-published'
+                datetime='{{ wm.content.published |> toISOString }}'
+              >
+                {{ wm.content.published.toLocaleString([
+                  ...(post.language ? [post.language] : []),
+                  ...config.locales,
+                ]) }}
+              </time>
+            </a>
+          </header>
+          {{ if wm.content.name }}
+            <strong>
+              <cite class='p-name'>{{ wm.content.name }}</cite>
+            </strong>
+          {{ /if }}
+          <span class='p-content'>
+            {{ wm.content.content?.value }}
+          </span>
+        </article>
+      {{ /for }}
+    </div>
+  {{ /if }}
 </div>

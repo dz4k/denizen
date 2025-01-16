@@ -2,40 +2,40 @@
 
 <form action='/.denizen/auth/orize' method='POST'>
   {{ if scope }}
-		<h1>Authorize {{ clientInfo.name ?? client_id }}?</h1>
-		<p>
-			The app at {{ client_id }}
-			wants to access the following on your Denizen site:
-		</p>
-		<fieldset>
-			<legend>Requested scopes</legend>
-			{{ for s of scope |> split(/\s+/g) }}
-				<p>
-					<label>
-						<input type='checkbox' name='scopes' value='{{ s }}' checked />
-						{{ s }}
-					</label>
-				</p>
-			))}
-		</fieldset>
-	{{ else }}
-		<h1>
-			Log in to {{ client_id }} with your Denizen site
-		</h1>
-	{{ /if }}
+    <h1>Authorize {{ clientInfo.name ?? client_id }}?</h1>
+    <p>
+      The app at {{ client_id }}
+      wants to access the following on your Denizen site:
+    </p>
+    <fieldset>
+      <legend>Requested scopes</legend>
+      {{ for s of scope |> split(/\s+/g) }}
+        <p>
+          <label>
+            <input type='checkbox' name='scopes' value='{{ s }}' checked />
+            {{ s }}
+          </label>
+        </p>
+      ))}
+    </fieldset>
+  {{ else }}
+    <h1>
+      Log in to {{ client_id }} with your Denizen site
+    </h1>
+  {{ /if }}
 
-	{{ if !authorized }}
-		<label>
-			Password
-			<input type='password' name='password' required />
-		</label>
-	{{ /if }}
-	<button type='submit' name='response' value='allow'>Allow</button>
-	<button type='submit' name='response' value='deny'>Deny</button>
-	<input type='hidden' name='client_id' value='{{ client_id }}' />
-	<input type='hidden' name='redirect_uri' value='{{ redirect_uri }}' />
-	<input type='hidden' name='code_challenge' value='{{ code_challenge }}' />
-	<input type='hidden' name='state' value='{{ state }}' />
+  {{ if !authorized }}
+    <label>
+      Password
+      <input type='password' name='password' required />
+    </label>
+  {{ /if }}
+  <button type='submit' name='response' value='allow'>Allow</button>
+  <button type='submit' name='response' value='deny'>Deny</button>
+  <input type='hidden' name='client_id' value='{{ client_id }}' />
+  <input type='hidden' name='redirect_uri' value='{{ redirect_uri }}' />
+  <input type='hidden' name='code_challenge' value='{{ code_challenge }}' />
+  <input type='hidden' name='state' value='{{ state }}' />
 </form>
 
 {{ /layout }}

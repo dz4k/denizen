@@ -4,20 +4,20 @@
 <script type='module' src='/.denizen/public/dependent-input.js'></script>
 
 <header>
-	<h1>{{ c.var.title }}</h1>
+  <h1>{{ c.var.title }}</h1>
 </header>
 <main>
-	<form method='POST' class='post-editor'>
-	  <div class='post'>
-			<div class='titleRow'>
-    		<p class='title'>
-     			<label for='edit-title'>Title</label>
-     			<input
-    				type='text'
-    				name='name'
-    				id='edit-title'
-    				value='{{ post?.name }}'>
-    		</p>
+  <form method='POST' class='post-editor'>
+    <div class='post'>
+      <div class='titleRow'>
+        <p class='title'>
+           <label for='edit-title'>Title</label>
+           <input
+            type='text'
+            name='name'
+            id='edit-title'
+            value='{{ post?.name }}'>
+        </p>
         <details class='extraFields'>
           <summary class='<button>'>
             <span aria-hidden='true'>⋯</span>
@@ -25,84 +25,84 @@
           </summary>
           <div class='detailsContent'>
             <p>
-      				<label for='edit-summary'>Summary</label>
-      				<input
-       					type='text'
-       					name='summary'
-       					id='edit-summary'
-       					value='{{ post?.summary }}'>
-           	</p>
+              <label for='edit-summary'>Summary</label>
+              <input
+                 type='text'
+                 name='summary'
+                 id='edit-summary'
+                 value='{{ post?.summary }}'>
+             </p>
             <p>
-      				<label for='edit-lang'>Language</label>
-      				<!-- TODO: Make this a <select> when multiple site locales is impld. -->
-      				<input
-       					name='lang'
-       					id='edit-lang'
-       					value='{{ post?.language ?? c.var.lang }}'>
-           	</p>
+              <label for='edit-lang'>Language</label>
+              <!-- TODO: Make this a <select> when multiple site locales is impld. -->
+              <input
+                 name='lang'
+                 id='edit-lang'
+                 value='{{ post?.language ?? c.var.lang }}'>
+             </p>
           </div>
         </details>
-			</div>
-  		<div class='content-area'>
-    		<p>
-    		  <!-- HTML doesn't have a way for one <label> to label multiple elements -->
-    		  <label aria-hidden='true'>Content</label>
-     			<textarea
-     			  name='content[html]'
-    				id='edit-content-html'
-    				aria-label='Content, HTML'
-    				placeholder='(HTML)'
-    				data-autoexpand
-    				{{ if post?.contentType && post.contentType !== 'html' }}
-    				  hidden disabled
-    				{{ /if }}
-     			>
-    				{{- post?.content?.html -}}
-     			</textarea>
-     			<textarea
-     			  name='content'
-    				id='edit-content-text'
-    				aria-label='Content, plain text'
-    				placeholder='(Text)'
-    				data-autoexpand
-    				{{ if post.contentType !== 'text' }} hidden disabled {{ /if }}
-     			>
-    				{{- post?.content?.value -}}
-     			</textarea>
-    		</p>
-    		<p>
-    		  <label for='edit-content-type'>Content type</label>
-     			<dependent-input>
-     			  <select id='edit-content-type' name='x-content-type'>
-     					<option
-     					  value='html'
-    						data-controls='edit-content-html'
-    						{{ if post?.contentType === 'html' }} selected {{ /if }}
-     					>HTML</option>
-     					<option
-     					  value='text'
-    						data-controls='edit-content-text'
-    						{{ if post?.contentType === 'text' }} selected {{ /if }}
-     					>Text</option>
-     					<option
-     					  disabled value='markdown'
-    						data-controls='edit-content-markdown'
-    						{{# {{ if post?.contentType === 'markdown' }} selected {{ /if }} #}}
-     					>Markdown</option>
-     					<option
-     					  disabled value='wysiwyg'
-    						data-controls='edit-content-wysiwyg'
-    						{{# {{ if post?.contentType === 'wysiwyg' }} selected {{ /if }} #}}
-     					>Rich text</option>
-    				</select>
-     			</dependent-input>
-    		</p>
-  		</div>
-		</div>
-		<p>
-			<button type='submit'>Post</button>
-		</p>
-	</form>
+      </div>
+      <div class='content-area'>
+        <p>
+          <!-- HTML doesn't have a way for one <label> to label multiple elements -->
+          <label aria-hidden='true'>Content</label>
+           <textarea
+             name='content[html]'
+            id='edit-content-html'
+            aria-label='Content, HTML'
+            placeholder='(HTML)'
+            data-autoexpand
+            {{ if post?.contentType && post.contentType !== 'html' }}
+              hidden disabled
+            {{ /if }}
+           >
+            {{- post?.content?.html -}}
+           </textarea>
+           <textarea
+             name='content'
+            id='edit-content-text'
+            aria-label='Content, plain text'
+            placeholder='(Text)'
+            data-autoexpand
+            {{ if post.contentType !== 'text' }} hidden disabled {{ /if }}
+           >
+            {{- post?.content?.value -}}
+           </textarea>
+        </p>
+        <p>
+          <label for='edit-content-type'>Content type</label>
+           <dependent-input>
+             <select id='edit-content-type' name='x-content-type'>
+               <option
+                 value='html'
+                data-controls='edit-content-html'
+                {{ if post?.contentType === 'html' }} selected {{ /if }}
+               >HTML</option>
+               <option
+                 value='text'
+                data-controls='edit-content-text'
+                {{ if post?.contentType === 'text' }} selected {{ /if }}
+               >Text</option>
+               <option
+                 disabled value='markdown'
+                data-controls='edit-content-markdown'
+                {{# {{ if post?.contentType === 'markdown' }} selected {{ /if }} #}}
+               >Markdown</option>
+               <option
+                 disabled value='wysiwyg'
+                data-controls='edit-content-wysiwyg'
+                {{# {{ if post?.contentType === 'wysiwyg' }} selected {{ /if }} #}}
+               >Rich text</option>
+            </select>
+           </dependent-input>
+        </p>
+      </div>
+    </div>
+    <p>
+      <button type='submit'>Post</button>
+    </p>
+  </form>
 </main>
 
 {{ /layout }}

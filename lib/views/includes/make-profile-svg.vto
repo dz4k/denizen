@@ -1,25 +1,25 @@
 {{ export stringToRandNumber = async (str, [min, max]) => {
   const buf = new TextEncoder().encode(str)
-	const hash = await crypto.subtle.digest('SHA-1', buf)
-	const bu64a = new BigUint64Array(hash.slice(0, 8))
-	const num = bu64a[0]
+  const hash = await crypto.subtle.digest('SHA-1', buf)
+  const bu64a = new BigUint64Array(hash.slice(0, 8))
+  const num = bu64a[0]
 
-	const range = max - min + 1
-	const mappedNumber = Number((num % BigInt(range)) + BigInt(min))
+  const range = max - min + 1
+  const mappedNumber = Number((num % BigInt(range)) + BigInt(min))
 
-	return mappedNumber
+  return mappedNumber
 } }}
 
 {{ export initials = (card) => {
-	const name = card.name ?? card.uid?.hostname ?? card.url[0]?.hostname ?? '';
-	const words = name.split(/\W+/g);
-	if (words.length <= 1) return words[0].slice(0, 2);
-	else return words[0][0] + words[1][0];
+  const name = card.name ?? card.uid?.hostname ?? card.url[0]?.hostname ?? '';
+  const words = name.split(/\W+/g);
+  if (words.length <= 1) return words[0].slice(0, 2);
+  else return words[0][0] + words[1][0];
 } }}
 
 {{ export makeProfileSvg = async (card) => {
-	const hue = await stringToRandNumber(card.name, [0, 359]);
-	const svg = `
+  const hue = await stringToRandNumber(card.name, [0, 359]);
+  const svg = `
     <svg xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20">
       <defs>
@@ -40,5 +40,5 @@
         fill="white">${initials(card)}</text>
     </svg>
   `;
-	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 } }}
