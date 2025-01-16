@@ -3,7 +3,6 @@ import * as mediaType from 'jsr:@std/media-types@1.1.0'
 
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
-import * as config from '../config.ts'
 import {
 	createPost,
 	deletePost,
@@ -67,7 +66,7 @@ export const get = async (c: hono.Context<Env>) => {
 	if (q === 'config') {
 		return c.json({
 			'media-endpoint':
-				new URL('/.denizen/micropub/media', config.baseUrl).href,
+				new URL('/.denizen/micropub/media', c.var.baseUrl).href,
 		})
 	}
 	if (q === 'source') {
@@ -156,7 +155,7 @@ export const post = async (c: hono.Context<Env>) => {
 				)
 				return new URL(
 					`/.denizen/storage/${encodeURIComponent(filename)}`,
-					config.baseUrl,
+					c.var.baseUrl,
 				).href
 			}
 			for (const prop of fileProperties) {
@@ -182,7 +181,7 @@ export const post = async (c: hono.Context<Env>) => {
 					? makeSlug(createdPost.name)
 					: createdPost.published.toISOString()
 			}`,
-			config.baseUrl, // TODO derive this somehow
+			c.var.baseUrl, // TODO derive this somehow
 		)
 		await createPost(createdPost)
 
@@ -204,7 +203,7 @@ export const postMedia = async (c: hono.Context<Env>) => {
 	})
 	return c.body('', 201, {
 		'Location':
-			new URL(`/.denizen/storage/${encodeURIComponent(name)}`, config.baseUrl)
+			new URL(`/.denizen/storage/${encodeURIComponent(name)}`, c.var.baseUrl)
 				.href,
 	})
 }

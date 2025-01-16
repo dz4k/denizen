@@ -3,7 +3,6 @@ import { assert } from 'jsr:@std/assert@1.0.10/assert'
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
-import * as config from '../config.ts'
 import { enqueue } from '../queue.ts'
 
 const supportedSchemes = new Set(['http:', 'https:'])
@@ -24,7 +23,7 @@ export const post = async (c: hono.Context<Env>) => {
 	try {
 		const targetUrl = new URL(target.toString())
 		assert(supportedSchemes.has(targetUrl.protocol))
-		assert(targetUrl.host === config.baseUrl.host)
+		assert(targetUrl.host === c.var.baseUrl.host)
 	} catch {
 		return c.json({ error: 'invalid_target' }, 400)
 	}

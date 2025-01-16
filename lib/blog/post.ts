@@ -1,7 +1,6 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
-import * as config from '../config.ts'
 import {
 	deletePost,
 	getPostByURL,
@@ -14,7 +13,7 @@ import { Entry } from '../model/entry.ts'
 import { clientRedirect } from '../common/util.ts'
 
 const accessPost = (c: hono.Context<Env>) =>
-	getPostByURL(new URL(c.req.path, config.baseUrl))
+	getPostByURL(new URL(c.req.path, c.var.baseUrl))
 
 export const get = async (c: hono.Context<Env>) => {
 	const post = await accessPost(c)
@@ -38,7 +37,7 @@ export const get = async (c: hono.Context<Env>) => {
 	c.header('Last-Modified', (post.updated ?? post.published).toUTCString())
 
 	c.set('title', post.name ?? post.summary ?? post.published.toLocaleString())
-	c.set('lang', post.language ?? config.lang())
+	c.set('lang', post.language ?? c.var.lang)
 
 	const [likes, reposts, mentions, replies] = await Promise.all([
 		getWebmentions(post, 'like'),

@@ -1,12 +1,8 @@
-import { Hono, jsxRenderer, serveStatic } from '../deps/hono.ts'
+import { Hono, serveStatic } from '../deps/hono.ts'
 import { Session, sessionMiddleware } from './common/session.ts'
 
-import './config.ts'
-import './webmention/webmention.ts'
-
 import { listen } from './queue.ts'
-import { db } from './db.ts'
-import * as config from './config.ts'
+import { db, getConfigs } from './db.ts'
 
 import * as fourOhFour from './404.ts'
 import * as o5command from './admin/console.ts'
@@ -51,15 +47,16 @@ export type Env = {
 }
 export const app = new Hono<Env>()
 
-app.use('*', (c, next) => (c.set('storage', fsBackend), next()))
-app.use('*', async (c, next) => (c.set('theme', await config.theme()), next()))
-app.use('*', (c, next) => (c.set('locales', config.locales), next()))
-app.use('*', (c, next) => (c.set('lang', config.lang()), next()))
-app.use('*', (c, next) => (c.set('baseUrl', config.baseUrl), next()))
 app.use('*', async (c, next) => {
+  const config = await getConfigs()
+  c.set('storage', fsBackend)
+  c.set('theme', config['theme'] as string)
+  c.set('locales', config['locales'] as string[])
+  c.set('lang', (config['locales'] as string[])[0])
+  c.set('baseUrl', new URL(config['base url'] as string))
   c.set('render', async (template: string, data?: Record<string, unknown>) =>
-    c.html(await render(c, template, data)));
-  await next();
+    c.html(await render(c, template, data)))
+  await next()
 })
 
 app

@@ -13,7 +13,6 @@ import {
 	removeEmptyProperties,
 } from '../common/mf2.ts'
 import { makeSlug } from '../common/slug.ts'
-import * as config from '../config.ts'
 import { Card } from './card.ts'
 import { Citation } from './citation.ts'
 import { htmlStripTags } from '../common/util.ts'
@@ -63,15 +62,6 @@ export class Entry {
 		Object.assign(this, props)
 		this.published ??= new Date()
 		this.iid ??= ulid(this.published?.getTime())
-	}
-
-	genUrl() {
-		return new URL(
-			`/${this.published.getFullYear()}/${
-				this.name ? makeSlug(this.name) : this.published.toISOString().slice(4)
-			}`,
-			config.baseUrl,
-		)
 	}
 
 	get language(): string | null {

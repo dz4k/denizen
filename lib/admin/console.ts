@@ -10,7 +10,7 @@ export const get = async (c: hono.Context<Env>) => {
 	c.set('title', 'Console')
 	return c.var.render('console.vto', {
 	  user,
-		theme: await config.theme(),
+		theme: c.var.theme,
 		themes: config.themes
 	})
 }
@@ -36,7 +36,7 @@ export const updateProfile = async (c: hono.Context<Env>) => {
 			{ cacheControl: 'public, max-age=31536000, immutable' },
 		)
 		user.profile.photo = [{
-			url: new URL(`/.denizen/storage/${filename}`, config.baseUrl),
+			url: new URL(`/.denizen/storage/${filename}`, c.var.baseUrl),
 		}]
 	}
 
@@ -83,7 +83,7 @@ export const postBadge = async (c: hono.Context<Env>) => {
 		photo as File,
 		{ cacheControl: 'public, max-age=31536000, immutable' },
 	)
-	const photoUrl = new URL(`/.denizen/storage/${filename}`, config.baseUrl)
+	const photoUrl = new URL(`/.denizen/storage/${filename}`, c.var.baseUrl)
 
 	const badge = new DenizenBadge({
 		photo: { url: photoUrl, alt: (alt ?? undefined) as string | undefined },

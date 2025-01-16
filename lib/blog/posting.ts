@@ -4,7 +4,6 @@ import type { Env } from '../denizen.ts'
 import { Entry } from '../model/entry.ts'
 import { makeSlug } from '../common/slug.ts'
 import { parseHashtags } from '../common/hashtag.ts'
-import * as config from '../config.ts'
 import { createPost, getPostByURL } from '../db.ts'
 import * as blogPost from './post.ts'
 import { clientRedirect } from '../common/util.ts'
@@ -32,7 +31,7 @@ export const getEdit = async (c: hono.Context<Env>) => {
 	let post
 	try {
 		const postPath = c.req.query('post')
-		post = await getPostByURL(new URL(postPath!, config.baseUrl))
+		post = await getPostByURL(new URL(postPath!, c.var.baseUrl))
 	} catch {
 		// invalid URL given
 	}
@@ -45,7 +44,7 @@ export const postEdit = (c: hono.Context<Env>) => {
 	const postPath = c.req.query('post')
 	if (!postPath) return c.notFound()
 
-	return blogPost.put(c, new URL(postPath, config.baseUrl))
+	return blogPost.put(c, new URL(postPath, c.var.baseUrl))
 }
 
 export const post = async (c: hono.Context<Env>) => {
@@ -56,7 +55,7 @@ export const post = async (c: hono.Context<Env>) => {
 		`${post.published.getFullYear()}/${
 			post.name ? makeSlug(post.name) : post.published.toISOString()
 		}`,
-		config.baseUrl, // TODO derive this somehow
+		c.var.baseUrl,
 	)
 	const { tags, html } = parseHashtags(post.content!.html)
 	post.content!.html = html

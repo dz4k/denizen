@@ -12,10 +12,10 @@ import { encodeBase64Url } from 'jsr:@std/encoding@1.0.6/base64url'
 
 export const getMetadata = (c: hono.Context<Env>) =>
 	c.json({
-		issuer: config.baseUrl,
+		issuer: c.var.baseUrl,
 		authorization_endpoint:
-			new URL('/.denizen/auth/orize', config.baseUrl).href,
-		token_endpoint: new URL('/.denizen/auth/token', config.baseUrl).href,
+			new URL('/.denizen/auth/orize', c.var.baseUrl).href,
+		token_endpoint: new URL('/.denizen/auth/token', c.var.baseUrl).href,
 		code_challenge_methods_supported: ['S256'],
 	})
 
@@ -121,7 +121,7 @@ export const postAuthorize = async (c: hono.Context<Env>) => {
 	const redirect = new URL(formdata.get('redirect_uri') as string)
 	redirect.searchParams.set('code', authCode)
 	redirect.searchParams.set('state', formdata.get('state') as string)
-	redirect.searchParams.set('iss', config.baseUrl.href)
+	redirect.searchParams.set('iss', c.var.baseUrl.href)
 
 	return c.redirect(redirect.href, 302)
 }
@@ -153,7 +153,7 @@ export const postToken = async (c: hono.Context<Env>) => {
 	return c.json({
 		access_token: token,
 		token_type: 'Bearer',
-		me: config.baseUrl.href,
+		me: c.var.baseUrl.href,
 		scope: authCode.scopes.join(' '),
 		// TODO: token expiration & refresh token
 	})
@@ -180,7 +180,7 @@ export const postAuth = async (c: hono.Context<Env>) => {
 		!verifyPKCE(authCode.codeChallenge, String(code_verifier))
 	) return c.json({ error: 'invalid_grant' }, 400)
 
-	return c.json({ me: config.baseUrl.href })
+	return c.json({ me: c.var.baseUrl.href })
 }
 
 type ClientInfo = {

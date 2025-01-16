@@ -1,7 +1,7 @@
 import { DOMParser, Element } from '../../deps/dom.ts'
 import { parseLinkHeader } from '../common/parse-link-header.ts'
 
-import { deleteWebmention, getPostByURL, saveWebmention } from '../db.ts'
+import { deleteWebmention, getConfig, getPostByURL, saveWebmention } from '../db.ts'
 import { Entry } from '../model/entry.ts'
 import { Webmention, WMResponseType } from '../model/webmention.ts'
 import { Citation } from '../model/citation.ts'
@@ -9,7 +9,6 @@ import parseMicroformats from '../mf2/mf2-parser.ts'
 import { MF2Object } from '../common/mf2.ts'
 import { isValidUrl } from '../common/util.ts'
 import { enqueue } from '../queue.ts'
-import * as config from '../config.ts'
 import { app } from '../denizen.ts'
 
 export const receiveWebmention = async (source: string, target: string) => {
@@ -206,8 +205,9 @@ const discoverWebmentionEndpoint = async (target: URL) => {
 	}
 }
 
-const fetchInternalOrExternal = (req: Request) => {
-	const myFetch = new URL(req.url).hostname === config.baseUrl.hostname
+const fetchInternalOrExternal = async (req: Request) => {
+  const baseUrl = new URL(await getConfig('base url') as string);
+	const myFetch = new URL(req.url).hostname === baseUrl.hostname
 		? app.fetch
 		: fetch
 	return myFetch(req)
