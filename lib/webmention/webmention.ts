@@ -6,10 +6,12 @@ import { Entry } from '../model/entry.ts'
 import { Webmention, WMResponseType } from '../model/webmention.ts'
 import { Citation } from '../model/citation.ts'
 import parseMicroformats from '../mf2/mf2-parser.ts'
-import { MF2Object } from '../common/mf2.ts'
+import { MF2Object, MF2PropertyValue } from '../common/mf2.ts'
 import { isValidUrl } from '../common/util.ts'
 import { enqueue } from '../queue.ts'
 import { app } from '../denizen.ts'
+import { isValid } from '../../deps/zod.ts'
+import { mf2Url } from '../common/mf2.ts'
 
 export const receiveWebmention = async (source: string, target: string) => {
 	const targetPost = await getPostByURL(new URL(target))
@@ -89,11 +91,11 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 	// TODO: support rsvp
 	if (
 		'repost-of' in hEntry.properties &&
-		isValidUrl(hEntry.properties['repost-of'][0])
+		hasValidUrl(hEntry.properties['repost-of'])
 	) return 'repost'
 	if (
 		'like-of' in hEntry.properties &&
-		isValidUrl(hEntry.properties['like-of'][0])
+		hasValidUrl(hEntry.properties['like-of'])
 	) return 'like'
 
 	// TODO: check if it's a reply to the target
@@ -102,6 +104,15 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 
 	return 'mention'
 }
+
+const hasValidUrl = (prop: MF2PropertyValue[]): boolean => prop.some((val) => {
+  if (isValidUrl(val)) return true
+  if ('properties' in val) {
+    return val.properties.uid && hasValidUrl(val.properties.uid) ||
+      val.properties.url && hasValidUrl(val.properties.url)
+  }
+  return false
+})
 
 export const sendWebmentions = (source: string, targets: Set<string>) =>
   Promise.all(targets.values().map((target) =>

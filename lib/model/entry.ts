@@ -26,6 +26,7 @@ export class Entry {
 	 */
 	iid: string
 	deleted: boolean = false
+	hidden: boolean = false
 
 	name?: string
 	summary?: string
@@ -78,6 +79,7 @@ export class Entry {
 	replace(p: MF2Properties) {
 		if ('published' in p) this.published = mf2Date(p.published[0])
 		if ('x-deleted' in p) this.deleted = p['x-deleted'][0] === 'true'
+		if ('x-hidden' in p) this.hidden = p['x-hidden'][0] === 'true'
 		if ('uid' in p) this.uid = mf2Url(p.uid[0])
 		if ('url' in p) this.url = new Set(mf2UrlArray(p.url))
 		if ('updated' in p) this.updated = mf2Date(p.updated[0])
@@ -241,6 +243,7 @@ export class Entry {
 		const getUrls = (k: string) =>
 			form.getAll(k).map((v) => new URL(v as string))
 
+		props.hidden = form.has('x-hidden')
 		if (form.has('name')) props.name = get('name')
 		if (form.has('summary')) props.summary = get('summary')
 		if (form.has('content[html]')) props.content = { html: get('content[html]') }
@@ -298,13 +301,14 @@ export class Entry {
 				syndication: this.syndication.map(String),
 				'in-reply-to': this.inReplyTo.map((cite) => cite.toMF2Json()),
 				'bookmark-of': this.bookmarkOf.map((cite) => cite.toMF2Json()),
-				likeOf: this.likeOf.map((cite) => cite.toMF2Json()),
+				'like-of': this.likeOf.map((cite) => cite.toMF2Json()),
 				photo: this.photo.map(({ url, alt }) => ({ value: url.href, alt })),
 				audio: this.audio.map(String),
 				video: this.video.map(String),
 				url: Array.from(this.url, String),
 				uid: this.uid ? [this.uid.toString()] : [],
 				'x-deleted': [String(this.deleted)],
+				'x-hidden': [String(this.hidden)],
 				'x-content-type': this.contentType ? [this.contentType] : [],
 			},
 		})

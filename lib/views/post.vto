@@ -51,45 +51,7 @@
     {{ /if }}
   </header>
   <main>
-    {{ for index, cite of post.inReplyTo }}
-      <!-- TODO: better reply context -->
-      <p
-        class='reply-context p-in-reply-to h-cite'
-        style='view-transition-name: post-{{ post.iid }}-reply-context-{{ index }}'
-      >
-        <strong class='tiny-header'>↪ In reply to</strong>
-        {{ for author of cite.author }}
-          <a class='p-author h-card' href='{{ author.url[0].href }}'>
-            {{- author.name -}}
-          </a>,
-        {{ /for }}
-        <a
-          href='{{ (cite.uid ?? cite.url[0]).href }}'
-          class='{{cite.uid ? 'u-uid u-url' : 'u-url'}}'
-        >
-          {{ if cite.name }}
-            <cite>{{ cite.name }}</cite>
-          {{ else if cite.content }}
-            <span>{{ cite.content |> slice(0, 40) }}</span>
-          {{ else }}
-            <span>{{ cite.url }}</span>
-          {{ /if }}
-        </a>
-      </p>
-    {{ /for }}
-    {{ for index, cite of post.repostOf }}
-      <p
-        class='repost-context p-repost-of h-cite'
-        style='view-transition-name: post-{{ post.iid }}-repost-of-{{ index }}'
-      >
-        <strong class='tiny-header'>🔁 Reposted from</strong>
-        {{ for author of cite.author }}
-          <a class='p-author h-card' href='{{ author.url[0].href }}'>
-            {{- author.name -}}
-          </a>,
-        {{ /for }}
-      </p>
-    {{ /for }}
+    {{ include 'includes/interaction-context.vto' { post } }}
     {{ for index, photo of post.photo }}
       <figure
         style='view-transition-name: post-{{ post.iid }}-photo-{{ index }}'

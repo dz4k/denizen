@@ -12,14 +12,13 @@
       <dependent-input>
         <fieldset>
           <legend>Post type</legend>
-          <label><input type='radio' name='x-type' data-controls='edit-plain-post'> Post</label>
+          <label><input type='radio' name='x-type' data-controls='edit-plain-post' checked> Post</label>
           <label><input type='radio' name='x-type' data-controls='edit-reply'> Reply</label>
           <label><input type='radio' name='x-type' data-controls='edit-like'> Like</label>
           <label><input type='radio' name='x-type' data-controls='edit-repost'> Repost</label>
           <label><input type='radio' name='x-type' data-controls='edit-bookmark'> Bookmark</label>
         </fieldset>
       </dependent-input>
-      <input type='hidden' id='edit-plain-post' name='x-mainpage' value=''>
       <fieldset id='edit-reply' {{ if !post.inReplyTo.length }} hidden disabled {{/if}}>
         <p>
           <label for='edit-reply-to'>Reply to</label>
@@ -33,7 +32,7 @@
           <label><input type='checkbox' name='x-replycontext'>Include reply context</label>
         </p>
         <p>
-          <label><input type='checkbox' name='x-mainpage' checked>Show on main feed</label>
+          <label><input type='checkbox' name='x-hidden'>Hide from home feed</label>
         </p>
       </fieldset>
       <fieldset id='edit-like' {{ if !post.likeOf.length }} hidden disabled {{/if}}>
@@ -46,7 +45,7 @@
             value='{{ post.likeOf[0]?.url }}'>
         </p>
         <p>
-          <label><input type='checkbox' name='x-mainpage'>Show on main feed</label>
+          <label><input type='checkbox' name='x-hidden' checked>Hide from home feed</label>
         </p>
       </fieldset>
       <fieldset id='edit-bookmark' {{ if !post.bookmarkOf.length }} hidden disabled {{/if}}>
@@ -59,7 +58,7 @@
             value='{{ post.bookmarkOf[0]?.url }}'>
         </p>
         <p>
-          <label><input type='checkbox' name='x-mainpage' checked>Show on main feed</label>
+          <label><input type='checkbox' name='x-hidden'>Hide from home feed</label>
         </p>
       </fieldset>
       <fieldset id='edit-repost' {{ if !post.repostOf.length }} hidden disabled {{/if}}>

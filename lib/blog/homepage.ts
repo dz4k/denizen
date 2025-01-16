@@ -25,6 +25,7 @@ export const get = async (c: hono.Context<Env>) => {
 	const { cursor } = c.req.query()
 	const siteOwner = await getUser('admin')
 	const posts = await getPosts({ cursor })
+	posts.data = posts.data.filter((post) => !post.hidden)
 	const admin = isAdmin(c)
 
 	const socials = Object.entries(siteOwner.profile.me)

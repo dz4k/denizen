@@ -148,8 +148,8 @@ export const deleteWebmention = async (
 	return db.atomic()
 		.delete(srcDstKey)
 		.delete(existing.value as Deno.KvKey)
-		.sum(['WMCount', postIid], -1n)
-		.sum(['WMCount', postIid, responseType], -1n)
+		.sum(['WMCount', postIid], 2n ** 64n - 1n)
+		.sum(['WMCount', postIid, responseType], 2n ** 64n - 1n)
 		.commit()
 }
 

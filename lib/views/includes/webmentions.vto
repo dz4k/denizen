@@ -11,7 +11,7 @@
   {{ if reposts.data.length }}
     <p>
       <strong class='tiny-header'>Reposts</strong>
-      {{ for like of reposts.data }}
+      {{ for wm of reposts.data }}
         {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
       {{ /for }}
     </p>
@@ -19,7 +19,7 @@
   {{ if mentions.data.length }}
      <p>
        <strong class='tiny-header'>Mentions</strong>
-       {{ for like of mentions.data }}
+       {{ for wm of mentions.data }}
          {{ include 'includes/face.vto' { card: wm.content.author[0], link: wm.source } }}
        {{ /for }}
      </p>

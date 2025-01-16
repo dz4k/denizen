@@ -89,6 +89,7 @@
             {{ post.name }}
           </a>
         </h2>
+        {{ include 'includes/interaction-context.vto' { post } }}
         {{ for index, photo of post.photo }}
           <figure
             style='view-transition-name: post-{{ post.iid }}-photo-{{ index }}'
