@@ -154,6 +154,10 @@ select {
     border: none;
 }
 
+textarea {
+  min-height: 4em;
+}
+
 td,
 th {
     border-block-end: 1px solid var(--bg2);

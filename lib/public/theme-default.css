@@ -54,6 +54,10 @@ input[type=reset],
     }
 }
 
+textarea {
+  min-height: 4em;
+}
+
 a,
 .\<a\> {
     color: currentColor;

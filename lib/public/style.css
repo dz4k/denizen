@@ -42,6 +42,10 @@ input[type=reset],
     }
 }
 
+[hidden] {
+  display: none !important;
+}
+
 a,
 .\<a\> {
     border: none;
@@ -147,6 +151,19 @@ list-input {
     }
 }
 
+.\(vh\) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
 .h-entry {
     margin-block: 1em;
 }
@@ -165,7 +182,39 @@ list-input {
             margin-block-start: auto;
         }
     }
+}
 
+.post-editor {
+  input, textarea {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    max-width: none;
+  }
+
+  .titleRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: .5em;
+
+    .title {
+      grid-area: 1/1;
+    }
+
+    .extraFields {
+      display: contents;
+
+      summary {
+        list-style: none;
+        grid-area: 1/2;
+        align-self: center;
+      }
+
+      .detailsContent {
+        grid-area: 2 / 1 / 2 / span 2;
+      }
+    }
+  }
 }
 
 .entry-list {
