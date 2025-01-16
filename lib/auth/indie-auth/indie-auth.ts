@@ -2,13 +2,13 @@ import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 
 import * as config from '../../config.ts'
-import { crypto } from 'https://deno.land/std@0.204.0/crypto/mod.ts'
+import { crypto } from 'jsr:@std/crypto@1.0.3'
 import parseMicroformats from '../../mf2/mf2-parser.ts'
 import { isAdmin } from '../../admin/middleware.ts'
 import { mf2String } from '../../common/mf2.ts'
 import { login } from '../login.ts'
 import { db } from '../../db.ts'
-import { encodeBase64Url } from 'https://deno.land/std@0.204.0/encoding/base64url.ts'
+import { encodeBase64Url } from 'jsr:@std/encoding@1.0.6/base64url'
 
 export const getMetadata = (c: hono.Context<Env>) =>
 	c.json({

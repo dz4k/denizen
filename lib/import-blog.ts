@@ -1,4 +1,4 @@
-import { escape as htmlEscape } from 'https://deno.land/std@0.203.0/html/mod.ts'
+import { escape as htmlEscape } from 'jsr:@std/html@1.0.3'
 import {
 	createPost,
 	getPost,

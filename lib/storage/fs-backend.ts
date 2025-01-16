@@ -1,6 +1,6 @@
 // TODO: Rewrite in Deno KV blob storage when that becomes a thing.
 
-import * as path from 'https://deno.land/std@0.203.0/path/mod.ts'
+import * as path from 'jsr:@std/path@1.0.8'
 import { WriteOptions } from './storage-interface.ts'
 
 export const name = 'FSBackend'

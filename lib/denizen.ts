@@ -29,7 +29,6 @@ import * as webmentionRecv from './webmention/recv.ts'
 import { StorageBackend } from './storage/storage-interface.ts'
 import * as fsBackend from './storage/fs-backend.ts'
 
-import { Layout } from './layout.ts'
 import render from './common/vento.ts'
 
 listen()
@@ -79,7 +78,6 @@ app
 			rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
 		}),
 	)
-	.use('*', jsxRenderer(Layout))
 	.use('*', initialSetup.middleware)
 	.get('/.denizen/initial-setup', initialSetup.get)
 	.post('/.denizen/initial-setup', initialSetup.post)

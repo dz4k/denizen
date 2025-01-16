@@ -11,7 +11,7 @@ export const login = async (
 	pw: string,
 ): Promise<User | null> => {
 	const user = await getUser(username)
-	if (await bcrypt.compareSync(pw, user.pwhash)) return user
+	if (bcrypt.verify(pw, user.pwhash, {})) return user
 	else return null
 }
 

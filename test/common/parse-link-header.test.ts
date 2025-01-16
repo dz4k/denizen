@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.204.0/assert/mod.ts'
+import { assertEquals } from 'jsr:@std/assert@1.0.10/equals'
 import { parseLinkHeader } from '../../lib/common/parse-link-header.ts'
 
 Deno.test('parses a single, simple link', () => {

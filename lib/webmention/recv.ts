@@ -1,4 +1,4 @@
-import { assert } from 'https://deno.land/std@0.203.0/assert/assert.ts'
+import { assert } from 'jsr:@std/assert@1.0.10/assert'
 
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'

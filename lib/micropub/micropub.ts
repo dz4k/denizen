@@ -1,5 +1,5 @@
-import * as path from 'https://deno.land/std@0.203.0/path/extname.ts'
-import * as mediaType from 'https://deno.land/std@0.203.0/media_types/mod.ts'
+import * as path from 'jsr:@std/path@1.0.8/extname'
+import * as mediaType from 'jsr:@std/media-types@1.1.0'
 
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'

@@ -14,8 +14,7 @@ import { Card } from '../model/card.ts'
 import { isValidUrl } from '../common/util.ts'
 
 const signup = async (username: string, pw: string, card: Card) => {
-	const salt = await bcrypt.genSaltSync()
-	const user = new User(username, await bcrypt.hashSync(pw, salt), card)
+	const user = new User(username, bcrypt.hash(pw, {}), card)
 	await createUser(user)
 }
 

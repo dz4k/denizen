@@ -1,5 +1,5 @@
-import { ulid } from 'https://deno.land/std@0.203.0/ulid/mod.ts'
-import { escape as htmlEscape, unescape as htmlUnescape } from 'https://deno.land/std@0.203.0/html/mod.ts'
+import { ulid } from 'jsr:@std/ulid@1.0.0'
+import { escape as htmlEscape, unescape as htmlUnescape } from 'jsr:@std/html@1.0.3'
 import {
 	ImageUrl,
 	mf2Date,

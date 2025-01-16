@@ -1,7 +1,7 @@
 import {
 	assertEquals,
 	assertExists,
-} from 'https://deno.land/std@0.204.0/assert/mod.ts'
+} from 'jsr:@std/assert@1.0.10'
 import mf2 from '../../lib/mf2/mf2-parser.ts'
 
 Deno.test('parses a simple h-entry', () => {
