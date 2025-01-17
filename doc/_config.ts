@@ -13,9 +13,9 @@ import 'npm:prismjs@1.29.0/components/prism-bash.js'
 const site = lume()
 
 site.loadPages(['.html'])
-site.copy(['.css', '.svg'])
 site.copy('/fonts')
-site.data('layout', 'layout.vto')
+site.copy('/media')
+site.copy('/css')
 
 site.use(date())
 site.use(code_highlight())
@@ -24,6 +24,7 @@ site.use(prism({ cssSelector: 'pre' }))
 site.use(sitemap())
 site.use(vento())
 
+site.data('layout', 'layout.vto')
 site.data("date", "git created")
 site.preprocess([".html"], (pages) => pages.forEach((page) =>
   void (page.data.modified = getGitDate("modified", page.src.entry?.src!))))
