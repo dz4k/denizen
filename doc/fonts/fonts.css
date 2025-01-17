@@ -1,8 +1,8 @@
 @font-face {
-  font-family: DINish;
-  src: url("/fonts/DINish/DINish-Variable-VF.woff2") format("woff2");
+	font-family: DINish;
+	src: url('/fonts/DINish/DINish-Variable-VF.woff2') format('woff2');
 }
 @font-face {
-  font-family: PicNic;
-  src: url("/fonts/PicNic/PicNic.woff2") format("woff2");
+	font-family: PicNic;
+	src: url('/fonts/PicNic/PicNic.woff2') format('woff2');
 }

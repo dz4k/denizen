@@ -42,21 +42,27 @@ export type Env = {
 		theme: string
 		baseUrl: URL
 
-		render: (template: string, data?: Record<string, unknown>) => Response | Promise<Response>
+		render: (
+			template: string,
+			data?: Record<string, unknown>,
+		) => Response | Promise<Response>
 	}
 }
 export const app = new Hono<Env>()
 
 app.use('*', async (c, next) => {
-  const config = await getConfigs()
-  c.set('storage', fsBackend)
-  c.set('theme', config['theme'] as string)
-  c.set('locales', config['locales'] as string[])
-  c.set('lang', (config['locales'] as string[])[0])
-  c.set('baseUrl', new URL(config['base url'] as string))
-  c.set('render', async (template: string, data?: Record<string, unknown>) =>
-    c.html(await render(c, template, data)))
-  await next()
+	const config = await getConfigs()
+	c.set('storage', fsBackend)
+	c.set('theme', config['theme'] as string)
+	c.set('locales', config['locales'] as string[])
+	c.set('lang', (config['locales'] as string[])[0])
+	c.set('baseUrl', new URL(config['base url'] as string))
+	c.set(
+		'render',
+		async (template: string, data?: Record<string, unknown>) =>
+			c.html(await render(c, template, data)),
+	)
+	await next()
 })
 
 app

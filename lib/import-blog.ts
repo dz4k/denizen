@@ -105,7 +105,7 @@ const importEntryImpl = async (jobId: string, entry: Entry) => {
 	// Fill in missing content
 	if (!entry.content) {
 		const res = await fetch(entryUrl, {
-		  headers: { 'User-Agent': config.userAgent }
+			headers: { 'User-Agent': config.userAgent },
 		})
 		if (!res.ok) {
 			throw new Error(
@@ -193,7 +193,9 @@ const importMediaImpl = async (
 	newUrl: string,
 ) => {
 	console.log(`importMedia: ${oldUrl} -> ${newUrl}`)
-	const res = await fetch(oldUrl, { headers: { 'User-Agent': config.userAgent } })
+	const res = await fetch(oldUrl, {
+		headers: { 'User-Agent': config.userAgent },
+	})
 	if (!res.ok) {
 		throw new Error(
 			`Failed to fetch ${oldUrl}: ${res.status} ${res.statusText}`,

@@ -1,7 +1,4 @@
-import {
-	assertEquals,
-	assertExists,
-} from 'jsr:@std/assert@1.0.10'
+import { assertEquals, assertExists } from 'jsr:@std/assert@1.0.10'
 import mf2 from '../../lib/mf2/mf2-parser.ts'
 
 Deno.test('parses a simple h-entry', () => {

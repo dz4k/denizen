@@ -10,7 +10,7 @@ export const get = async (c: hono.Context<Env>) => {
 			redirect_uri: new URL('/.denizen/indieauth-cb', c.var.baseUrl).href,
 			client_id: c.var.baseUrl.href,
 		}),
-		headers: { 'User-Agent': config.userAgent }
+		headers: { 'User-Agent': config.userAgent },
 	}).then((res) => res.json())
 	if (validate.me === c.var.baseUrl.href) {
 		const sesh = c.get('session')

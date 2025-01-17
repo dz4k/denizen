@@ -9,9 +9,9 @@ export const get = async (c: hono.Context<Env>) => {
 	const user = await getUser(c.var.session.get('user') as string)
 	c.set('title', 'Console')
 	return c.var.render('console.vto', {
-	  user,
+		user,
 		theme: c.var.theme,
-		themes: config.themes
+		themes: config.themes,
 	})
 }
 

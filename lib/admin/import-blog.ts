@@ -12,14 +12,14 @@ export const get = (c: hono.Context<Env>) => {
 export const post = async (c: hono.Context<Env>) => {
 	const body = await c.req.parseBody()
 	if (typeof body['feed-url'] !== 'string') {
-	  c.status(400)
+		c.status(400)
 		return c.var.render('import-form.vto', { error: 'Please specify an URL' })
 	}
 	let feedUrl
 	try {
 		feedUrl = new URL(body['feed-url'])
 	} catch {
-	  c.status(400)
+		c.status(400)
 		return c.var.render('import-form.vto', { error: 'Invalid feed URL' })
 	}
 
@@ -35,7 +35,7 @@ export const post = async (c: hono.Context<Env>) => {
 }
 
 export const getJob = async (c: hono.Context<Env>) => {
-  const jobId = c.req.param("id")
-  const job = await getBlogImportJob(jobId)
-  return c.var.render('import-job.vto', { job })
+	const jobId = c.req.param('id')
+	const job = await getBlogImportJob(jobId)
+	return c.var.render('import-job.vto', { job })
 }

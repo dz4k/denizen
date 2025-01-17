@@ -1,7 +1,12 @@
 import { DOMParser, Element } from '../../deps/dom.ts'
 import { parseLinkHeader } from '../common/parse-link-header.ts'
 
-import { deleteWebmention, getConfig, getPostByURL, saveWebmention } from '../db.ts'
+import {
+	deleteWebmention,
+	getConfig,
+	getPostByURL,
+	saveWebmention,
+} from '../db.ts'
 import { Entry } from '../model/entry.ts'
 import { Webmention, WMResponseType } from '../model/webmention.ts'
 import { Citation } from '../model/citation.ts'
@@ -104,23 +109,26 @@ const discoverResponseType = (hEntry: MF2Object): WMResponseType => {
 	return 'mention'
 }
 
-const hasValidUrl = (prop: MF2PropertyValue[]): boolean => prop.some((val) => {
-  if (isValidUrl(val)) return true
-  if ('properties' in val) {
-    return val.properties.uid && hasValidUrl(val.properties.uid) ||
-      val.properties.url && hasValidUrl(val.properties.url)
-  }
-  return false
-})
+const hasValidUrl = (prop: MF2PropertyValue[]): boolean =>
+	prop.some((val) => {
+		if (isValidUrl(val)) return true
+		if ('properties' in val) {
+			return val.properties.uid && hasValidUrl(val.properties.uid) ||
+				val.properties.url && hasValidUrl(val.properties.url)
+		}
+		return false
+	})
 
 export const sendWebmentions = (source: string, targets: Set<string>) =>
-  Promise.all(targets.values().map((target) =>
-		enqueue({
-			type: 'send_webmention',
-			source,
-			target,
-		})
-  )).then((res) => void res)
+	Promise.all(
+		targets.values().map((target) =>
+			enqueue({
+				type: 'send_webmention',
+				source,
+				target,
+			})
+		),
+	).then((res) => void res)
 // const mentionedPages = findMentions(post, oldContent)
 
 export const findMentions = (post: Entry, oldContent?: string) => {
@@ -163,7 +171,7 @@ const findMentionsInContent = function* (
 		if (el.getAttribute('rel')?.includes('nomention')) return
 		try {
 			const url = new URL(el.getAttribute('href')!, baseUrl)
-			url.hash = ""
+			url.hash = ''
 			yield url
 		} catch {
 			// invalid URL
@@ -216,7 +224,7 @@ const discoverWebmentionEndpoint = async (target: URL) => {
 }
 
 const fetchInternalOrExternal = async (req: Request) => {
-  const baseUrl = new URL(await getConfig('base url') as string);
+	const baseUrl = new URL(await getConfig('base url') as string)
 	const myFetch = new URL(req.url).hostname === baseUrl.hostname
 		? app.fetch
 		: fetch

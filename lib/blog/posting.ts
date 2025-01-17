@@ -11,8 +11,8 @@ import { clientRedirect } from '../common/util.ts'
 export const get = (c: hono.Context<Env>) => {
 	c.set('title', 'New post')
 	return c.var.render('post-editor.vto', {
-	  post: Entry.fromFormData(formDataFromObject(c.req.query()))
-	});
+		post: Entry.fromFormData(formDataFromObject(c.req.query())),
+	})
 }
 
 const formDataFromObject = (obj: Record<string, string | string[]>) => {

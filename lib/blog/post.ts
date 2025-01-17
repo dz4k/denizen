@@ -25,9 +25,9 @@ export const get = async (c: hono.Context<Env>) => {
 	}
 
 	if (post.deleted) {
-  	c.status(410)
-  	c.set('title', 'Deleted post')
-  	return c.var.render('410.vto')
+		c.status(410)
+		c.set('title', 'Deleted post')
+		return c.var.render('410.vto')
 	}
 
 	const admin = isAdmin(c)
@@ -47,7 +47,9 @@ export const get = async (c: hono.Context<Env>) => {
 	])
 
 	return c.var.render('post.vto', {
-	  post, admin, siteOwner,
+		post,
+		admin,
+		siteOwner,
 		webmentions: { likes, reposts, mentions, replies },
 	})
 }

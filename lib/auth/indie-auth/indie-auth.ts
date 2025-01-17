@@ -13,8 +13,7 @@ import { encodeBase64Url } from 'jsr:@std/encoding@1.0.6/base64url'
 export const getMetadata = (c: hono.Context<Env>) =>
 	c.json({
 		issuer: c.var.baseUrl,
-		authorization_endpoint:
-			new URL('/.denizen/auth/orize', c.var.baseUrl).href,
+		authorization_endpoint: new URL('/.denizen/auth/orize', c.var.baseUrl).href,
 		token_endpoint: new URL('/.denizen/auth/token', c.var.baseUrl).href,
 		code_challenge_methods_supported: ['S256'],
 	})
@@ -194,7 +193,7 @@ const fetchClientInfo = async (clientId: URL): Promise<ClientInfo> => {
 
 	const res = await fetch(clientId.href, {
 		method: 'GET',
-		headers: { 'User-Agent': config.userAgent }
+		headers: { 'User-Agent': config.userAgent },
 	})
 	const html = await res.text()
 	const mf2 = parseMicroformats(html, { baseUrl: res.url ?? clientId.href })

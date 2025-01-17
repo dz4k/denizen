@@ -8,5 +8,5 @@ export const get = (c: hono.Context<Env>) => {
 
 	c.status(404)
 	c.set('title', 'Not found')
-	return c.var.render("404.vto")
+	return c.var.render('404.vto')
 }

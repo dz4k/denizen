@@ -17,7 +17,7 @@ export const get = async (c: hono.Context<Env>) => {
 		[]
 	const lang =
 		requestedLanguages.find((lang) => c.var.locales.includes(lang)) ??
-		  c.var.lang
+			c.var.lang
 
 	c.set('lang', lang)
 

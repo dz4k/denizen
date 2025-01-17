@@ -65,8 +65,7 @@ export const get = async (c: hono.Context<Env>) => {
 	const q = c.req.query('q')
 	if (q === 'config') {
 		return c.json({
-			'media-endpoint':
-				new URL('/.denizen/micropub/media', c.var.baseUrl).href,
+			'media-endpoint': new URL('/.denizen/micropub/media', c.var.baseUrl).href,
 		})
 	}
 	if (q === 'source') {

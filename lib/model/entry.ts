@@ -1,5 +1,8 @@
 import { ulid } from 'jsr:@std/ulid@1.0.0'
-import { escape as htmlEscape, unescape as htmlUnescape } from 'jsr:@std/html@1.0.3'
+import {
+	escape as htmlEscape,
+	unescape as htmlUnescape,
+} from 'jsr:@std/html@1.0.3'
 import {
 	ImageUrl,
 	mf2Date,
@@ -89,14 +92,14 @@ export class Entry {
 			if (typeof content === 'string') {
 				this.content = { html: htmlEscape(content) }
 			} else if ('html' in content) {
-			  this.content = content
+				this.content = content
 				this.content.value = htmlUnescape(htmlStripTags(content.html))
 			} else if (content.value) {
-			  this.content = { html: htmlEscape(content.value) }
+				this.content = { html: htmlEscape(content.value) }
 			}
 		}
 		if ('x-content-type' in p) {
-		  this.contentType = mf2String(p['x-content-type'][0]) as 'html' | 'text'
+			this.contentType = mf2String(p['x-content-type'][0]) as 'html' | 'text'
 		}
 		if ('author' in p) this.author = p.author.map((v) => Card.fromMf2Json(v))
 		if ('category' in p) this.category = mf2StringArray(p.category)
@@ -245,13 +248,16 @@ export class Entry {
 		props.hidden = form.has('x-hidden')
 		if (form.has('name')) props.name = get('name')
 		if (form.has('summary')) props.summary = get('summary')
-		if (form.has('content[html]')) props.content = { html: get('content[html]') }
-		else if (form.has('content')) props.content = {
-		  value: get('content'),
-			html: htmlEscape(get('content')),
+		if (form.has('content[html]')) {
+			props.content = { html: get('content[html]') }
+		} else if (form.has('content')) {
+			props.content = {
+				value: get('content'),
+				html: htmlEscape(get('content')),
+			}
 		}
 		if (form.has('x-content-type')) {
-		  const type = get('x-content-type')
+			const type = get('x-content-type')
 			if (type === 'html' || type === 'text') props.contentType = type
 		}
 		if (form.has('category')) props.category = getAll('category')

@@ -60,7 +60,11 @@ export const createPost = async (post: Entry): Promise<string> => {
 	myUrlKey && tx.set(myUrlKey, post.iid)
 	bump(tx)
 	const { ok } = await tx.commit()
-	if (!ok) throw new Error("Couldn't save post. Likely, a post with same URL or IID already exists.")
+	if (!ok) {
+		throw new Error(
+			"Couldn't save post. Likely, a post with same URL or IID already exists.",
+		)
+	}
 
 	// TODO: this doesn't feel like it belongs here
 	await enqueue({
@@ -242,9 +246,18 @@ export const saveBlogImportJob = async (job: BlogImportJobParams) => {
 	const key = ['ImportJob', job.id ??= ulid()]
 	await db.atomic()
 		.set(key, job)
-		.set(['ImportJob.EntryCount', job.id], new Deno.KvU64(BigInt(job.totalPosts ?? 0n)))
-		.set(['ImportJob.ImportedEntryCount', job.id], new Deno.KvU64(BigInt(job.importedPosts ?? 0n)))
-		.set(['ImportJob.FailedEntryCount', job.id], new Deno.KvU64(BigInt(job.failedPosts ?? 0n)))
+		.set(
+			['ImportJob.EntryCount', job.id],
+			new Deno.KvU64(BigInt(job.totalPosts ?? 0n)),
+		)
+		.set(
+			['ImportJob.ImportedEntryCount', job.id],
+			new Deno.KvU64(BigInt(job.importedPosts ?? 0n)),
+		)
+		.set(
+			['ImportJob.FailedEntryCount', job.id],
+			new Deno.KvU64(BigInt(job.failedPosts ?? 0n)),
+		)
 		.set(['ImportJob.MediaCount', job.id], new Deno.KvU64(0n))
 		.set(['ImportJob.ImportedMediaCount', job.id], new Deno.KvU64(0n))
 		.set(['ImportJob.FailedMediaCount', job.id], new Deno.KvU64(0n))
@@ -254,10 +267,10 @@ export const saveBlogImportJob = async (job: BlogImportJobParams) => {
 
 export const getBlogImportJob = async (id: string) => {
 	const [job_, entries, imported, failed] = await db.getMany([
-    ['ImportJob', id],
-    ['ImportJob.EntryCount', id],
-    ['ImportJob.ImportedEntryCount', id],
-    ['ImportJob.FailedEntryCount', id],
+		['ImportJob', id],
+		['ImportJob.EntryCount', id],
+		['ImportJob.ImportedEntryCount', id],
+		['ImportJob.FailedEntryCount', id],
 	])
 	console.log(job_, entries, imported, failed)
 	const job = job_.value as BlogImportJob

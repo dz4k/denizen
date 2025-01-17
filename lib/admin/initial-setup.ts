@@ -28,8 +28,8 @@ export const middleware: hono.MiddlewareHandler<Env> = async (c, next) => {
 }
 
 export const get = (c: hono.Context<Env>) => {
-  c.set('title', 'Initial Setup -- Denizen')
-  return c.var.render('initial-setup.vto')
+	c.set('title', 'Initial Setup -- Denizen')
+	return c.var.render('initial-setup.vto')
 }
 
 export const post = async (c: hono.Context<Env>) => {
@@ -40,13 +40,15 @@ export const post = async (c: hono.Context<Env>) => {
 	const pw = form.get('pw')
 	if (typeof pw !== 'string') {
 		c.status(400)
-	  return c.var.render('initial-setup.vto', { error: 'Missing username or password' })
+		return c.var.render('initial-setup.vto', {
+			error: 'Missing username or password',
+		})
 	}
 
 	const displayName = form.get('name')
 	if (typeof displayName !== 'string') {
 		c.status(400)
-	  return c.var.render('initial-setup.vto', { error: 'Please enter a name' })
+		return c.var.render('initial-setup.vto', { error: 'Please enter a name' })
 	}
 
 	const siteUrl = form.get('site-url')
@@ -55,13 +57,17 @@ export const post = async (c: hono.Context<Env>) => {
 		!isValidUrl(siteUrl)
 	) {
 		c.status(400)
-	  return c.var.render('initial-setup.vto', { error: 'Site URL should be a valid URL' })
+		return c.var.render('initial-setup.vto', {
+			error: 'Site URL should be a valid URL',
+		})
 	}
 
 	const locale = form.get('lang')
 	if (typeof locale !== 'string') {
 		c.status(400)
-	  return c.var.render('initial-setup.vto', { error: 'Please choose a language for your blog' })
+		return c.var.render('initial-setup.vto', {
+			error: 'Please choose a language for your blog',
+		})
 	}
 
 	// Do setup
