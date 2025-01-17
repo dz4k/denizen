@@ -55,7 +55,7 @@ app.use('*', async (c, next) => {
 	c.set('storage', fsBackend)
 	c.set('theme', config['theme'] as string)
 	c.set('locales', config['locales'] as string[])
-	c.set('lang', (config['locales'] as string[])[0])
+	c.set('lang', (config['locales'] as string[])?.[0])
 	c.set('baseUrl', new URL(config['base url'] as string))
 	c.set(
 		'render',
