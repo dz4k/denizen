@@ -1,4 +1,3 @@
-import { MF2Object } from './common/mf2.ts'
 import { db } from './db.ts'
 import {
 	BlogImportJob,
@@ -6,7 +5,6 @@ import {
 	importEntry,
 	importMedia,
 } from './import-blog.ts'
-import { Entry } from './model/entry.ts'
 import {
 	receiveWebmention,
 	sendWebmention,

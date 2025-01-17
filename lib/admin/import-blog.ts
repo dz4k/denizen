@@ -4,7 +4,6 @@ import type { Env } from '../denizen.ts'
 import { getBlogImportJob, saveBlogImportJob } from '../db.ts'
 import { enqueue } from '../queue.ts'
 import { clientRedirect } from '../common/util.ts'
-import { BlogImportJob } from '../import-blog.ts'
 
 export const get = (c: hono.Context<Env>) => {
 	return c.var.render('import-form.vto')

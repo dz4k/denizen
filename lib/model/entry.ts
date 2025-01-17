@@ -12,7 +12,6 @@ import {
 	mf2UrlArray,
 	removeEmptyProperties,
 } from '../common/mf2.ts'
-import { makeSlug } from '../common/slug.ts'
 import { Card } from './card.ts'
 import { Citation } from './citation.ts'
 import { htmlStripTags } from '../common/util.ts'

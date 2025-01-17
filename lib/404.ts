@@ -1,5 +1,4 @@
 import * as hono from '../deps/hono.ts'
-import render from './common/vento.ts'
 import type { Env } from './denizen.ts'
 
 export const get = (c: hono.Context<Env>) => {
