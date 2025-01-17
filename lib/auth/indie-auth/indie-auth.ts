@@ -1,7 +1,6 @@
 import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
 
-import * as config from '../../config.ts'
 import { crypto } from 'jsr:@std/crypto@1.0.3'
 import parseMicroformats from '../../mf2/mf2-parser.ts'
 import { isAdmin } from '../../admin/middleware.ts'

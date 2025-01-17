@@ -1,7 +1,6 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
-import * as config from '../config.ts'
 import { getPosts, getUser } from '../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
 
