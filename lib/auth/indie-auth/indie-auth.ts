@@ -1,5 +1,6 @@
 import * as hono from '../../../deps/hono.ts'
 import type { Env } from '../../denizen.ts'
+import * as config from '../../config.ts'
 
 import { crypto } from 'jsr:@std/crypto@1.0.3'
 import parseMicroformats from '../../mf2/mf2-parser.ts'
@@ -193,6 +194,7 @@ const fetchClientInfo = async (clientId: URL): Promise<ClientInfo> => {
 
 	const res = await fetch(clientId.href, {
 		method: 'GET',
+		headers: { 'User-Agent': config.userAgent }
 	})
 	const html = await res.text()
 	const mf2 = parseMicroformats(html, { baseUrl: res.url ?? clientId.href })

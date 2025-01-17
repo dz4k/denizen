@@ -16,6 +16,7 @@ import { enqueue } from './queue.ts'
 import parseMicroformats from './mf2/mf2-parser.ts'
 import { Document, DOMParser, Element } from '../deps/dom.ts'
 import * as storage from './storage/fs-backend.ts'
+import * as config from './config.ts'
 
 export type BlogImportJob = {
 	id: string
@@ -44,7 +45,7 @@ export const importBlog = async (job: BlogImportJob) => {
 	const res = await fetch(job.feedUrl, {
 		headers: {
 			'Accept': 'application/feed+json, application/json',
-			'User-Agent': 'Denizen/0.0 (+https://denizen.dev)',
+			'User-Agent': config.userAgent,
 		},
 	})
 	if (!res.ok) {
@@ -103,7 +104,9 @@ const importEntryImpl = async (jobId: string, entry: Entry) => {
 
 	// Fill in missing content
 	if (!entry.content) {
-		const res = await fetch(entryUrl)
+		const res = await fetch(entryUrl, {
+		  headers: { 'User-Agent': config.userAgent }
+		})
 		if (!res.ok) {
 			throw new Error(
 				`importEntry: Failed to fetch ${entry.url}: ${res.status} ${res.statusText}`,
@@ -190,7 +193,7 @@ const importMediaImpl = async (
 	newUrl: string,
 ) => {
 	console.log(`importMedia: ${oldUrl} -> ${newUrl}`)
-	const res = await fetch(oldUrl)
+	const res = await fetch(oldUrl, { headers: { 'User-Agent': config.userAgent } })
 	if (!res.ok) {
 		throw new Error(
 			`Failed to fetch ${oldUrl}: ${res.status} ${res.statusText}`,

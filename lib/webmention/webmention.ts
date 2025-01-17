@@ -10,8 +10,7 @@ import { MF2Object, MF2PropertyValue } from '../common/mf2.ts'
 import { isValidUrl } from '../common/util.ts'
 import { enqueue } from '../queue.ts'
 import { app } from '../denizen.ts'
-import { isValid } from '../../deps/zod.ts'
-import { mf2Url } from '../common/mf2.ts'
+import * as config from '../config.ts'
 
 export const receiveWebmention = async (source: string, target: string) => {
 	const targetPost = await getPostByURL(new URL(target))
@@ -221,5 +220,7 @@ const fetchInternalOrExternal = async (req: Request) => {
 	const myFetch = new URL(req.url).hostname === baseUrl.hostname
 		? app.fetch
 		: fetch
+
+	req.headers.set('User-Agent', config.userAgent)
 	return myFetch(req)
 }

@@ -1,5 +1,6 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
+import * as config from '../config.ts'
 
 export const get = async (c: hono.Context<Env>) => {
 	const validate = await fetch('https://indieauth.com/auth', {
@@ -9,6 +10,7 @@ export const get = async (c: hono.Context<Env>) => {
 			redirect_uri: new URL('/.denizen/indieauth-cb', c.var.baseUrl).href,
 			client_id: c.var.baseUrl.href,
 		}),
+		headers: { 'User-Agent': config.userAgent }
 	}).then((res) => res.json())
 	if (validate.me === c.var.baseUrl.href) {
 		const sesh = c.get('session')
