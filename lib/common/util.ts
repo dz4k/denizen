@@ -30,3 +30,19 @@ export const htmlStripTags = (html: string) =>
 	html
 		.replace(/<(?!\/?( )\\b)[^<>]+>/gm, '')
 		.replace(/([\r\n]+ +)+/gm, '')
+
+export const ByteLimitStream = class extends TransformStream<Uint8Array, Uint8Array> {
+  total: number = 0
+
+  constructor(public limit: number) {
+    super({
+      transform: (chunk, controller) => {
+        this.total += chunk.length
+        if (this.total > limit) controller.error(
+          new Error(`Byte limit of ${limit} exceeded`)
+        )
+        controller.enqueue(chunk)
+      }
+    })
+  }
+}

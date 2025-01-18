@@ -12,7 +12,7 @@ import { Webmention, WMResponseType } from '../model/webmention.ts'
 import { Citation } from '../model/citation.ts'
 import parseMicroformats from '../mf2/mf2-parser.ts'
 import { MF2Object, MF2PropertyValue } from '../common/mf2.ts'
-import { isValidUrl } from '../common/util.ts'
+import { ByteLimitStream, isValidUrl } from '../common/util.ts'
 import { enqueue } from '../queue.ts'
 import { app } from '../denizen.ts'
 import * as config from '../config.ts'
@@ -61,7 +61,7 @@ export const receiveWebmention = async (source: string, target: string) => {
 		return
 	}
 
-	const mf2doc = await parseMicroformats(doc, {
+	const mf2doc = parseMicroformats(doc, {
 		baseUrl: sourceRes.url || source,
 	})
 	const hEntry = mf2doc.items.find((item) => item.type.includes('h-entry'))
@@ -230,5 +230,12 @@ const fetchInternalOrExternal = async (req: Request) => {
 		: fetch
 
 	req.headers.set('User-Agent', config.userAgent)
-	return myFetch(req)
+
+	const res = await myFetch(req, {
+		signal: AbortSignal.timeout(5000)
+	})
+	return new Response(
+		res.body?.pipeThrough(new ByteLimitStream(1024 * 1024)),
+		res,
+	)
 }
