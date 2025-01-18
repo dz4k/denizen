@@ -4,6 +4,22 @@ title: Get started
 
 ##      Install
 
+
+<details open name="how-to-run">
+<summary>Run on your own server or personal computer</summary>
+
+You can run Denizen locally on your computer or on a server by downloading a binary release from
+[our Codeberg releases page]
+
+  ~~~~ sh
+  ./denizen-v.0.0.0-devel.1-unknown-linux-gnu
+  ~~~~
+
+</details>
+
+<details name="how-to-run">
+<summary>Run on Deno Deploy</summary>
+
 Currently, running Denizen requires cloning the source repository locally.
 Once Deno supports
 [asset references](https://github.com/tc39/proposal-asset-references)
@@ -16,27 +32,11 @@ Use Git to clone the repository:
   git clone https://codeberg.org/dz4k/denizen && cd denizen
   ~~~~
 
-
-<details open name="how-to-run">
-<summary>Run on your own server or personal computer</summary>
-
-You can run Denizen locally on your computer or on a server you own
-with the following command:
+Use `deployctl` to deploy it to your account:
 
   ~~~~ sh
-  deno task run
+  deno run -A jsr:@deno/deployctl deploy bin/denizen.ts --prod
   ~~~~
-
-</details>
-
-<details name="how-to-run">
-<summary>Run on Deno Deploy</summary>
-
-Use `deployctl`:
-
-~~~~ sh
-deno run -A jsr:@deno/deployctl deploy bin/denizen.ts --prod
-~~~~
 
 </details>
 
