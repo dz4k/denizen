@@ -12,6 +12,9 @@ import 'npm:prismjs@1.29.0/components/prism-bash.js'
 
 const site = lume()
 
+site.remoteFile('/css/vendor/siimple-icons.css',
+  'https://cdn.jsdelivr.net/npm/siimple-icons/siimple-icons.css',)
+
 site.loadPages(['.html'])
 site.copy('/fonts')
 site.copy('/media')

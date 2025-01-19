@@ -141,7 +141,7 @@ details {
 	font-weight: normal;
 
 	color: var(--text-accent);
-	filter: drop-shadow(0 0 1.5em rgb(from var(--text-accent) r g b / 70%));
+	text-shadow: 0 0 1.5em rgb(from var(--text-accent) r g b / 70%);
 }
 
 .nav-bar {
@@ -183,22 +183,23 @@ details {
 		#540
 	);
 
-	&::before {
+	> i {
 		content: '⚠';
 		position: absolute;
 		left: 0;
 		padding-block: inherit;
+		translate: 0 .3em;
 	}
 }
 
 .box-link {
 	text-decoration: none;
-	display: block;
+	display: block grid;
 
 	height: 100%;
 	width: 100%;
 	padding: 0.25em;
-	align-content: end;
+	align-content: space-between;
 
 	font-size: 1.3em;
 	line-height: 0.9;
@@ -218,11 +219,6 @@ details {
 
 	&:active {
 		box-shadow: 0 0 1em -0.5em hsl(from var(--colorbg) h s calc(3 * l));
-	}
-
-	&::after {
-		content: '⏵' / '';
-		color: hsl(from currentcolor h s l / 30%);
 	}
 
 	strong & {
