@@ -1,11 +1,11 @@
 {{ for author of cite.author }}
-  <a class='p-author h-card' href='{{ author.url[0].href }}'>
+  <a class="p-author h-card" href="{{ author.url[0].href }}">
     {{- author.name -}}
   </a>,
 {{ /for }}
 <a
-  href='{{ (cite.uid ?? cite.url[0]).href }}'
-  class='{{cite.uid ? 'u-uid u-url' : 'u-url'}}'
+  href="{{ (cite.uid ?? cite.url[0]).href }}"
+  class="{{cite.uid ? "u-uid u-url" : "u-url"}}"
 >
   {{ if cite.name }}
     <cite>{{ cite.name }}</cite>

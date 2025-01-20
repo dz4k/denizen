@@ -1,177 +1,177 @@
-{{ layout 'includes/layout.vto' }}
+{{ layout "includes/layout.vto" }}
 
-<script type='module' src='/.denizen/public/textarea-autoexpand.js'></script>
-<script type='module' src='/.denizen/public/dependent-input.js'></script>
+<script type="module" src="/.denizen/public/textarea-autoexpand.js"></script>
+<script type="module" src="/.denizen/public/dependent-input.js"></script>
 
 <header>
   <h1>{{ c.var.title }}</h1>
 </header>
 <main>
-  <form method='POST' class='post-editor'>
-    <div class='interact'>
+  <form method="POST" class="post-editor">
+    <div class="interact">
       <dependent-input>
-        <fieldset class='contents'>
-          <legend class='(vh)'>Post type</legend>
-          <label class='<button> big'>
-            <input type='radio' class='(vh)' name='x-type' data-controls='edit-plain-post' checked>
+        <fieldset class="contents">
+          <legend class="(vh)">Post type</legend>
+          <label class="<button> big">
+            <input type="radio" class="(vh)" name="x-type" data-controls="edit-plain-post" checked>
             Post
           </label>
-          <label class='<button> big'>
-            <input type='radio' class='(vh)' name='x-type' data-controls='edit-reply'>
+          <label class="<button> big">
+            <input type="radio" class="(vh)" name="x-type" data-controls="edit-reply">
             Reply
           </label>
-          <label class='<button> big'>
-            <input type='radio' class='(vh)' name='x-type' data-controls='edit-like'>
+          <label class="<button> big">
+            <input type="radio" class="(vh)" name="x-type" data-controls="edit-like">
             Like
           </label>
-          <label class='<button> big'>
-            <input type='radio' class='(vh)' name='x-type' data-controls='edit-repost'>
+          <label class="<button> big">
+            <input type="radio" class="(vh)" name="x-type" data-controls="edit-repost">
             Repost
           </label>
-          <label class='<button> big'>
-            <input type='radio' class='(vh)' name='x-type' data-controls='edit-bookmark'>
+          <label class="<button> big">
+            <input type="radio" class="(vh)" name="x-type" data-controls="edit-bookmark">
             Bookmark
           </label>
         </fieldset>
       </dependent-input>
-      <fieldset id='edit-reply' {{ if !post.inReplyTo.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-reply" {{ if !post.inReplyTo.length }} hidden disabled {{/if}}>
         <p>
-          <label for='edit-reply-to'>Reply to</label>
+          <label for="edit-reply-to">Reply to</label>
           <input
-            type='url'
-            name='in-reply-to'
-            id='edit-reply-to'
-            value='{{ post.inReplyTo[0]?.url }}'>
+            type="url"
+            name="in-reply-to"
+            id="edit-reply-to"
+            value="{{ post.inReplyTo[0]?.url }}">
         </p>
         <p>
-          <label><input type='checkbox' name='x-replycontext'>Include reply context</label>
+          <label><input type="checkbox" name="x-replycontext">Include reply context</label>
         </p>
         <p>
-          <label><input type='checkbox' name='x-hidden'>Hide from home feed</label>
+          <label><input type="checkbox" name="x-hidden">Hide from home feed</label>
         </p>
       </fieldset>
-      <fieldset id='edit-like' {{ if !post.likeOf.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-like" {{ if !post.likeOf.length }} hidden disabled {{/if}}>
         <p>
-          <label for='edit-like-of'>Like of</label>
+          <label for="edit-like-of">Like of</label>
           <input
-            type='url'
-            name='like-of'
-            id='edit-like-of'
-            value='{{ post.likeOf[0]?.url }}'>
+            type="url"
+            name="like-of"
+            id="edit-like-of"
+            value="{{ post.likeOf[0]?.url }}">
         </p>
         <p>
-          <label><input type='checkbox' name='x-hidden' checked>Hide from home feed</label>
+          <label><input type="checkbox" name="x-hidden" checked>Hide from home feed</label>
         </p>
       </fieldset>
-      <fieldset id='edit-bookmark' {{ if !post.bookmarkOf.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-bookmark" {{ if !post.bookmarkOf.length }} hidden disabled {{/if}}>
         <p>
-          <label for='edit-bookmark-of'>Bookmark of</label>
+          <label for="edit-bookmark-of">Bookmark of</label>
           <input
-            type='url'
-            name='bookmark-of'
-            id='edit-bookmark-of'
-            value='{{ post.bookmarkOf[0]?.url }}'>
+            type="url"
+            name="bookmark-of"
+            id="edit-bookmark-of"
+            value="{{ post.bookmarkOf[0]?.url }}">
         </p>
         <p>
-          <label><input type='checkbox' name='x-hidden'>Hide from home feed</label>
+          <label><input type="checkbox" name="x-hidden">Hide from home feed</label>
         </p>
       </fieldset>
-      <fieldset id='edit-repost' {{ if !post.repostOf.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-repost" {{ if !post.repostOf.length }} hidden disabled {{/if}}>
         <p>
-          <label for='edit-repost-of'>Repost of</label>
+          <label for="edit-repost-of">Repost of</label>
           <input
-            type='url'
-            name='repost-of'
-            id='edit-repost-of'
-            value='{{ post.repostOf[0]?.url }}'>
+            type="url"
+            name="repost-of"
+            id="edit-repost-of"
+            value="{{ post.repostOf[0]?.url }}">
         </p>
       </fieldset>
     </div>
-    <div class='post'>
-      <div class='titleRow'>
-        <p class='title'>
-           <label for='edit-title'>Title</label>
+    <div class="post">
+      <div class="titleRow">
+        <p class="title">
+           <label for="edit-title">Title</label>
            <input
-            type='text'
-            name='name'
-            id='edit-title'
-            value='{{ post?.name }}'>
+            type="text"
+            name="name"
+            id="edit-title"
+            value="{{ post?.name }}">
         </p>
-        <details class='extraFields'>
-          <summary class='<button>'>
-            <span aria-hidden='true'>⋯</span>
-            <span class='(vh)'>More fields</span>
+        <details class="extraFields">
+          <summary class="<button>">
+            <span aria-hidden="true">⋯</span>
+            <span class="(vh)">More fields</span>
           </summary>
-          <div class='detailsContent'>
+          <div class="detailsContent">
             <p>
-              <label for='edit-summary'>Summary</label>
+              <label for="edit-summary">Summary</label>
               <input
-                 type='text'
-                 name='summary'
-                 id='edit-summary'
-                 value='{{ post?.summary }}'>
+                 type="text"
+                 name="summary"
+                 id="edit-summary"
+                 value="{{ post?.summary }}">
              </p>
             <p>
-              <label for='edit-lang'>Language</label>
+              <label for="edit-lang">Language</label>
               <!-- TODO: Make this a <select> when multiple site locales is impld. -->
               <input
-                 name='lang'
-                 id='edit-lang'
-                 value='{{ post?.language ?? c.var.lang }}'>
+                 name="lang"
+                 id="edit-lang"
+                 value="{{ post?.language ?? c.var.lang }}">
              </p>
           </div>
         </details>
       </div>
-      <div class='content-area'>
+      <div class="content-area">
         <p>
-          <!-- HTML doesn't have a way for one <label> to label multiple elements -->
-          <label aria-hidden='true'>Content</label>
+          <!-- HTML doesn"t have a way for one <label> to label multiple elements -->
+          <label aria-hidden="true">Content</label>
            <textarea
-             name='content[html]'
-            id='edit-content-html'
-            aria-label='Content, HTML'
-            placeholder='(HTML)'
+             name="content[html]"
+            id="edit-content-html"
+            aria-label="Content, HTML"
+            placeholder="(HTML)"
             data-autoexpand
-            {{ if post?.contentType && post.contentType !== 'html' }}
+            {{ if post?.contentType && post.contentType !== "html" }}
               hidden disabled
             {{ /if }}
            >
             {{- post?.content?.html -}}
            </textarea>
            <textarea
-             name='content'
-            id='edit-content-text'
-            aria-label='Content, plain text'
-            placeholder='(Text)'
+             name="content"
+            id="edit-content-text"
+            aria-label="Content, plain text"
+            placeholder="(Text)"
             data-autoexpand
-            {{ if post.contentType !== 'text' }} hidden disabled {{ /if }}
+            {{ if post.contentType !== "text" }} hidden disabled {{ /if }}
            >
             {{- post?.content?.value -}}
            </textarea>
         </p>
         <p>
-          <label for='edit-content-type'>Content type</label>
+          <label for="edit-content-type">Content type</label>
            <dependent-input>
-             <select id='edit-content-type' name='x-content-type'>
+             <select id="edit-content-type" name="x-content-type">
                <option
-                 value='html'
-                data-controls='edit-content-html'
-                {{ if post?.contentType === 'html' }} selected {{ /if }}
+                 value="html"
+                data-controls="edit-content-html"
+                {{ if post?.contentType === "html" }} selected {{ /if }}
                >HTML</option>
                <option
-                 value='text'
-                data-controls='edit-content-text'
-                {{ if post?.contentType === 'text' }} selected {{ /if }}
+                 value="text"
+                data-controls="edit-content-text"
+                {{ if post?.contentType === "text" }} selected {{ /if }}
                >Text</option>
                <option
-                 disabled value='markdown'
-                data-controls='edit-content-markdown'
-                {{# {{ if post?.contentType === 'markdown' }} selected {{ /if }} #}}
+                 disabled value="markdown"
+                data-controls="edit-content-markdown"
+                {{# {{ if post?.contentType === "markdown" }} selected {{ /if }} #}}
                >Markdown</option>
                <option
-                 disabled value='wysiwyg'
-                data-controls='edit-content-wysiwyg'
-                {{# {{ if post?.contentType === 'wysiwyg' }} selected {{ /if }} #}}
+                 disabled value="wysiwyg"
+                data-controls="edit-content-wysiwyg"
+                {{# {{ if post?.contentType === "wysiwyg" }} selected {{ /if }} #}}
                >Rich text</option>
             </select>
            </dependent-input>
@@ -179,7 +179,7 @@
       </div>
     </div>
     <p>
-      <button type='submit'>Post</button>
+      <button type="submit">Post</button>
     </p>
   </form>
 </main>

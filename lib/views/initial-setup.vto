@@ -1,72 +1,72 @@
-{{ layout 'includes/layout.vto' }}
+{{ layout "includes/layout.vto" }}
 <header>
-  <h1 style='white-space:nowrap'>Welcome to Denizen</h1>
+  <h1 style="white-space:nowrap">Welcome to Denizen</h1>
   <script>
     const welcomes = [
-      'Welcome to Denizen',
-      'Denizen’e hoş geldiniz',
-      'sina kama pona tawa ilo Denizen',
-      'Benvido a Denizen',
-      'TODO: add more languages',
-      'Denizenga xush kelibsiz',
-      'Welkom by Denizen',
-      'Bienvenue à Denizen',
+      "Welcome to Denizen",
+      "Denizen’e hoş geldiniz",
+      "sina kama pona tawa ilo Denizen",
+      "Benvido a Denizen",
+      "TODO: add more languages",
+      "Denizenga xush kelibsiz",
+      "Welkom by Denizen",
+      "Bienvenue à Denizen",
     ]
     const h1 = document.currentScript.previousElementSibling
     let i = 0
     setInterval(async () => {
-      await h1.animate({ opacity: [1, 0] }, { duration: 500, easing: 'ease-in-out' }).finished
+      await h1.animate({ opacity: [1, 0] }, { duration: 500, easing: "ease-in-out" }).finished
       h1.textContent = welcomes[++i % welcomes.length]
-      await h1.animate({ opacity: [0, 1] }, { duration: 500, easing: 'ease-in-out' })
+      await h1.animate({ opacity: [0, 1] }, { duration: 500, easing: "ease-in-out" })
     }, 3000)
   </script>
 </header>
 <main>
-  {{ if error }}<div class='bad box'>{{ error }}</div>{{ /if }}
+  {{ if error }}<div class="bad box">{{ error }}</div>{{ /if }}
 
-  <form method='POST' class='grid' style='grid: auto-flow / auto 1fr'>
-    <p class='grid-row'>
-      <label for='edit-lang'>🌐 Site language</label>
-      <select name='lang' id='edit-lang'>
-        <option value='en'>[af] Afrikaans</option>
-        <option value='en' selected>[en] English</option>
-        <option value='en'>[es] Esperanto</option>
-        <option value='en'>[tok] Toki Pona</option>
-        <option value='en'>[tr] Türkçe</option>
+  <form method="POST" class="grid" style="grid: auto-flow / auto 1fr">
+    <p class="grid-row">
+      <label for="edit-lang">🌐 Site language</label>
+      <select name="lang" id="edit-lang">
+        <option value="en">[af] Afrikaans</option>
+        <option value="en" selected>[en] English</option>
+        <option value="en">[es] Esperanto</option>
+        <option value="en">[tok] Toki Pona</option>
+        <option value="en">[tr] Türkçe</option>
       </select>
     </p>
-    <p class='grid-row'>
-      <label for='edit-name'>Name</label>
-      <span class='grid'>
+    <p class="grid-row">
+      <label for="edit-name">Name</label>
+      <span class="grid">
         <input
-          type='text'
-          name='name'
-          id='edit-name'
+          type="text"
+          name="name"
+          id="edit-name"
           required
-          aria-describedby='desc-edit-name'
+          aria-describedby="desc-edit-name"
         />
-        <span id='desc-edit-name' class='<small> italic'>
+        <span id="desc-edit-name" class="<small> italic">
           Not a login username -- the name that will be displayed on your
           homepage.
         </span>
       </span>
     </p>
-    <p class='grid-row'>
-      <label for='edit-site-url'>Site URL</label>
-      <input type='url' name='site-url' id='edit-site-url' />
+    <p class="grid-row">
+      <label for="edit-site-url">Site URL</label>
+      <input type="url" name="site-url" id="edit-site-url" />
       <script>
-        document.getElementById('edit-site-url').value = location.origin
+        document.getElementById("edit-site-url").value = location.origin
       </script>
     </p>
-    <p class='grid-row'>
-      <label for='edit-pw'>Password</label>
-      <input type='password' name='pw' id='edit-pw' required />
+    <p class="grid-row">
+      <label for="edit-pw">Password</label>
+      <input type="password" name="pw" id="edit-pw" required />
     </p>
-    <p class='grid-row'>
+    <p class="grid-row">
       <button
-        type='submit'
-        class='big'
-        style='grid-column: 2; justify-self: start'
+        type="submit"
+        class="big"
+        style="grid-column: 2; justify-self: start"
       >
         Get started
       </button>

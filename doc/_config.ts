@@ -30,11 +30,11 @@ site.use(vento())
 site.data('layout', 'layout.vto')
 site.data('date', 'git created')
 site.preprocess(
-	['.html'],
-	(pages) =>
-		pages.forEach((page) => {
-			page.data.modified = getGitDate('modified', page.src.entry?.src!)
-		}),
+  ['.html'],
+  (pages) =>
+    pages.forEach((page) => {
+      page.data.modified = getGitDate('modified', page.src.entry?.src!)
+    }),
 )
 
 export default site

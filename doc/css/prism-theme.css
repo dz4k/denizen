@@ -4,11 +4,11 @@
 .token.string,
 .token.char,
 .token.punctuation {
-	color: #555;
+  color: #555;
 
-	@media (prefers-color-scheme: dark) {
-		color: #dcd;
-	}
+  @media (prefers-color-scheme: dark) {
+    color: #dcd;
+  }
 }
 
 .token.property,
@@ -19,11 +19,11 @@
 .token.function,
 .token.symbol,
 .token.deleted {
-	color: #a23;
+  color: #a23;
 
-	@media (prefers-color-scheme: dark) {
-		color: #eab;
-	}
+  @media (prefers-color-scheme: dark) {
+    color: #eab;
+  }
 }
 
 .token.selector,
@@ -31,11 +31,11 @@
 .token.comment,
 .token.builtin,
 .token.inserted {
-	color: #2a3;
+  color: #2a3;
 
-	@media (prefers-color-scheme: dark) {
-		color: #6b8;
-	}
+  @media (prefers-color-scheme: dark) {
+    color: #6b8;
+  }
 }
 
 .token.operator,
@@ -46,36 +46,36 @@
 .token.regex,
 .token.important,
 .token.variable {
-	color: #770;
+  color: #770;
 
-	@media (prefers-color-scheme: dark) {
-		color: #dd7;
-	}
+  @media (prefers-color-scheme: dark) {
+    color: #dd7;
+  }
 }
 
 .token.atrule,
 .token.attr-value,
 .token.keyword {
-	color: #549;
+  color: #549;
 
-	@media (prefers-color-scheme: dark) {
-		color: #ade;
-	}
+  @media (prefers-color-scheme: dark) {
+    color: #ade;
+  }
 }
 
 .token.function {
-	font-style: italic;
+  font-style: italic;
 }
 
 .token.important,
 .token.bold {
-	font-weight: 700;
+  font-weight: 700;
 }
 
 .token.italic {
-	font-style: italic;
+  font-style: italic;
 }
 
 .token.entity {
-	cursor: help;
+  cursor: help;
 }

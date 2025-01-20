@@ -17,7 +17,7 @@
 	},
 	"fmt": {
 		"semiColons": false,
-		"useTabs": true,
+		"useTabs": false,
 		"indentWidth": 2,
 		"singleQuote": true,
 		"exclude": [

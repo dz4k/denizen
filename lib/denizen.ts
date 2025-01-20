@@ -30,99 +30,99 @@ import render from './common/vento.ts'
 listen()
 
 export type Env = {
-	Variables: {
-		session: Session
-		session_key_rotation: boolean
-		authScopes: string[]
-		storage: StorageBackend
+  Variables: {
+    session: Session
+    session_key_rotation: boolean
+    authScopes: string[]
+    storage: StorageBackend
 
-		locales: string[]
-		lang: string
-		title: string
-		theme: string
-		accentHue: string
-		baseUrl: URL
+    locales: string[]
+    lang: string
+    title: string
+    theme: string
+    accentHue: string
+    baseUrl: URL
 
-		render: (
-			template: string,
-			data?: Record<string, unknown>,
-		) => Response | Promise<Response>
-	}
+    render: (
+      template: string,
+      data?: Record<string, unknown>,
+    ) => Response | Promise<Response>
+  }
 }
 export const app = new Hono<Env>()
 
 app.use('*', async (c, next) => {
-	const config = await getConfigs()
-	c.set('storage', fsBackend)
-	c.set('theme', config['theme'] as string)
-	c.set('accentHue', config['accent hue'] as string)
-	c.set('locales', config['locales'] as string[])
-	c.set('lang', (config['locales'] as string[])?.[0])
-	c.set('baseUrl', new URL(config['base url'] as string))
-	c.set(
-		'render',
-		async (template: string, data?: Record<string, unknown>) =>
-			c.html(await render(c, template, data)),
-	)
-	await next()
+  const config = await getConfigs()
+  c.set('storage', fsBackend)
+  c.set('theme', config['theme'] as string)
+  c.set('accentHue', config['accent hue'] as string)
+  c.set('locales', config['locales'] as string[])
+  c.set('lang', (config['locales'] as string[])?.[0])
+  c.set('baseUrl', new URL(config['base url'] as string))
+  c.set(
+    'render',
+    async (template: string, data?: Record<string, unknown>) =>
+      c.html(await render(c, template, data)),
+  )
+  await next()
 })
 
 app
-	.use(
-		'*',
-		sessionMiddleware({
-			db,
-			namespace: ['Sessions'],
-			expireSeconds: 60 * 60 * 24 * 7, // 1 week
-		}),
-	)
-	.use(
-		'/.denizen/public/*',
-		serveStatic({
-			root: import.meta.dirname + '/public',
-			rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
-		}),
-	)
-	.use('*', initialSetup.middleware)
-	.get('/.denizen/initial-setup', initialSetup.get)
-	.post('/.denizen/initial-setup', initialSetup.post)
-	.get('/.denizen/post/new', posting.get)
-	.post('/.denizen/post/new', requireAdmin, posting.post)
-	.get('/.denizen/post/edit', posting.getEdit)
-	.post('/.denizen/post/edit', posting.postEdit)
-	.get('/.denizen/webaction', webaction.get)
-	.get('/.denizen/console', requireAdmin, o5command.get)
-	.post('/.denizen/profile', requireAdmin, o5command.updateProfile)
-	.post('/.denizen/profile/badge', requireAdmin, o5command.postBadge)
-	.delete('/.denizen/profile/badge/:iid', requireAdmin, o5command.deleteBadge)
-	.post('/.denizen/site-settings', requireAdmin, o5command.updateSettings)
-	.post('/.denizen/theme-settings', requireAdmin, o5command.updateTheme)
-	.post('/.denizen/import-blog', requireAdmin, importBlog.post)
-	.get('/.denizen/import-blog/:id', requireAdmin, importBlog.getJob)
-	.get('/.denizen/login', login.get)
-	.post('/.denizen/login', login.post)
-	.post('/.denizen/logout', login.logout)
-	.get('/.well-known/oauth-authorization-server', indieAuth.getMetadata)
-	.get('/.denizen/auth', indieAuth.getAuth)
-	.post('/.denizen/auth', indieAuth.postAuth)
-	.post('/.denizen/token', indieAuth.postToken)
-	.post('/.denizen/auth/orize', indieAuth.postAuthorize)
-	.get('/.denizen/indieauth-cb', indieauthCb.get)
-	.get('/.denizen/storage/:filename{.+}', storage.get)
-	.post('/.denizen/storage/:filename{.+}', requireAdmin, storage.post)
-	.post('/.denizen/storage', requireAdmin, storage.postFormdata)
-	.delete('/.denizen/storage/:filename{.+}', requireAdmin, storage.del)
-	.all('/.denizen/storage', storage.queryParam)
-	.get('/.denizen/files', requireAdmin, fileManager.get)
-	.get('/.denizen/micropub', micropub.middleware, micropub.get)
-	.post('/.denizen/micropub', micropub.middleware, micropub.post)
-	.post('/.denizen/micropub/media', micropub.middleware, micropub.postMedia)
-	.post('/.denizen/webmention', webmentionRecv.post)
-	.get('/', homepage.get)
-	.get('/wp-admin/', wpAdmin.get)
-	.get('/feed.json', feed.json)
-	.get('/feed.xml', feed.xml)
-	.get('*', post.get)
-	.put('*', requireAdmin, (c) => post.put(c))
-	.delete('*', requireAdmin, post.del)
-	.notFound(fourOhFour.get)
+  .use(
+    '*',
+    sessionMiddleware({
+      db,
+      namespace: ['Sessions'],
+      expireSeconds: 60 * 60 * 24 * 7, // 1 week
+    }),
+  )
+  .use(
+    '/.denizen/public/*',
+    serveStatic({
+      root: import.meta.dirname + '/public',
+      rewriteRequestPath: (path) => path.slice('/.denizen/public'.length),
+    }),
+  )
+  .use('*', initialSetup.middleware)
+  .get('/.denizen/initial-setup', initialSetup.get)
+  .post('/.denizen/initial-setup', initialSetup.post)
+  .get('/.denizen/post/new', posting.get)
+  .post('/.denizen/post/new', requireAdmin, posting.post)
+  .get('/.denizen/post/edit', posting.getEdit)
+  .post('/.denizen/post/edit', posting.postEdit)
+  .get('/.denizen/webaction', webaction.get)
+  .get('/.denizen/console', requireAdmin, o5command.get)
+  .post('/.denizen/profile', requireAdmin, o5command.updateProfile)
+  .post('/.denizen/profile/badge', requireAdmin, o5command.postBadge)
+  .delete('/.denizen/profile/badge/:iid', requireAdmin, o5command.deleteBadge)
+  .post('/.denizen/site-settings', requireAdmin, o5command.updateSettings)
+  .post('/.denizen/theme-settings', requireAdmin, o5command.updateTheme)
+  .post('/.denizen/import-blog', requireAdmin, importBlog.post)
+  .get('/.denizen/import-blog/:id', requireAdmin, importBlog.getJob)
+  .get('/.denizen/login', login.get)
+  .post('/.denizen/login', login.post)
+  .post('/.denizen/logout', login.logout)
+  .get('/.well-known/oauth-authorization-server', indieAuth.getMetadata)
+  .get('/.denizen/auth', indieAuth.getAuth)
+  .post('/.denizen/auth', indieAuth.postAuth)
+  .post('/.denizen/token', indieAuth.postToken)
+  .post('/.denizen/auth/orize', indieAuth.postAuthorize)
+  .get('/.denizen/indieauth-cb', indieauthCb.get)
+  .get('/.denizen/storage/:filename{.+}', storage.get)
+  .post('/.denizen/storage/:filename{.+}', requireAdmin, storage.post)
+  .post('/.denizen/storage', requireAdmin, storage.postFormdata)
+  .delete('/.denizen/storage/:filename{.+}', requireAdmin, storage.del)
+  .all('/.denizen/storage', storage.queryParam)
+  .get('/.denizen/files', requireAdmin, fileManager.get)
+  .get('/.denizen/micropub', micropub.middleware, micropub.get)
+  .post('/.denizen/micropub', micropub.middleware, micropub.post)
+  .post('/.denizen/micropub/media', micropub.middleware, micropub.postMedia)
+  .post('/.denizen/webmention', webmentionRecv.post)
+  .get('/', homepage.get)
+  .get('/wp-admin/', wpAdmin.get)
+  .get('/feed.json', feed.json)
+  .get('/feed.xml', feed.xml)
+  .get('*', post.get)
+  .put('*', requireAdmin, (c) => post.put(c))
+  .delete('*', requireAdmin, post.del)
+  .notFound(fourOhFour.get)

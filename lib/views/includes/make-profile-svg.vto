@@ -1,6 +1,6 @@
 {{ export stringToRandNumber = async (str, [min, max]) => {
   const buf = new TextEncoder().encode(str)
-  const hash = await crypto.subtle.digest('SHA-1', buf)
+  const hash = await crypto.subtle.digest("SHA-1", buf)
   const bu64a = new BigUint64Array(hash.slice(0, 8))
   const num = bu64a[0]
 
@@ -11,7 +11,7 @@
 } }}
 
 {{ export initials = (card) => {
-  const name = card.name ?? card.uid?.hostname ?? card.url[0]?.hostname ?? '';
+  const name = card.name ?? card.uid?.hostname ?? card.url[0]?.hostname ?? "";
   const words = name.split(/\W+/g);
   if (words.length <= 1) return words[0].slice(0, 2);
   else return words[0][0] + words[1][0];

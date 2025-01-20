@@ -1,33 +1,33 @@
-{{ layout 'includes/layout.vto' }}
+{{ layout "includes/layout.vto" }}
 
-{{ import { makeProfileSvg } from 'includes/make-profile-svg.vto' }}
+{{ import { makeProfileSvg } from "includes/make-profile-svg.vto" }}
 
-<script type='module' src='/.denizen/public/textarea-autoexpand.js'></script>
+<script type="module" src="/.denizen/public/textarea-autoexpand.js"></script>
 
-<header class='h-card' lang={{ c.var.lang }}>
+<header class="h-card" lang={{ c.var.lang }}>
   {{# TODO: used this makeprofilesvg in a few places now, factor out to Card. #}}
   <img
-    src='{{ siteOwner.profile.photo[0]?.url.href ?? makeProfileSvg(siteOwner.profile) }}'
-    alt='{{ siteOwner.profile.photo[0]?.alt }}'
-    style='view-transition-name: owner-pfp'
-    class='big face'
+    src="{{ siteOwner.profile.photo[0]?.url.href ?? makeProfileSvg(siteOwner.profile) }}"
+    alt="{{ siteOwner.profile.photo[0]?.alt }}"
+    style="view-transition-name: owner-pfp"
+    class="big face"
   >
-  <h1 style='view-transition-name: owner-name'>
-    <a href='/' class='u-url u-uid p-name'>
+  <h1 style="view-transition-name: owner-name">
+    <a href="/" class="u-url u-uid p-name">
       {{ siteOwner.profile.name }}
     </a>
   </h1>
   {{ if siteOwner.profile.note.length }}
-    <p class='p-note'>{{ siteOwner.profile.note }}</p>
+    <p class="p-note">{{ siteOwner.profile.note }}</p>
   {{ /if }}
   {{ if socials.length }}
     <p>
       {{ for social of socials }}
         {{> const [name, value] = social }}
         <a
-          rel='me'
-          class='<button> {{ value.startsWith('mailto') ? 'u-email' : '' }}'
-          href='{{ value }}'
+          rel="me"
+          class="<button> {{ value.startsWith("mailto") ? "u-email" : "" }}"
+          href="{{ value }}"
         >
           {{ name }}
         </a>
@@ -36,18 +36,18 @@
   {{ /if }}
 
   {{ if badges.length }}
-    <p class='denizen-badges'>
+    <p class="denizen-badges">
       {{ for badge of badges }}
         {{ set img }}
           <img
-            src='{{ badge.photo?.url.href }}'
-            alt='{{ badge.photo?.alt }}'
-            class='badge'>
+            src="{{ badge.photo?.url.href }}"
+            alt="{{ badge.photo?.alt }}"
+            class="badge">
         {{ /set }}
 
-        <span className='p-x-denizen-badge h-x-denizen-badge'>
+        <span className="p-x-denizen-badge h-x-denizen-badge">
           {{ if badge.url }}
-            <a href='{{ badge.url.href }}' class='u-url'>{{ img |> safe }}</a>
+            <a href="{{ badge.url.href }}" class="u-url">{{ img |> safe }}</a>
           {{ else }}
             {{ img |> safe }}
           {{ /if }}
@@ -59,48 +59,48 @@
 <main>
   {{ if admin }}
     <form
-      class='quick-post'
-      method='POST'
-      action='/.denizen/post/new'
+      class="quick-post"
+      method="POST"
+      action="/.denizen/post/new"
     >
       <textarea
-        name='content'
-        class='quick-post-content'
-        aria-label='What&apos;s on your mind?'
-        placeholder='What&apos;s on your mind?'
+        name="content"
+        class="quick-post-content"
+        aria-label="What&apos;s on your mind?"
+        placeholder="What&apos;s on your mind?"
         data-autoexpand
       ></textarea>
-      <div class='quick-post-form-actions'>
-        <a class='<small>' href='/.denizen/post/new'>Open big editor</a>
-        <button type='submit' class='quick-post-submit'>Post</button>
+      <div class="quick-post-form-actions">
+        <a class="<small>" href="/.denizen/post/new">Open big editor</a>
+        <button type="submit" class="quick-post-submit">Post</button>
       </div>
     </form>
   {{ /if }}
-  <div className='entry-list'>
+  <div className="entry-list">
     {{ for post of posts.data }}
       <article
-        class='h-entry link-card'
-        lang='{{ post.language ?? c.var.lang }}'
+        class="h-entry link-card"
+        lang="{{ post.language ?? c.var.lang }}"
       >
         <h2
-          style='view-transition-name: post-{{ post.iid }}-name'
+          style="view-transition-name: post-{{ post.iid }}-name"
         >
-          <a class='p-name u-url u-uid' href='{{ post.uid.pathname }}'>
+          <a class="p-name u-url u-uid" href="{{ post.uid.pathname }}">
             {{ post.name }}
           </a>
         </h2>
-        {{ include 'includes/interaction-context.vto' { post } }}
+        {{ include "includes/interaction-context.vto" { post } }}
         {{ for index, photo of post.photo }}
           <figure
-            style='view-transition-name: post-{{ post.iid }}-photo-{{ index }}'
+            style="view-transition-name: post-{{ post.iid }}-photo-{{ index }}"
           >
-            <img class='u-photo' src='{{ photo.url.href }}' alt='{{ photo.alt }}' />
+            <img class="u-photo" src="{{ photo.url.href }}" alt="{{ photo.alt }}" />
           </figure>
         {{ /for }}
         {{ if post.summary }}
           <p
-            class='italic'
-            style='view-transition-name: post-{{ post.iid }}-summary'
+            class="italic"
+            style="view-transition-name: post-{{ post.iid }}-summary"
           >
             {{- post.summary |> safe -}}
           </p>
@@ -108,18 +108,18 @@
           {{# -- #}}
         {{ else if post.content }}
           <div
-            class='e-content'
-            style='view-transition-name: post-{{ post.iid }}-content'
+            class="e-content"
+            style="view-transition-name: post-{{ post.iid }}-content"
           />
             {{- post.content.html |> safe -}}
           </div>
         {{ /if }}
         <p
-          class='<small>'
-          style='view-transition-name: post-{{ post.iid }}-footer'
+          class="<small>"
+          style="view-transition-name: post-{{ post.iid }}-footer"
         >
-          <a href='{{ post.uid?.pathname }}' class='card-link'>
-            <time className='dt-published' datetime='{{ post.published |> toISOString }}'>
+          <a href="{{ post.uid?.pathname }}" class="card-link">
+            <time className="dt-published" datetime="{{ post.published |> toISOString }}">
               {{ post.published.toLocaleString([
                 ...(post.language ? [post.language] : []),
                 ...c.var.locales,
@@ -128,7 +128,7 @@
           </a>
           {{ if post.updated }}
             &middot; Updated on
-            <time className='dt-updated' datetime='{{ post.updated |> toISOString }}'>
+            <time className="dt-updated" datetime="{{ post.updated |> toISOString }}">
               {{ post.updated.toLocaleString([
                 ...(post.language ? [post.language] : []),
                 ...c.var.locales,
@@ -141,8 +141,8 @@
   </div>
   {{ if posts.cursor }}
     <a
-      rel='next swap-replaceWith'
-      href='/?cursor={{ posts.cursor |> encodeURIComponent }}#:~:selector=main :is(.h-entry,[rel=next])'
+      rel="next swap-replaceWith"
+      href="/?cursor={{ posts.cursor |> encodeURIComponent }}#:~:selector=main :is(.h-entry,[rel=next])"
     >
       Load more
     </a>
@@ -150,9 +150,9 @@
 </main>
 <footer>
   {{ if admin }}
-    <div style='display: flex; flex-flow: row wrap; gap: 1em'>
-      <a class='<button>' href='/.denizen/console'>Console</a>
-      <form method='POST' action='/.denizen/logout' class='contents'>
+    <div style="display: flex; flex-flow: row wrap; gap: 1em">
+      <a class="<button>" href="/.denizen/console">Console</a>
+      <form method="POST" action="/.denizen/logout" class="contents">
         <button>Log out</button>
       </form>
     </div>
@@ -162,9 +162,9 @@
 {{ if admin }}
   <script>
     navigator.registerProtocolHandler(
-      'web+action',
-      {{ new URL('/.denizen/webaction?handler=%s', c.var.baseUrl).href |> JSON.stringify }},
-      'Denizen on ' + location.hostname
+      "web+action",
+      {{ new URL("/.denizen/webaction?handler=%s", c.var.baseUrl).href |> JSON.stringify }},
+      "Denizen on " + location.hostname
     )
   </script>
 {{ /if }}

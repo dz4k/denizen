@@ -1,24 +1,24 @@
 @import url(https://rsms.me/inter/inter.css);
 
 :root {
-	font-family: Inter, sans-serif;
+  font-family: Inter, sans-serif;
 
-	max-width: 70ch;
-	margin: auto;
+  max-width: 70ch;
+  margin: auto;
 
-	background: var(--bg1);
-	color-scheme: light;
+  background: var(--bg1);
+  color-scheme: light;
 
-	--accent: lch(from var(--accent-color) 45 100 h);
-	--bg1: white;
-	--bg2: lch(from var(--accent-color) 92 10 h);
-	--bg3: #ddd;
-	--fg2: #355;
+  --accent: lch(from var(--accent-color) 45 100 h);
+  --bg1: white;
+  --bg2: lch(from var(--accent-color) 92 10 h);
+  --bg3: #ddd;
+  --fg2: #355;
 }
 
 header:has(+ main),
 main + footer {
-	margin: 3em 0;
+  margin: 3em 0;
 }
 
 button,
@@ -27,68 +27,68 @@ input[type='button'],
 input[type='submit'],
 input[type='reset'],
 ::file-selector-button {
-	font: inherit;
-	font-size: 0.9em;
-	font-weight: bold;
-	text-decoration: none;
+  font: inherit;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-decoration: none;
 
-	display: inline-block;
-	padding: 0 0.4em;
-	vertical-align: middle;
-	min-width: auto;
+  display: inline-block;
+  padding: 0 0.4em;
+  vertical-align: middle;
+  min-width: auto;
 
-	background: var(--bg2);
-	color: var(--accent);
-	border: none;
-	border-radius: 0.6em;
+  background: var(--bg2);
+  color: var(--accent);
+  border: none;
+  border-radius: 0.6em;
 
-	&:hover,
-	&:focus-visible {
-		text-decoration: none;
-		background-color: var(--accent);
-		color: var(--bg1);
-	}
+  &:hover,
+  &:focus-visible {
+    text-decoration: none;
+    background-color: var(--accent);
+    color: var(--bg1);
+  }
 
-	&:active {
-		background-color: var(--accent);
-		color: var(--bg2);
-	}
+  &:active {
+    background-color: var(--accent);
+    color: var(--bg2);
+  }
 
-	&[aria-pressed=true],
-	&:has(:checked) {
-	  background-color: var(--accent);
-		color: var(--bg2);
-	}
+  &[aria-pressed=true],
+  &:has(:checked) {
+    background-color: var(--accent);
+    color: var(--bg2);
+  }
 }
 
 textarea {
-	min-height: 4em;
+  min-height: 4em;
 }
 
 a,
 .\<a\> {
-	color: currentColor;
-	text-decoration: 1px dashed var(--accent) underline;
+  color: currentColor;
+  text-decoration: 1px dashed var(--accent) underline;
 
-	&:hover,
-	&:focus-visible {
-		color: var(--accent);
-		text-decoration: 2px solid var(--fg2) underline;
-	}
+  &:hover,
+  &:focus-visible {
+    color: var(--accent);
+    text-decoration: 2px solid var(--fg2) underline;
+  }
 }
 
 td,
 th {
-	border-block-end: 1px solid var(--bg2);
+  border-block-end: 1px solid var(--bg2);
 }
 
 .\<small\> {
-	color: var(--fg2);
+  color: var(--fg2);
 }
 
 .face {
-	border-radius: 9999em;
-	border: 2px solid var(--bg1);
+  border-radius: 9999em;
+  border: 2px solid var(--bg1);
 }
 
 header.h-card {
