@@ -101,7 +101,7 @@ details {
 			rgb(from var(--colorbg) r g b / 95%),
 			rgb(from var(--colorbg) r g b / 95%)
 		),
-		url(/pattern.svg) repeat center,
+		url(/media/pattern.svg) repeat center,
 		var(--colorbg);
 	border: 2px solid hsl(from var(--colorbg) h s calc(l * 0.7 + 100 * 0.3));
 
@@ -208,7 +208,7 @@ details {
 
 	background:
 		linear-gradient(45deg, var(--colorbg), transparent),
-		var(--box-link-pattern, url(/pattern.svg)) center,
+		var(--box-link-pattern, url(/media/pattern.svg)) center,
 		var(--colorbg);
 
 	transition: box-shadow 0.15s ease-in-out;
@@ -259,7 +259,7 @@ details {
 			rgb(from var(--bg) r g b / 99%),
 			rgb(from var(--bg) r g b / 80%)
 		),
-		url(/pattern.svg) repeat center,
+		url(/media/pattern.svg) repeat center,
 		var(--bg);
 }
 
