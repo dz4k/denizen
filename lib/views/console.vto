@@ -19,10 +19,21 @@
       style="grid: auto-flow / auto 1fr"
     >
       <p class="grid-row">
-        <label for="profile.photo">Photo</label>
+        <label for="profile.photo">Avatar</label>
         <span>
           {{ include "includes/face.vto" { card: user.profile, link: undefined } }}
           <input type="file" id="profile.photo" name="photo" />
+        </span>
+      </p>
+      <p class="grid-row">
+        <label for="profile.featured">Banner image</label>
+        <span>
+          <img
+            src="{{ user.profile.featured[0]?.url }}"
+            alt="{{ user.profile.featured[0]?.alt }}"
+            class="face"
+          >
+          <input type="file" id="profile.featured" name="featured" />
         </span>
       </p>
       <p class="grid-row">

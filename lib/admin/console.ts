@@ -22,22 +22,24 @@ export const updateProfile = async (c: hono.Context<Env>) => {
   user.profile.name = formdata.get('name') as string
   user.profile.note = [formdata.get('note') as string]
 
-  // Profile image
-  const photo = formdata.get('photo')
-  if (photo instanceof File) {
-    const filename = crypto.randomUUID()
-    const oldUrl = user.profile.photo[0]?.url
-    if (oldUrl) {
-      await c.var.storage.del(oldUrl.pathname.split('/').pop() as string)
+  // Images
+  for (const prop of ['photo', 'featured'] as const) {
+    const img = formdata.get(prop)
+    if (img instanceof File) {
+      const filename = `.denizen-pfp-${new Date().toISOString()}`
+      const oldUrl = user.profile[prop][0]?.url
+      if (oldUrl) {
+        await c.var.storage.del(oldUrl.pathname.split('/').pop() as string)
+      }
+      await c.var.storage.write(
+        filename,
+        img,
+        { cacheControl: 'public, max-age=31536000, immutable' },
+      )
+      user.profile[prop] = [{
+        url: new URL(`/.denizen/storage/${filename}`, c.var.baseUrl),
+      }]
     }
-    await c.var.storage.write(
-      filename,
-      photo,
-      { cacheControl: 'public, max-age=31536000, immutable' },
-    )
-    user.profile.photo = [{
-      url: new URL(`/.denizen/storage/${filename}`, c.var.baseUrl),
-    }]
   }
 
   const socials = formdata.getAll('me[value]')

@@ -32,6 +32,7 @@ export class Card {
 
   logo: URL[] = []
   photo: ImageUrl[] = []
+  featured: ImageUrl[] = []
 
   // Not a Date since birthdays can have unspecified year, month or day
   bday?: string
@@ -84,6 +85,7 @@ export class Card {
     if ('tel' in p) rv.tel = mf2StringArray(p.tel)
     if ('logo' in p) rv.logo = mf2UrlArray(p.logo)
     if ('photo' in p) rv.photo = mf2ImgArray(p.photo)
+    if ('featured' in p) rv.featured = mf2ImgArray(p.featured)
     if ('bday' in p) rv.bday = mf2String(p.bday[0])
     if ('anniversary' in p) rv.anniversary = mf2String(p.anniversary[0])
     if ('org' in p) rv.org = p.org.map((v) => Card.fromMf2Json(v))
@@ -124,6 +126,7 @@ export class Card {
 
         logo: this.logo.map(String),
         photo: this.photo.map(({ url, alt }) => ({ value: url.href, alt })),
+        featured: this.featured.map(({ url, alt }) => ({ value: url.href, alt })),
 
         // Not a Date since birthdays can have unspecified year, month or day
         bday: this.bday ? [this.bday] : [],

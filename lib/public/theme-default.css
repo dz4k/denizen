@@ -16,6 +16,11 @@
   --fg2: #355;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
 header:has(+ main),
 main + footer {
   margin: 3em 0;
@@ -94,5 +99,27 @@ th {
 header.h-card {
   .p-name {
     color: var(--accent);
+  }
+
+  .u-featured {
+    display: block;
+
+    /* full bleed */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+
+    max-width: none;
+    max-height: 45vh;
+    object-fit: cover;
+    margin-block: 0;
+  }
+
+  &:has(.u-featured) {
+    margin-block-start: 0;
+    .u-photo {
+      font-size: 10rem;
+      margin-block-start: -6rem;
+      border: .5rem solid var(--bg1);
+    }
   }
 }

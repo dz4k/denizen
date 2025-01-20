@@ -20,6 +20,11 @@
   font-family: var(--text);
 }
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
 @view-transition {
   navigation: auto;
 }
@@ -52,6 +57,7 @@ body > article > header {
 }
 
 header.h-card {
+  margin-block-start: 0;
   h1 {
     font-family: var(--display);
   }
@@ -74,6 +80,25 @@ header.h-card {
     line-height: 1.4;
     margin-block-start: 0;
     color: var(--accent2);
+  }
+
+  .u-featured {
+    display: block;
+
+    /* full bleed */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+
+    max-width: none;
+    max-height: 45vh;
+    object-fit: cover;
+    margin-block: 0;
+  }
+
+  &:has(.u-featured) .u-photo {
+    font-size: 10rem;
+    margin-block-start: -6rem;
+    border: .5rem solid var(--bg1);
   }
 }
 

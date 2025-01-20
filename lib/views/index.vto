@@ -5,12 +5,18 @@
 <script type="module" src="/.denizen/public/textarea-autoexpand.js"></script>
 
 <header class="h-card" lang={{ c.var.lang }}>
+  {{ for featured of siteOwner.profile.featured }}
+    <img
+      src="{{ featured.url }}"
+      alt="{{ featured.alt }}"
+      class="u-featured">
+  {{ /for }}
   {{# TODO: used this makeprofilesvg in a few places now, factor out to Card. #}}
   <img
     src="{{ siteOwner.profile.photo[0]?.url.href ?? makeProfileSvg(siteOwner.profile) }}"
     alt="{{ siteOwner.profile.photo[0]?.alt }}"
     style="view-transition-name: owner-pfp"
-    class="big face"
+    class="u-photo big face"
   >
   <h1 style="view-transition-name: owner-name">
     <a href="/" class="u-url u-uid p-name">
