@@ -10,13 +10,28 @@
   <form method='POST' class='post-editor'>
     <div class='interact'>
       <dependent-input>
-        <fieldset>
-          <legend>Post type</legend>
-          <label><input type='radio' name='x-type' data-controls='edit-plain-post' checked> Post</label>
-          <label><input type='radio' name='x-type' data-controls='edit-reply'> Reply</label>
-          <label><input type='radio' name='x-type' data-controls='edit-like'> Like</label>
-          <label><input type='radio' name='x-type' data-controls='edit-repost'> Repost</label>
-          <label><input type='radio' name='x-type' data-controls='edit-bookmark'> Bookmark</label>
+        <fieldset class='contents'>
+          <legend class='(vh)'>Post type</legend>
+          <label class='<button> big'>
+            <input type='radio' class='(vh)' name='x-type' data-controls='edit-plain-post' checked>
+            Post
+          </label>
+          <label class='<button> big'>
+            <input type='radio' class='(vh)' name='x-type' data-controls='edit-reply'>
+            Reply
+          </label>
+          <label class='<button> big'>
+            <input type='radio' class='(vh)' name='x-type' data-controls='edit-like'>
+            Like
+          </label>
+          <label class='<button> big'>
+            <input type='radio' class='(vh)' name='x-type' data-controls='edit-repost'>
+            Repost
+          </label>
+          <label class='<button> big'>
+            <input type='radio' class='(vh)' name='x-type' data-controls='edit-bookmark'>
+            Bookmark
+          </label>
         </fieldset>
       </dependent-input>
       <fieldset id='edit-reply' {{ if !post.inReplyTo.length }} hidden disabled {{/if}}>

@@ -115,6 +115,10 @@ label {
 	display: contents;
 }
 
+.inline {
+  display: inline;
+}
+
 .grid {
 	display: grid;
 	gap: 0.5em;

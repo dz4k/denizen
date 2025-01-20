@@ -97,6 +97,7 @@ input[type='reset'],
 	display: inline-block;
 	padding: 0 0.4em;
 	vertical-align: middle;
+	min-width: auto;
 
 	border: none;
 	background: var(--accent1);
@@ -114,6 +115,12 @@ input[type='reset'],
 
 	&:active {
 		background-color: var(--accent2);
+		color: var(--bg2);
+	}
+
+	&[aria-pressed=true],
+	&:has(:checked) {
+	  background-color: var(--accent2);
 		color: var(--bg2);
 	}
 }
