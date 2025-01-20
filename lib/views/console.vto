@@ -162,6 +162,17 @@
         </select>
       </p>
       <p class='grid-row'>
+        <label for='edit-accent-hue'>Accent color</label>
+        <input id='edit-accent-hue'
+          name='accent[hue]'
+          class='hue-slider'
+          type='range'
+          min='0' max='360'
+          value='{{ c.var.accentHue }}'
+          oninput='document.documentElement.style.setProperty("--accent-color", `lch(50 100 ${value})`)'
+        >
+      </p>
+      <p class='grid-row'>
         <span />
         <span>
           <button class='big'>Save</button>

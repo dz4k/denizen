@@ -1,10 +1,10 @@
 :root {
-	--bg1: #353a42;
-	--bg2: #44484f;
-	--fg1: #e8cccc;
-	--fg2: #a99;
-	--accent1: #132;
-	--accent2: #88a098;
+  --bg1: lch(from var(--accent-color) 15 3 calc(h + 170));
+  --bg2: lch(from var(--accent-color) 20 3 calc(h + 170));
+  --fg1: lch(from var(--accent-color) 80 5 calc(h - 60));
+  --fg2: lch(from var(--accent-color) 60 5 calc(h - 60));
+  --accent1: lch(from var(--accent-color) 10 100 h);
+  --accent2: lch(from var(--accent-color) 76 35 h);
 	--text: monaspace krypton, sans-serif;
 	--display: monaspace krypton, monospace;
 	--code: monaspace krypton, monospace;
@@ -62,9 +62,9 @@ header.h-card {
 	}
 
 	/* .u-photo */
-	.big.face {
+	/* .big.face {
 		display: none;
-	}
+	} */
 
 	.p-note {
 		font-family: var(--display);

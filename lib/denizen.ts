@@ -40,6 +40,7 @@ export type Env = {
 		lang: string
 		title: string
 		theme: string
+		accentHue: string
 		baseUrl: URL
 
 		render: (
@@ -54,6 +55,7 @@ app.use('*', async (c, next) => {
 	const config = await getConfigs()
 	c.set('storage', fsBackend)
 	c.set('theme', config['theme'] as string)
+	c.set('accentHue', config['accent hue'] as string)
 	c.set('locales', config['locales'] as string[])
 	c.set('lang', (config['locales'] as string[])?.[0])
 	c.set('baseUrl', new URL(config['base url'] as string))

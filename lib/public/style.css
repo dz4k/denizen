@@ -1,3 +1,7 @@
+:root {
+  accent-color: var(--accent-color);
+}
+
 main {
 	min-height: 100%;
 }
@@ -114,6 +118,27 @@ label {
 .grid {
 	display: grid;
 	gap: 0.5em;
+}
+
+.hue-slider {
+  background: none;
+  &::-moz-range-track {
+    height: 1em;
+    border-radius: .5em;
+    border: 1px solid black;
+    box-shadow: 0 0 0 1px white;
+    background: linear-gradient(
+      to right in lch longer hue,
+      lch(50 100 0) 0 0
+    )
+  }
+  &::-moz-range-thumb {
+    border: 1px solid white;
+    box-shadow: 0 0 0 1px black;
+    background: none;
+    height: .5em;
+    width: .5em;
+  }
 }
 
 .grid-row {
@@ -373,7 +398,7 @@ list-input {
 	}
 
 	&.big {
-		font-size: 6rem;
+		font-size: 12rem;
 		margin: -2px;
 	}
 }

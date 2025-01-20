@@ -9,9 +9,9 @@
 	background: var(--bg1);
 	color-scheme: light;
 
-	--accent: #287;
+	--accent: lch(from var(--accent-color) 45 100 h);
 	--bg1: white;
-	--bg2: #dee;
+	--bg2: lch(from var(--accent-color) 92 10 h);
 	--bg3: #ddd;
 	--fg2: #355;
 }
@@ -82,4 +82,10 @@ th {
 .face {
 	border-radius: 9999em;
 	border: 2px solid var(--bg1);
+}
+
+header.h-card {
+  .p-name {
+    color: var(--accent);
+  }
 }

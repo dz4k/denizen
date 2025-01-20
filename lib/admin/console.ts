@@ -67,6 +67,8 @@ export const updateTheme = async (c: hono.Context<Env>) => {
 	const formdata = await c.req.formData()
 	const theme = formdata.get('theme')
 	if (theme) await setConfig('theme', theme)
+	const accentHue = formdata.get('accent[hue]')
+	if (accentHue) await setConfig('accent hue', accentHue)
 	return c.redirect('/.denizen/console', 303)
 }
 
