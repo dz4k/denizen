@@ -4,6 +4,7 @@ import type { Env } from '../denizen.ts'
 import * as config from '../config.ts'
 import { getUser, setConfig, updateUser } from '../db.ts'
 import { DenizenBadge } from '../model/card.ts'
+import { ulid } from 'jsr:@std/ulid@1.0.0'
 
 export const get = async (c: hono.Context<Env>) => {
   const user = await getUser(c.var.session.get('user') as string)
@@ -81,7 +82,7 @@ export const postBadge = async (c: hono.Context<Env>) => {
     href = formdata.get('url')
   const url = href ? new URL(href as string) : undefined
 
-  const filename = crypto.randomUUID()
+  const filename = ulid()
   await c.var.storage.write(
     filename,
     photo as File,

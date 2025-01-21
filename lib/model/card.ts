@@ -1,3 +1,4 @@
+import { ulid } from 'jsr:@std/ulid@1.0.0'
 import {
   ImageUrl,
   MF2Html,
@@ -157,7 +158,7 @@ export class Card {
 }
 
 export class DenizenBadge {
-  iid: string = crypto.randomUUID()
+  iid: string = ulid()
   photo?: ImageUrl
   url?: URL
 

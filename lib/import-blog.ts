@@ -17,6 +17,7 @@ import parseMicroformats from './mf2/mf2-parser.ts'
 import { Document, DOMParser, Element } from '../deps/dom.ts'
 import * as storage from './storage/fs-backend.ts'
 import * as config from './config.ts'
+import { ulid } from 'jsr:@std/ulid@1.0.0'
 
 export type BlogImportJob = {
   id: string
@@ -149,7 +150,7 @@ const importEntryImpl = async (jobId: string, entry: Entry) => {
     const src = el.getAttribute('src')
     if (src) {
       const url = new URL(src, entryUrl)
-      const newName = crypto.randomUUID()
+      const newName = ulid()
       media.set(url.href, newName)
       el.setAttribute('src', `/.denizen/storage/${newName}`)
     }

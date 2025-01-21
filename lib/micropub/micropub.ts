@@ -14,6 +14,7 @@ import { Entry } from '../model/entry.ts'
 import { isAdmin } from '../admin/middleware.ts'
 import { makeSlug } from '../common/slug.ts'
 import { getTokenData } from '../auth/indie-auth/indie-auth.ts'
+import { ulid } from 'jsr:@std/ulid@1.0.0'
 
 /*
     A conforming Micropub server:
@@ -146,7 +147,7 @@ export const post = async (c: hono.Context<Env>) => {
     ) {
       formData = await c.req.formData()
       const upload = async (file: File) => {
-        const filename = crypto.randomUUID()
+        const filename = ulid()
         await c.var.storage.write(
           filename,
           file,
@@ -196,7 +197,7 @@ export const postMedia = async (c: hono.Context<Env>) => {
   const formdata = await c.req.formData()
   const file = formdata.get('file')
   if (!file || !(file instanceof File)) return badRequest(c)
-  const name = crypto.randomUUID() + path.extname(file.name)
+  const name = ulid() + path.extname(file.name)
   await c.var.storage.write(name, file, {
     cacheControl: 'public, max-age=31536000, immutable',
   })

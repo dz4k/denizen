@@ -1,3 +1,4 @@
+import { ulid } from 'jsr:@std/ulid@1.0.0'
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
@@ -32,8 +33,13 @@ export const postFormdata = async (c: hono.Context<Env>) => {
 
   const file = formdata.get('file')
   if (!file || !(file instanceof File)) return c.body('No file!', 400)
-  await c.var.storage.write(file.name, file, { cacheControl })
-  return c.redirect('/.denizen/files')
+  const filename = formdata.get('filename') as string ?? file.name ?? ulid()
+  await c.var.storage.write(filename, file, { cacheControl })
+  if (/text\/html/i.test(c.req.header('Accept')!)) {
+    return c.redirect('/.denizen/files')
+  } else {
+    return c.json({ url: `/.denizen/storage/${filename}` })
+  }
 }
 
 export const del = async (c: hono.Context<Env>) => {

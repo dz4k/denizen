@@ -2,6 +2,7 @@
 
 <script type="module" src="/.denizen/public/textarea-autoexpand.js"></script>
 <script type="module" src="/.denizen/public/dependent-input.js"></script>
+<script type="module" src="/.denizen/public/image-drop-zone.js"></script>
 
 <header>
   <h1>{{ c.var.title }}</h1>
@@ -126,18 +127,20 @@
         <p>
           <!-- HTML doesn"t have a way for one <label> to label multiple elements -->
           <label aria-hidden="true">Content</label>
-           <textarea
-             name="content[html]"
-            id="edit-content-html"
-            aria-label="Content, HTML"
-            placeholder="(HTML)"
-            data-autoexpand
-            {{ if post?.contentType && post.contentType !== "html" }}
-              hidden disabled
-            {{ /if }}
-           >
-            {{- post?.content?.html -}}
-           </textarea>
+          <image-drop-zone>
+            <textarea
+              name="content[html]"
+              id="edit-content-html"
+              aria-label="Content, HTML"
+              placeholder="(HTML)"
+              data-autoexpand
+              {{ if post?.contentType && post.contentType !== "html" }}
+                hidden disabled
+              {{ /if }}
+            >
+              {{- post?.content?.html -}}
+            </textarea>
+          </image-drop-zone>
            <textarea
              name="content"
             id="edit-content-text"
