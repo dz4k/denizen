@@ -20,8 +20,7 @@
     "jsr:@stdext/crypto@0.1.0": "0.1.0",
     "npm:@types/estree@1.0.5": "1.0.5",
     "npm:estree-walker@3.0.3": "3.0.3",
-    "npm:meriyah@4.5.0": "4.5.0",
-    "npm:wrangler@*": "3.103.2_esbuild@0.17.19"
+    "npm:meriyah@4.5.0": "4.5.0"
   },
   "jsr": {
     "@b-fuze/deno-dom@0.1.49": {
@@ -431,21 +430,6 @@
         "@cloudflare/workerd-linux-64",
         "@cloudflare/workerd-linux-arm64",
         "@cloudflare/workerd-windows-64"
-      ]
-    },
-    "wrangler@3.103.2_esbuild@0.17.19": {
-      "integrity": "sha512-eYcnubPhPBU1QMZYTam+vfCLpaQx+x1EWA6nFbLhid1eqNDAk1dNwNlbo+ZryrOHDEX3XlOxn2Z3Fx8vVv3hKw==",
-      "dependencies": [
-        "@cloudflare/kv-asset-handler",
-        "@esbuild-plugins/node-globals-polyfill",
-        "@esbuild-plugins/node-modules-polyfill",
-        "blake3-wasm",
-        "esbuild",
-        "fsevents",
-        "miniflare",
-        "path-to-regexp",
-        "unenv@npm:unenv-nightly@2.0.0-20250109-100802-88ad671",
-        "workerd"
       ]
     },
     "ws@8.18.0": {
