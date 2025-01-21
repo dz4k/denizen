@@ -41,7 +41,7 @@ export type Env = {
     title: string
     theme: string
     accentHue: string
-    baseUrl: URL
+    baseUrl?: URL
 
     render: (
       template: string,
@@ -54,11 +54,11 @@ export const app = new Hono<Env>()
 app.use('*', async (c, next) => {
   const config = await getConfigs()
   c.set('storage', fsBackend)
-  c.set('theme', config['theme'] as string)
+  c.set('theme', config['theme'] as string ?? 'default')
   c.set('accentHue', config['accent hue'] as string)
   c.set('locales', config['locales'] as string[])
   c.set('lang', (config['locales'] as string[])?.[0])
-  c.set('baseUrl', new URL(config['base url'] as string))
+  c.set('baseUrl', new URL(config['base url'] as string ?? 'https://initial.invalid'))
   c.set(
     'render',
     async (template: string, data?: Record<string, unknown>) =>
