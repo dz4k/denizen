@@ -1,6 +1,7 @@
 import { escape as htmlEscape } from 'jsr:@std/html@1.0.3'
 import {
   createPost,
+  getConfig,
   getPost,
   recordEntryImported,
   recordEntryImportFailed,
@@ -102,6 +103,10 @@ export const importEntry = async (jobId: string, entryId: string) => {
 const importEntryImpl = async (jobId: string, entry: Entry) => {
   const entryUrl = entry.uid!
   console.log(`importEntry: ${entryUrl}`)
+
+  // Remap URL
+  const baseUrl = new URL(await getConfig("base url") as string)
+  entry.uid!.host = baseUrl.host
 
   // Fill in missing content
   if (!entry.content) {
