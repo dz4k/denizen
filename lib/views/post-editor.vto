@@ -42,7 +42,7 @@
             type="url"
             name="in-reply-to"
             id="edit-reply-to"
-            value="{{ post.inReplyTo[0]?.url }}">
+            value="{{ c.var.href(post.inReplyTo[0]?.url) }}">
         </p>
         <p>
           <label><input type="checkbox" name="x-replycontext">Include reply context</label>
@@ -58,7 +58,7 @@
             type="url"
             name="like-of"
             id="edit-like-of"
-            value="{{ post.likeOf[0]?.url }}">
+            value="{{ c.var.href(post.likeOf[0]?.url) }}">
         </p>
         <p>
           <label><input type="checkbox" name="x-hidden" checked>Hide from home feed</label>
@@ -71,7 +71,7 @@
             type="url"
             name="bookmark-of"
             id="edit-bookmark-of"
-            value="{{ post.bookmarkOf[0]?.url }}">
+            value="{{ c.var.href(post.bookmarkOf[0]?.url) }}">
         </p>
         <p>
           <label><input type="checkbox" name="x-hidden">Hide from home feed</label>
@@ -84,7 +84,7 @@
             type="url"
             name="repost-of"
             id="edit-repost-of"
-            value="{{ post.repostOf[0]?.url }}">
+            value="{{ c.var.href(post.repostOf[0]?.url) }}">
         </p>
       </fieldset>
     </div>

@@ -37,7 +37,7 @@
                {{ include "includes/face.vto" { card: wm.content.author[0] } }}
               <a
                 class="p-author h-card"
-                href="{{ wm.content.author[0].url[0] }}"
+                href="{{ c.var.href(wm.content.author[0].url[0]) }}"
               >
                 {{ wm.content.author[0].name }}
               </a>

@@ -12,7 +12,7 @@
   >
 {{ /if }}
 {{ for photo of post.photo }}
-    <meta property="og:image" content="{{ photo.url.href }}">
+    <meta property="og:image" content="{{ c.var.href(photo.url) }}">
     <meta property="og:image:alt" content="{{ photo.alt }}">
 {{ /for }}
 {{ for video of post.video }}
@@ -28,7 +28,7 @@
       <a href="/" class="p-author h-card author-card unlink">
         {{ import { makeProfileSvg } from "includes/make-profile-svg.vto" }}
         <img
-          src="{{ siteOwner.profile.photo[0]?.url.href ?? await makeProfileSvg(siteOwner.profile) }}"
+          src="{{ c.var.href(siteOwner.profile.photo[0]?.url ?? await makeProfileSvg(siteOwner.profile)) }}"
           alt="{{ siteOwner.profile.photo[0]?.alt }}"
           class="photo"
           style="view-transition-name: owner-pfp"
@@ -36,7 +36,7 @@
         <strong class="p-name" style="view-transition-name: owner-name">
           {{ siteOwner.profile.name }}
         </strong>
-        <span>{{ c.var.baseUrl.hostname }}</span>
+        <span>{{ c.var.baseUrl }}</span>
       </a>
     </nav>
     {{ if post.name }}
@@ -56,7 +56,7 @@
       <figure
         style="view-transition-name: post-{{ post.iid }}-photo-{{ index }}"
       >
-        <img class="u-photo" src="{{ photo.url.href }}" alt="{{ photo.alt }}">
+        <img class="u-photo" src="{{ c.var.href(photo.url) }}" alt="{{ photo.alt }}">
       </figure>
     {{ /for }}
     <div
@@ -71,7 +71,7 @@
   >
     <div class="<small>">
       <p>
-        <a href="{{ post.uid.href }}" class="u-url u-uid">
+        <a href="{{ c.var.href(post.uid) }}" class="u-url u-uid">
           <time class="dt-published" datetime="{{ post.published |> toISOString }}">
             {{ post.published.toLocaleString([
               ...(post.language ? [post.language] : []),

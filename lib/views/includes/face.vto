@@ -1,7 +1,7 @@
 {{ import { makeProfileSvg } from "./make-profile-svg.vto" }}
 <a href="{{ link }}" rel="noopener noreferrer">
   <img
-    src="{{ card.photo[0]?.url.href ?? await makeProfileSvg(card) }}"
+    src="{{ c.var.href(card.photo[0]?.url ?? await makeProfileSvg(card)) }}"
     alt="{{ card.name }}"
     title="{{ card.name }}"
     class="face"

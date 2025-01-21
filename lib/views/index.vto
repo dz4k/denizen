@@ -7,13 +7,13 @@
 <header class="h-card" lang={{ c.var.lang }}>
   {{ for featured of siteOwner.profile.featured }}
     <img
-      src="{{ featured.url }}"
+      src="{{ c.var.href(featured.url) }}"
       alt="{{ featured.alt }}"
       class="u-featured">
   {{ /for }}
   {{# TODO: used this makeprofilesvg in a few places now, factor out to Card. #}}
   <img
-    src="{{ siteOwner.profile.photo[0]?.url.href ?? makeProfileSvg(siteOwner.profile) }}"
+    src="{{ c.var.href(siteOwner.profile.photo[0]?.url ?? await makeProfileSvg(siteOwner.profile)) }}"
     alt="{{ siteOwner.profile.photo[0]?.alt }}"
     style="view-transition-name: owner-pfp"
     class="u-photo big face"
@@ -46,14 +46,16 @@
       {{ for badge of badges }}
         {{ set img }}
           <img
-            src="{{ badge.photo?.url.href }}"
+            src="{{ c.var.href(badge.photo?.url) }}"
             alt="{{ badge.photo?.alt }}"
             class="badge">
         {{ /set }}
 
         <span className="p-x-denizen-badge h-x-denizen-badge">
           {{ if badge.url }}
-            <a href="{{ badge.url.href }}" class="u-url">{{ img |> safe }}</a>
+            <a href="{{ c.var.href(badge.url.href) }}" class="u-url">
+              {{- img |> safe -}}
+            </a>
           {{ else }}
             {{ img |> safe }}
           {{ /if }}
@@ -91,7 +93,7 @@
         <h2
           style="view-transition-name: post-{{ post.iid }}-name"
         >
-          <a class="p-name u-url u-uid" href="{{ post.uid.pathname }}">
+          <a class="p-name u-url u-uid" href="{{ c.var.href(post.uid) }}">
             {{ post.name }}
           </a>
         </h2>
@@ -100,7 +102,7 @@
           <figure
             style="view-transition-name: post-{{ post.iid }}-photo-{{ index }}"
           >
-            <img class="u-photo" src="{{ photo.url.href }}" alt="{{ photo.alt }}" />
+            <img class="u-photo" src="{{ c.var.href(photo.url.href) }}" alt="{{ photo.alt }}" />
           </figure>
         {{ /for }}
         {{ if post.summary }}
@@ -124,7 +126,7 @@
           class="<small>"
           style="view-transition-name: post-{{ post.iid }}-footer"
         >
-          <a href="{{ post.uid?.pathname }}" class="card-link">
+          <a href="{{ c.var.href(post.uid) }}" class="card-link">
             <time className="dt-published" datetime="{{ post.published |> toISOString }}">
               {{ post.published.toLocaleString([
                 ...(post.language ? [post.language] : []),

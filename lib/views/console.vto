@@ -74,7 +74,7 @@
       {{ for badge of user.profile.denizenBadge }}
         {{ fragment badge }}
         <li id="badge-item-{{ badge.iid }}">
-          <img src="{{ badge.photo?.url }}" alt="{{ badge.photo?.alt }}" />
+          <img src="{{ c.var.href(badge.photo?.url) }}" alt="{{ badge.photo?.alt }}" />
           <form
             rel="swap-replaceWith"
             action="/.denizen/profile/badge/{{ badge.iid }}"
