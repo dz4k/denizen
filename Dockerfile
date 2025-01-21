@@ -4,7 +4,7 @@ ARG DENO_VERSION=2.1.5
 ARG BIN_IMAGE=denoland/deno:bin-${DENO_VERSION}
 FROM ${BIN_IMAGE} AS bin
 
-FROM frolvlad/alpine-glibc:alpine-3.13
+FROM frolvlad/alpine-glibc:alpine-3.18
 
 RUN apk --no-cache add ca-certificates
 
