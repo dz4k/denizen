@@ -47,7 +47,7 @@ export type Env = {
       template: string,
       data?: Record<string, unknown>,
     ) => Response | Promise<Response>
-    href: (url: string | URL) => string
+    href: (url?: string | URL) => string
   }
 }
 export const app = new Hono<Env>()
@@ -67,8 +67,9 @@ app.use('*', async (c, next) => {
   )
   c.set(
     'href',
-    (url: string | URL) => {
-      let u = new URL(url)
+    (url?: string | URL) => {
+      if (!url) return url
+      const u = new URL(url)
       if (u.origin === c.var.baseUrl?.origin)
         return u.pathname + u.search + u.hash
       return u.href
