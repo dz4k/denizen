@@ -27,7 +27,7 @@ export const updateProfile = async (c: hono.Context<Env>) => {
   for (const prop of ['photo', 'featured'] as const) {
     const img = formdata.get(prop)
     if (img instanceof File) {
-      const filename = `.denizen-pfp-${new Date().toISOString()}`
+      const filename = `.denizen-profile-${prop}-${new Date().toISOString()}`
       const oldUrl = user.profile[prop][0]?.url
       if (oldUrl) {
         await c.var.storage.del(oldUrl.pathname.split('/').pop() as string)
