@@ -41,3 +41,6 @@ Use `deployctl` to deploy it to your account:
   ~~~~
 
 </details>
+
+After installing, [connect a domain name](/about/domains)
+or [open your site for the first time](/about/first-run).

@@ -9,8 +9,20 @@ import vento from 'lume/plugins/vento.ts'
 import { getGitDate } from 'lume/core/utils/date.ts'
 
 import 'npm:prismjs@1.29.0/components/prism-bash.js'
+import { container } from 'npm:@mdit/plugin-container'
 
-const site = lume()
+const site = lume({}, {
+  markdown: {
+    options: {
+      typographer: true
+    },
+    plugins: [
+      [container, {
+        name: "warn"
+      }]
+    ],
+  },
+})
 
 site.remoteFile('/css/vendor/siimple-icons.css',
   'https://cdn.jsdelivr.net/npm/siimple-icons/siimple-icons.css',)

@@ -19,21 +19,23 @@ as well as the "author" field on all your posts.
 This is not a _username_, you won't use this to log in.
 
 
+##      Site URL
+
+This is the base URL that your site is on.
+Denizen uses it to generate links and talk to other sites.
+This field will populate itself.
+
+If you haven't got a domain name yet, you should [update the site URL](/about/settings#site)
+when you do.
+
+
 ##      Password
 
 The password allows you to log in to your site,
-which you'll need to do in order to [post], [change your settings] or [edit your profile].
-
-
-##      Language
-
-Select the language of your site.
-Correctly labeling your website's language is important.
-It helps people find materials in their language using search engines,
-and is used by screen reader software to pronounce things correctly.
-
-If you intend to post in multiple languages,
-you can also [change the language for individual posts].
+which you'll need to do in order to
+[post](/about/posting), [change your settings](/about/settings) or [edit your profile](/about/settings#profile).
+Enter a secure password, and keep it safe --
+there is no way to reset it.
 
 
 ##      Finish
@@ -43,8 +45,5 @@ In order to make your first post or add more detail to your profile,
 you'll need to [log in].
 
 
-[post]: /about/posting
-[change your settings]: /about/settings
-[edit your profile]: /about/profile
 [change the language for individual posts]: /about/posting#language
 [log in]: /about/login
