@@ -266,6 +266,10 @@ list-input {
       }
     }
   }
+
+  .content-area textarea {
+    min-height: 10rem;
+  }
 }
 
 .entry-list {
