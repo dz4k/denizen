@@ -8,7 +8,7 @@
   <h1>{{ c.var.title }}</h1>
 </header>
 <main>
-  <form method="POST" class="post-editor">
+  <form method="POST" class="post-editor" enctype="multipart/form-data">
     <div class="interact">
       <dependent-input>
         <fieldset class="contents">
@@ -180,6 +180,14 @@
            </dependent-input>
         </p>
       </div>
+    </div>
+    <div class="add-stuff">
+      <p>
+        <label for="edit-photo">Add image</label>
+        <input
+          type="file"
+          name="photo"
+          id="edit-photo">
     </div>
     <p>
       <button type="submit">Post</button>

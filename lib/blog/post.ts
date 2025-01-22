@@ -63,7 +63,11 @@ export const put = async (
 
   const formdata = await c.req.formData()
 
-  const newPost = Entry.fromFormData(formdata)
+  const newPost = await Entry.fromFormDataWithFiles(
+    formdata,
+    c.var.storage,
+    c.var.baseUrl!,
+  )
   newPost.iid = oldPost.iid
   newPost.uid = oldPost.uid
   await updatePost(newPost)

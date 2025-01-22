@@ -50,7 +50,7 @@ export const postEdit = (c: hono.Context<Env>) => {
 export const post = async (c: hono.Context<Env>) => {
   const formdata = await c.req.formData()
 
-  const post = Entry.fromFormData(formdata)
+  const post = await Entry.fromFormDataWithFiles(formdata, c.var.storage, c.var.baseUrl!)
   post.uid = new URL(
     `${post.published.getFullYear()}/${
       post.name ? makeSlug(post.name) : post.published.toISOString()

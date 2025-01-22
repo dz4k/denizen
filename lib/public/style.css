@@ -102,6 +102,10 @@ select {
   padding: 0.4em;
 }
 
+textarea {
+  field-sizing: content;
+}
+
 ::placeholder {
   font-style: italic;
 }

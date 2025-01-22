@@ -18,6 +18,7 @@ import {
 import { Card } from './card.ts'
 import { Citation } from './citation.ts'
 import { htmlStripTags } from '../common/util.ts'
+import type { StorageBackend } from '../storage/storage-interface.ts'
 
 /**
  * @see http://microformats.org/wiki/h-entry
@@ -290,6 +291,35 @@ export class Entry {
     const rv = new Entry(props)
     if (form.has('lang')) rv.language = get('lang')
     return rv
+  }
+
+  static async fromFormDataWithFiles(
+    form: FormData,
+    storage: StorageBackend,
+    baseUrl: string | URL
+  ) {
+    // TODO: Disallowing video and audio uploads for now.
+    for (const prop of ['photo']) {
+      const values = form.getAll(prop)
+      form.delete(prop)
+      for (const value of values) {
+        console.log("fromFormDataWithFiles", prop, value)
+        if (value instanceof File) {
+          const name = `entry-${prop}-${crypto.randomUUID()}`
+          await storage.write(name, value,
+            { cacheControl: 'public, max-age=31536000, immutable' })
+          form.append(
+            prop,
+            new URL(
+              `/.denizen/storage/${encodeURIComponent(name)}`, baseUrl
+            ).href
+          )
+        } else {
+          form.append(prop, value)
+        }
+      }
+    }
+    return this.fromFormData(form)
   }
 
   toMF2Json(): MF2Object {
