@@ -41,13 +41,13 @@ export type Env = {
     title: string
     theme: string
     accentHue: string
-    baseUrl?: URL
+    baseUrl: URL
 
     render: (
       template: string,
       data?: Record<string, unknown>,
     ) => Response | Promise<Response>
-    href: (url?: string | URL) => string
+    href: (url?: string | URL) => string | undefined
   }
 }
 export const app = new Hono<Env>()
