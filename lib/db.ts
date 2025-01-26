@@ -94,6 +94,8 @@ export const updatePost = async (post: Entry): Promise<string> => {
     targets: findMentions(post, oldContent),
   })
 
+  await purgePostFromCache(post)
+
   return post.iid!
 }
 
@@ -111,6 +113,11 @@ export const getPostByURL = async (url: URL): Promise<Entry | null> => {
   const kvEntry = await db.get(urlKey(url))
   if (kvEntry.value === null) return null
   return getPost(kvEntry.value as string)
+}
+
+const purgePostFromCache = async (post: Entry) => {
+  const cache = await caches.open('denizen-request-cache')
+  return cache.delete(post.uid!)
 }
 
 // #endregion

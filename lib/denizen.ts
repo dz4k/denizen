@@ -3,7 +3,6 @@ import { Session, sessionMiddleware } from './common/session.ts'
 
 import { listen } from './queue.ts'
 import { db, getConfigs } from './db.ts'
-
 import * as fourOhFour from './404.ts'
 import * as o5command from './admin/console.ts'
 import * as initialSetup from './admin/initial-setup.ts'
@@ -24,6 +23,7 @@ import * as micropub from './micropub/micropub.ts'
 import * as webmentionRecv from './webmention/recv.ts'
 import { StorageBackend } from './storage/storage-interface.ts'
 import * as fsBackend from './storage/fs-backend.ts'
+import { cache } from './common/cache.ts'
 
 import render from './common/vento.ts'
 
@@ -133,7 +133,7 @@ app
   .get('/wp-admin/', wpAdmin.get)
   .get('/feed.json', feed.json)
   .get('/feed.xml', feed.xml)
-  .get('*', post.get)
+  .get('*', cache, post.get)
   .put('*', requireAdmin, (c) => post.put(c))
   .delete('*', requireAdmin, post.del)
   .notFound(fourOhFour.get)
