@@ -77,8 +77,13 @@ export const createEntry = async (entry: Entry): Promise<string> => {
 
 export const updateEntry = async (entry: Entry): Promise<string> => {
   const oldEntry = await getEntry(entry.iid)
+  if (!oldEntry) {
+    throw new Error(`Trying to update entry (iid ${entry.iid}) that doesn't exist`)
+  }
+
   const oldContent = oldEntry.content?.html
 
+  entry.published = oldEntry.published
   entry.updated = new Date()
 
   const key = entryKey(entry)
