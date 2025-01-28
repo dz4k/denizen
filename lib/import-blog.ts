@@ -1,15 +1,15 @@
 import { escape as htmlEscape } from 'jsr:@std/html@1.0.3'
 import {
-  createPost,
+  createEntry,
   getConfig,
-  getPost,
+  getEntry,
   recordEntryImported,
   recordEntryImportFailed,
   recordMediaImported,
   recordMediaImportFailed,
   recordMediaToImport,
   saveBlogImportJob,
-  updatePost,
+  updateEntry,
 } from './db.ts'
 import { Entry } from './model/entry.ts'
 import { Card } from './model/card.ts'
@@ -25,9 +25,9 @@ export type BlogImportJob = {
   feedUrl: string
   status: 'starting' | 'running' | 'failed'
 
-  totalPosts?: number
-  importedPosts?: number
-  failedPosts?: number
+  entriesTotal?: number
+  entriesImported?: number
+  entriesFailed?: number
 
   errors?: string[]
 }
@@ -73,13 +73,13 @@ export const importBlog = async (job: BlogImportJob) => {
   }
 
   // Save entry count
-  job.totalPosts = entries.length
+  job.entriesTotal = entries.length
   await saveBlogImportJob(job)
 
   // Save the entries
   for (const entry of entries) {
     entry.deleted = true
-    const iid = await createPost(entry)
+    const iid = await createEntry(entry)
     await enqueue({
       type: 'import_entry',
       jobId: job.id,
@@ -89,7 +89,7 @@ export const importBlog = async (job: BlogImportJob) => {
 }
 
 export const importEntry = async (jobId: string, entryId: string) => {
-  const entry = await getPost(entryId)
+  const entry = await getEntry(entryId)
   if (!entry) throw new Error(`importEntry: Entry not found: ${entryId}`)
   try {
     await importEntryImpl(jobId, entry)
@@ -174,9 +174,9 @@ const importEntryImpl = async (jobId: string, entry: Entry) => {
     })
   }
 
-  // Save the post
+  // Save the entry
   entry.deleted = false
-  await updatePost(entry)
+  await updateEntry(entry)
 }
 
 export const importMedia = async (

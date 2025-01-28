@@ -1,7 +1,7 @@
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
-import { getPosts, getUser } from '../db.ts'
+import { getEntries, getUser } from '../db.ts'
 import { isAdmin } from '../admin/middleware.ts'
 
 export const get = async (c: hono.Context<Env>) => {
@@ -23,8 +23,8 @@ export const get = async (c: hono.Context<Env>) => {
 
   const { cursor } = c.req.query()
   const siteOwner = await getUser('admin')
-  const posts = await getPosts({ cursor })
-  posts.data = posts.data.filter((post) => !post.hidden)
+  const entries = await getEntries({ cursor })
+  entries.data = entries.data.filter((entry) => !entry.hidden)
   const admin = isAdmin(c)
 
   const socials = Object.entries(siteOwner.profile.me)
@@ -33,5 +33,5 @@ export const get = async (c: hono.Context<Env>) => {
   c.set('title', siteOwner.profile.name)
   c.set('theme', c.var.theme)
 
-  return c.var.render('index.vto', { admin, siteOwner, posts, socials, badges })
+  return c.var.render('index.vto', { admin, siteOwner, entries, socials, badges })
 }

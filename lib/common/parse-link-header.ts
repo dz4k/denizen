@@ -9,7 +9,7 @@ export const parseLinkHeader = (header: string): LinkHeader[] => {
   // parser context
   let pos = 0
   const consumeChar = () => {
-    if (pos >= header.length) return null
+    if (pos >= header.length) return
     return header[pos++]
   }
   const peekChar = () => {

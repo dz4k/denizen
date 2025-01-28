@@ -4,14 +4,14 @@ import type { Env } from '../denizen.ts'
 import { Entry } from '../model/entry.ts'
 import { makeSlug } from '../common/slug.ts'
 import { parseHashtags } from '../common/hashtag.ts'
-import { createPost, getPostByURL } from '../db.ts'
-import * as blogPost from './post.ts'
+import { createEntry, getEntryByURL } from '../db.ts'
+import * as entry from './entry.ts'
 import { clientRedirect } from '../common/util.ts'
 
 export const get = (c: hono.Context<Env>) => {
-  c.set('title', 'New post')
-  return c.var.render('post-editor.vto', {
-    post: Entry.fromFormData(formDataFromObject(c.req.query())),
+  c.set('title', 'New entry')
+  return c.var.render('entry-editor.vto', {
+    entry: Entry.fromFormData(formDataFromObject(c.req.query())),
   })
 }
 
@@ -28,43 +28,43 @@ const formDataFromObject = (obj: Record<string, string | string[]>) => {
 }
 
 export const getEdit = async (c: hono.Context<Env>) => {
-  let post
+  let entry
   try {
-    const postPath = c.req.query('post')
-    post = await getPostByURL(new URL(postPath!, c.var.baseUrl))
+    const entryPath = c.req.query('entry')
+    entry = await getEntryByURL(new URL(entryPath!, c.var.baseUrl))
   } catch {
     // invalid URL given
   }
-  if (!post) return c.notFound()
+  if (!entry) return c.notFound()
   c.set('title', 'Edit')
-  return c.var.render('post-editor.vto', { post })
+  return c.var.render('entry-editor.vto', { entry })
 }
 
 export const postEdit = (c: hono.Context<Env>) => {
-  const postPath = c.req.query('post')
-  if (!postPath) return c.notFound()
+  const entryPath = c.req.query('entry')
+  if (!entryPath) return c.notFound()
 
-  return blogPost.put(c, new URL(postPath, c.var.baseUrl))
+  return entry.put(c, new URL(entryPath, c.var.baseUrl))
 }
 
 export const post = async (c: hono.Context<Env>) => {
   const formdata = await c.req.formData()
 
-  const post = await Entry.fromFormDataWithFiles(formdata, c.var.storage, c.var.baseUrl!)
-  post.uid = new URL(
-    `${post.published.getFullYear()}/${
-      post.name ? makeSlug(post.name) : post.published.toISOString()
+  const entry = await Entry.fromFormDataWithFiles(formdata, c.var.storage, c.var.baseUrl!)
+  entry.uid = new URL(
+    `${entry.published.getFullYear()}/${
+      entry.name ? makeSlug(entry.name) : entry.published.toISOString()
     }`,
     c.var.baseUrl,
   )
-  const { tags, html } = parseHashtags(post.content!.html)
-  post.content!.html = html
-  post.category.push(...tags)
-  await createPost(post)
+  const { tags, html } = parseHashtags(entry.content!.html)
+  entry.content!.html = html
+  entry.category.push(...tags)
+  await createEntry(entry)
 
   if (c.req.header('Soiree')) {
-    return c.html(clientRedirect(post.uid.pathname))
+    return c.html(clientRedirect(entry.uid.pathname))
   } else {
-    return c.redirect(post.uid!.pathname, 303)
+    return c.redirect(entry.uid!.pathname, 303)
   }
 }

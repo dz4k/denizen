@@ -4,7 +4,7 @@ import { parseLinkHeader } from '../common/parse-link-header.ts'
 import {
   deleteWebmention,
   getConfig,
-  getPostByURL,
+  getEntryByURL,
   saveWebmention,
 } from '../db.ts'
 import { Entry } from '../model/entry.ts'
@@ -18,10 +18,10 @@ import { app } from '../denizen.ts'
 import * as config from '../config.ts'
 
 export const receiveWebmention = async (source: string, target: string) => {
-  const targetPost = await getPostByURL(new URL(target))
-  if (!targetPost) {
+  const targetEntry = await getEntryByURL(new URL(target))
+  if (!targetEntry) {
     console.error(
-      'Webmention received for nonexistent post',
+      'Webmention received for nonexistent entry',
       target,
       'from',
       source,
@@ -74,7 +74,7 @@ export const receiveWebmention = async (source: string, target: string) => {
     return
   }
 
-  const webmentionPost = Entry.fromMF2Json(hEntry)
+  const webmentionEntry = Entry.fromMF2Json(hEntry)
 
   const responseType = discoverResponseType(hEntry)
 
@@ -82,10 +82,10 @@ export const receiveWebmention = async (source: string, target: string) => {
     source,
     target,
     responseType,
-    webmentionPost,
+    webmentionEntry,
   )
 
-  await saveWebmention(targetPost, wm)
+  await saveWebmention(targetEntry, wm)
 }
 
 /**
@@ -129,9 +129,9 @@ export const sendWebmentions = (source: string, targets: Set<string>) =>
       })
     ),
   ).then((res) => void res)
-// const mentionedPages = findMentions(post, oldContent)
+// const mentionedPages = findMentions(entry, oldContent)
 
-export const findMentions = (post: Entry, oldContent?: string) => {
+export const findMentions = (entry: Entry, oldContent?: string) => {
   const urls = new Set<string>()
   const add = (url: URL) => {
     urls.add(url.href)
@@ -140,20 +140,20 @@ export const findMentions = (post: Entry, oldContent?: string) => {
     if (cite.uid) add(cite.uid)
     cite.url.forEach(add)
   }
-  post.bookmarkOf.forEach(addCitation)
-  post.inReplyTo.forEach(addCitation)
-  post.likeOf.forEach(addCitation)
+  entry.bookmarkOf.forEach(addCitation)
+  entry.inReplyTo.forEach(addCitation)
+  entry.likeOf.forEach(addCitation)
 
-  if (post.content) {
+  if (entry.content) {
     for (
-      const mention of findMentionsInContent(post.content.html, {
-        baseUrl: post.uid!,
+      const mention of findMentionsInContent(entry.content.html, {
+        baseUrl: entry.uid!,
       })
     ) add(mention)
   }
   if (oldContent) {
     for (
-      const mention of findMentionsInContent(oldContent, { baseUrl: post.uid! })
+      const mention of findMentionsInContent(oldContent, { baseUrl: entry.uid! })
     ) add(mention)
   }
 
@@ -175,7 +175,7 @@ const findMentionsInContent = function* (
       yield url
     } catch {
       // invalid URL
-      // TODO: maybe post a warning?
+      // TODO: maybe a warning?
     }
   }
 }

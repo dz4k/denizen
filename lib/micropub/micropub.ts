@@ -4,11 +4,11 @@ import * as mediaType from 'jsr:@std/media-types@1.1.0'
 import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 import {
-  createPost,
-  deletePost,
-  getPostByURL,
-  undeletePost,
-  updatePost,
+  createEntry,
+  deleteEntry,
+  getEntryByURL,
+  undeleteEntry,
+  updateEntry,
 } from '../db.ts'
 import { Entry } from '../model/entry.ts'
 import { isAdmin } from '../admin/middleware.ts'
@@ -76,7 +76,7 @@ export const get = async (c: hono.Context<Env>) => {
     } catch {
       return badRequest(c)
     }
-    const post = await getPostByURL(new URL(url))
+    const post = await getEntryByURL(new URL(url))
     return c.json(post?.toMF2Json())
   }
   if (q === 'syndicate-to') {
@@ -105,9 +105,9 @@ export const post = async (c: hono.Context<Env>) => {
     } catch {
       return badRequest(c)
     }
-    const post = await getPostByURL(url)
+    const post = await getEntryByURL(url)
     if (!post) return c.json({ error: 'not_found' }, 404)
-    await deletePost(post)
+    await deleteEntry(post)
     return c.body('', 200)
   } else if (reqBody.action === 'undelete') {
     if (!c.var.authScopes.includes('update')) return insufficientScope(c)
@@ -117,9 +117,9 @@ export const post = async (c: hono.Context<Env>) => {
     } catch {
       return badRequest(c)
     }
-    const post = await getPostByURL(url)
+    const post = await getEntryByURL(url)
     if (!post) return c.json({ error: 'not_found' }, 404)
-    await undeletePost(post)
+    await undeleteEntry(post)
     return c.body('', 200)
   } else if (reqBody.action === 'update') {
     if (
@@ -129,12 +129,12 @@ export const post = async (c: hono.Context<Env>) => {
     ) {
       return badRequest(c)
     }
-    const post = await getPostByURL(new URL(reqBody.url))
+    const post = await getEntryByURL(new URL(reqBody.url))
     if (!post) return badRequest(c)
     if (reqBody.replace) post.replace(reqBody.replace)
     if (reqBody.add) post.add(reqBody.add)
     if (reqBody.delete) post.delete(reqBody.delete)
-    await updatePost(post)
+    await updateEntry(post)
     return c.body(null, 204)
   } else {
     // Create post
@@ -183,7 +183,7 @@ export const post = async (c: hono.Context<Env>) => {
       }`,
       c.var.baseUrl, // TODO derive this somehow
     )
-    await createPost(createdPost)
+    await createEntry(createdPost)
 
     return c.body('', 201, {
       'Location': createdPost.uid!.href,

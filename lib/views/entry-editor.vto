@@ -8,11 +8,11 @@
   <h1>{{ c.var.title }}</h1>
 </header>
 <main>
-  <form method="POST" class="post-editor" enctype="multipart/form-data">
+  <form method="POST" class="entry-editor" enctype="multipart/form-data">
     <div class="interact">
       <dependent-input>
         <fieldset class="contents">
-          <legend class="(vh)">Post type</legend>
+          <legend class="(vh)">Entry type</legend>
           <label class="<button> big">
             <input type="radio" class="(vh)" name="x-type" data-controls="edit-plain-post" checked>
             Post
@@ -35,14 +35,14 @@
           </label>
         </fieldset>
       </dependent-input>
-      <fieldset id="edit-reply" {{ if !post.inReplyTo.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-reply" {{ if !entry.inReplyTo.length }} hidden disabled {{/if}}>
         <p>
           <label for="edit-reply-to">Reply to</label>
           <input
             type="url"
             name="in-reply-to"
             id="edit-reply-to"
-            value="{{ c.var.href(post.inReplyTo[0]?.url) }}">
+            value="{{ c.var.href(entry.inReplyTo[0]?.url) }}">
         </p>
         <p>
           <label><input type="checkbox" name="x-replycontext">Include reply context</label>
@@ -51,44 +51,44 @@
           <label><input type="checkbox" name="x-hidden">Hide from home feed</label>
         </p>
       </fieldset>
-      <fieldset id="edit-like" {{ if !post.likeOf.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-like" {{ if !entry.likeOf.length }} hidden disabled {{/if}}>
         <p>
           <label for="edit-like-of">Like of</label>
           <input
             type="url"
             name="like-of"
             id="edit-like-of"
-            value="{{ c.var.href(post.likeOf[0]?.url) }}">
+            value="{{ c.var.href(entry.likeOf[0]?.url) }}">
         </p>
         <p>
           <label><input type="checkbox" name="x-hidden" checked>Hide from home feed</label>
         </p>
       </fieldset>
-      <fieldset id="edit-bookmark" {{ if !post.bookmarkOf.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-bookmark" {{ if !entry.bookmarkOf.length }} hidden disabled {{/if}}>
         <p>
           <label for="edit-bookmark-of">Bookmark of</label>
           <input
             type="url"
             name="bookmark-of"
             id="edit-bookmark-of"
-            value="{{ c.var.href(post.bookmarkOf[0]?.url) }}">
+            value="{{ c.var.href(entry.bookmarkOf[0]?.url) }}">
         </p>
         <p>
           <label><input type="checkbox" name="x-hidden">Hide from home feed</label>
         </p>
       </fieldset>
-      <fieldset id="edit-repost" {{ if !post.repostOf.length }} hidden disabled {{/if}}>
+      <fieldset id="edit-repost" {{ if !entry.repostOf.length }} hidden disabled {{/if}}>
         <p>
           <label for="edit-repost-of">Repost of</label>
           <input
             type="url"
             name="repost-of"
             id="edit-repost-of"
-            value="{{ c.var.href(post.repostOf[0]?.url) }}">
+            value="{{ c.var.href(entry.repostOf[0]?.url) }}">
         </p>
       </fieldset>
     </div>
-    <div class="post">
+    <div class="entry">
       <div class="titleRow">
         <p class="title">
            <label for="edit-title">Title</label>
@@ -96,7 +96,7 @@
             type="text"
             name="name"
             id="edit-title"
-            value="{{ post?.name }}">
+            value="{{ entry?.name }}">
         </p>
         <details class="extraFields">
           <summary class="<button>">
@@ -110,7 +110,7 @@
                  type="text"
                  name="summary"
                  id="edit-summary"
-                 value="{{ post?.summary }}">
+                 value="{{ entry?.summary }}">
              </p>
             <p>
               <label for="edit-lang">Language</label>
@@ -118,7 +118,7 @@
               <input
                  name="lang"
                  id="edit-lang"
-                 value="{{ post?.language ?? c.var.lang }}">
+                 value="{{ entry?.language ?? c.var.lang }}">
              </p>
           </div>
         </details>
@@ -134,11 +134,11 @@
               aria-label="Content, HTML"
               placeholder="(HTML)"
               data-autoexpand
-              {{ if post?.contentType && post.contentType !== "html" }}
+              {{ if entry?.contentType && entry.contentType !== "html" }}
                 hidden disabled
               {{ /if }}
             >
-              {{- post?.content?.html -}}
+              {{- entry?.content?.html -}}
             </textarea>
           </image-drop-zone>
            <textarea
@@ -147,9 +147,9 @@
             aria-label="Content, plain text"
             placeholder="(Text)"
             data-autoexpand
-            {{ if post.contentType !== "text" }} hidden disabled {{ /if }}
+            {{ if entry.contentType !== "text" }} hidden disabled {{ /if }}
            >
-            {{- post?.content?.value -}}
+            {{- entry?.content?.value -}}
            </textarea>
         </p>
         <p>
@@ -159,22 +159,22 @@
                <option
                  value="html"
                 data-controls="edit-content-html"
-                {{ if post?.contentType === "html" }} selected {{ /if }}
+                {{ if entry?.contentType === "html" }} selected {{ /if }}
                >HTML</option>
                <option
                  value="text"
                 data-controls="edit-content-text"
-                {{ if post?.contentType === "text" }} selected {{ /if }}
+                {{ if entry?.contentType === "text" }} selected {{ /if }}
                >Text</option>
                <option
                  disabled value="markdown"
                 data-controls="edit-content-markdown"
-                {{# {{ if post?.contentType === "markdown" }} selected {{ /if }} #}}
+                {{# {{ if entry?.contentType === "markdown" }} selected {{ /if }} #}}
                >Markdown</option>
                <option
                  disabled value="wysiwyg"
                 data-controls="edit-content-wysiwyg"
-                {{# {{ if post?.contentType === "wysiwyg" }} selected {{ /if }} #}}
+                {{# {{ if entry?.contentType === "wysiwyg" }} selected {{ /if }} #}}
                >Rich text</option>
             </select>
            </dependent-input>

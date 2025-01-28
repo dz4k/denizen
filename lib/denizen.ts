@@ -16,7 +16,7 @@ import * as indieauthCb from './auth/indieauth-cb.ts'
 import * as login from './auth/login.ts'
 import * as feed from './blog/feed.ts'
 import * as homepage from './blog/homepage.ts'
-import * as post from './blog/post.ts'
+import * as entry from './blog/entry.ts'
 import * as storage from './storage/storage-routes.ts'
 import * as fileManager from './storage/file-manager.ts'
 import * as micropub from './micropub/micropub.ts'
@@ -97,10 +97,10 @@ app
   .use('*', initialSetup.middleware)
   .get('/.denizen/initial-setup', initialSetup.get)
   .post('/.denizen/initial-setup', initialSetup.post)
-  .get('/.denizen/post/new', posting.get)
-  .post('/.denizen/post/new', requireAdmin, posting.post)
-  .get('/.denizen/post/edit', posting.getEdit)
-  .post('/.denizen/post/edit', posting.postEdit)
+  .get('/.denizen/entry/new', posting.get)
+  .post('/.denizen/entry/new', requireAdmin, posting.post)
+  .get('/.denizen/entry/edit', posting.getEdit)
+  .post('/.denizen/entry/edit', posting.postEdit)
   .get('/.denizen/webaction', webaction.get)
   .get('/.denizen/console', requireAdmin, o5command.get)
   .post('/.denizen/profile', requireAdmin, o5command.updateProfile)
@@ -133,7 +133,7 @@ app
   .get('/wp-admin/', wpAdmin.get)
   .get('/feed.json', feed.json)
   .get('/feed.xml', feed.xml)
-  .get('*', cache, post.get)
-  .put('*', requireAdmin, (c) => post.put(c))
-  .delete('*', requireAdmin, post.del)
+  .get('*', cache, entry.get)
+  .put('*', requireAdmin, (c) => entry.put(c))
+  .delete('*', requireAdmin, entry.del)
   .notFound(fourOhFour.get)

@@ -67,78 +67,78 @@
 <main>
   {{ if admin }}
     <form
-      class="quick-post"
+      class="quick-entry"
       method="POST"
-      action="/.denizen/post/new"
+      action="/.denizen/entry/new"
     >
       <textarea
         name="content"
-        class="quick-post-content"
+        class="quick-entry-content"
         aria-label="What&apos;s on your mind?"
         placeholder="What&apos;s on your mind?"
         data-autoexpand
       ></textarea>
-      <div class="quick-post-form-actions">
-        <a class="<small>" href="/.denizen/post/new">Open big editor</a>
-        <button type="submit" class="quick-post-submit">Post</button>
+      <div class="quick-entry-form-actions">
+        <a class="<small>" href="/.denizen/entry/new">Open big editor</a>
+        <button type="submit" class="quick-entry-submit">Post</button>
       </div>
     </form>
   {{ /if }}
   <div className="entry-list">
-    {{ for post of posts.data }}
+    {{ for entry of entries.data }}
       <article
         class="h-entry link-card"
-        lang="{{ post.language ?? c.var.lang }}"
+        lang="{{ entry.language ?? c.var.lang }}"
       >
         <h2
-          style="view-transition-name: post-{{ post.iid }}-name"
+          style="view-transition-name: entry-{{ entry.iid }}-name"
         >
-          <a class="p-name u-url u-uid" href="{{ c.var.href(post.uid) }}">
-            {{ post.name }}
+          <a class="p-name u-url u-uid" href="{{ c.var.href(entry.uid) }}">
+            {{ entry.name }}
           </a>
         </h2>
-        {{ include "includes/interaction-context.vto" { post } }}
-        {{ for index, photo of post.photo }}
+        {{ include "includes/interaction-context.vto" { entry } }}
+        {{ for index, photo of entry.photo }}
           <figure
-            style="view-transition-name: post-{{ post.iid }}-photo-{{ index }}"
+            style="view-transition-name: entry-{{ entry.iid }}-photo-{{ index }}"
           >
             <img class="u-photo" src="{{ c.var.href(photo.url.href) }}" alt="{{ photo.alt }}" />
           </figure>
         {{ /for }}
-        {{ if post.summary }}
+        {{ if entry.summary }}
           <p
             class="italic"
-            style="view-transition-name: post-{{ post.iid }}-summary"
+            style="view-transition-name: entry-{{ entry.iid }}-summary"
           >
-            {{- post.summary |> safe -}}
+            {{- entry.summary |> safe -}}
           </p>
-        {{ else if post.name }}
+        {{ else if entry.name }}
           {{# -- #}}
-        {{ else if post.content }}
+        {{ else if entry.content }}
           <div
             class="e-content"
-            style="view-transition-name: post-{{ post.iid }}-content"
+            style="view-transition-name: entry-{{ entry.iid }}-content"
           />
-            {{- post.content.html |> safe -}}
+            {{- entry.content.html |> safe -}}
           </div>
         {{ /if }}
         <p
           class="<small>"
-          style="view-transition-name: post-{{ post.iid }}-footer"
+          style="view-transition-name: entry-{{ entry.iid }}-footer"
         >
-          <a href="{{ c.var.href(post.uid) }}" class="card-link">
-            <time className="dt-published" datetime="{{ post.published |> toISOString }}">
-              {{ post.published.toLocaleString([
-                ...(post.language ? [post.language] : []),
+          <a href="{{ c.var.href(entry.uid) }}" class="card-link">
+            <time className="dt-published" datetime="{{ entry.published |> toISOString }}">
+              {{ entry.published.toLocaleString([
+                ...(entry.language ? [entry.language] : []),
                 ...c.var.locales,
               ]) }}
             </time>
           </a>
-          {{ if post.updated }}
+          {{ if entry.updated }}
             &middot; Updated on
-            <time className="dt-updated" datetime="{{ post.updated |> toISOString }}">
-              {{ post.updated.toLocaleString([
-                ...(post.language ? [post.language] : []),
+            <time className="dt-updated" datetime="{{ entry.updated |> toISOString }}">
+              {{ entry.updated.toLocaleString([
+                ...(entry.language ? [entry.language] : []),
                 ...c.var.locales,
               ]) }}
             </time>
@@ -147,10 +147,10 @@
       </article>
     {{ /for }}
   </div>
-  {{ if posts.cursor }}
+  {{ if entries.cursor }}
     <a
       rel="next swap-replaceWith"
-      href="/?cursor={{ posts.cursor |> encodeURIComponent }}#:~:selector=main :is(.h-entry,[rel=next])"
+      href="/?cursor={{ entries.cursor |> encodeURIComponent }}#:~:selector=main :is(.h-entry,[rel=next])"
     >
       Load more
     </a>

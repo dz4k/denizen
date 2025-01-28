@@ -202,23 +202,23 @@ list-input {
   margin-block: 1em;
 }
 
-.quick-post {
+.quick-entry {
   display: grid;
-  .quick-post-content {
+  .quick-entry-content {
     margin-block-end: 0.5em;
   }
 
-  .quick-post-form-actions {
+  .quick-entry-form-actions {
     display: flex;
     justify-content: space-between;
 
-    .quick-post-submit {
+    .quick-entry-submit {
       margin-block-start: auto;
     }
   }
 }
 
-.post-editor {
+.entry-editor {
   input:is(
     :not([type]),
     [type='text' i],

@@ -48,7 +48,7 @@
                 datetime="{{ wm.content.published |> toISOString }}"
               >
                 {{ wm.content.published.toLocaleString([
-                  ...(post.language ? [post.language] : []),
+                  ...(entry.language ? [entry.language] : []),
                   ...c.var.locales,
                 ]) }}
               </time>

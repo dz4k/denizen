@@ -15,7 +15,7 @@ export type PaginationOptions = {
   cursor?: string
 }
 
-export const postKey = (post: Entry) => ['Post', post.iid!]
+export const entryKey = (entry: Entry) => ['Post', entry.iid!]
 export const urlKey = (url: URL) => ['PostURL', url.pathname]
 export const lastmodKey = ['Last modified']
 
@@ -26,105 +26,105 @@ export const lastMod = async () => {
 
 export const bump = (tx: Deno.AtomicOperation) => tx.set(lastmodKey, Date.now())
 
-// #region Posts
+// #region Entries
 
-export const getPosts = async (
+export const getEntries = async (
   { limit = 100, cursor }: PaginationOptions = {},
 ): Promise<Page<Entry>> => {
   // TODO: pagination options
   const list = db.list({ prefix: ['Post'] }, { limit, cursor, reverse: true })
   const res = await asyncIteratorToArray(list)
-  const posts = res.map((kvEntry) => {
-    const post = Entry.fromMF2Json(kvEntry.value)
-    post.iid = kvEntry.key.at(-1) as string
-    return post
-  }).filter((post) => !post.deleted)
-  return { data: posts, cursor: list.cursor }
+  const entries = res.map((kvEntry) => {
+    const entry = Entry.fromMF2Json(kvEntry.value)
+    entry.iid = kvEntry.key.at(-1) as string
+    return entry
+  }).filter((entry) => !entry.deleted)
+  return { data: entries, cursor: list.cursor }
 }
 
-export const getPost = async (iid: string): Promise<Entry | null> => {
+export const getEntry = async (iid: string): Promise<Entry | null> => {
   const kvEntry = await db.get(['Post', iid])
   if (kvEntry.value === null) return null
-  const post = Entry.fromMF2Json(kvEntry.value)
-  post.iid = iid
-  return post
+  const entry = Entry.fromMF2Json(kvEntry.value)
+  entry.iid = iid
+  return entry
 }
 
-export const createPost = async (post: Entry): Promise<string> => {
-  const myPostKey = postKey(post)
-  const myUrlKey = post.uid && urlKey(post.uid)
+export const createEntry = async (entry: Entry): Promise<string> => {
+  const myEntryKey = entryKey(entry)
+  const myUrlKey = entry.uid && urlKey(entry.uid)
   const tx = db.atomic()
-  tx.check({ key: myPostKey, versionstamp: null })
+  tx.check({ key: myEntryKey, versionstamp: null })
   myUrlKey && tx.check({ key: myUrlKey, versionstamp: null })
-  tx.set(myPostKey, post.toMF2Json())
-  myUrlKey && tx.set(myUrlKey, post.iid)
+  tx.set(myEntryKey, entry.toMF2Json())
+  myUrlKey && tx.set(myUrlKey, entry.iid)
   bump(tx)
   const { ok } = await tx.commit()
   if (!ok) {
     throw new Error(
-      "Couldn't save post. Likely, a post with same URL or IID already exists.",
+      "Couldn't save entry. Likely, an entry with same URL or IID already exists.",
     )
   }
 
   // TODO: this doesn't feel like it belongs here
   await enqueue({
     type: 'send_webmentions',
-    source: post.uid!.href,
-    targets: findMentions(post),
+    source: entry.uid!.href,
+    targets: findMentions(entry),
   })
-  return post.iid
+  return entry.iid
 }
 
-export const updatePost = async (post: Entry): Promise<string> => {
-  const oldPost = await getPost(post.iid)
-  const oldContent = oldPost?.content?.html
+export const updateEntry = async (entry: Entry): Promise<string> => {
+  const oldEntry = await getEntry(entry.iid)
+  const oldContent = oldEntry.content?.html
 
-  post.updated = new Date()
+  entry.updated = new Date()
 
-  const key = postKey(post)
+  const key = entryKey(entry)
   const tx = db.atomic()
-  tx.set(key, post.toMF2Json())
+  tx.set(key, entry.toMF2Json())
   bump(tx)
   await tx.commit()
 
   // TODO: this doesn't feel like it belongs here
   await enqueue({
     type: 'send_webmentions',
-    source: post.uid!.href,
-    targets: findMentions(post, oldContent),
+    source: entry.uid!.href,
+    targets: findMentions(entry, oldContent),
   })
 
-  await purgePostFromCache(post)
+  await purgeEntryFromCache(entry)
 
-  return post.iid!
+  return entry.iid!
 }
 
-export const deletePost = async (post: Entry) => {
-  post.deleted = true
-  await updatePost(post)
+export const deleteEntry = async (entry: Entry) => {
+  entry.deleted = true
+  await updateEntry(entry)
 }
 
-export const undeletePost = async (post: Entry) => {
-  post.deleted = false
-  await updatePost(post)
+export const undeleteEntry = async (entry: Entry) => {
+  entry.deleted = false
+  await updateEntry(entry)
 }
 
-export const getPostByURL = async (url: URL): Promise<Entry | null> => {
+export const getEntryByURL = async (url: URL): Promise<Entry | null> => {
   const kvEntry = await db.get(urlKey(url))
   if (kvEntry.value === null) return null
-  return getPost(kvEntry.value as string)
+  return getEntry(kvEntry.value as string)
 }
 
-const purgePostFromCache = async (post: Entry) => {
+const purgeEntryFromCache = async (entry: Entry) => {
   const cache = await caches.open('denizen-request-cache')
-  return cache.delete(post.uid!)
+  return cache.delete(entry.uid!)
 }
 
 // #endregion
 
 // #region Webmentions
 
-export const saveWebmention = async (post: Entry, wm: Webmention) => {
+export const saveWebmention = async (entry: Entry, wm: Webmention) => {
   const srcDstKey = ['WMBySrcDst', wm.source, wm.target]
   const existing = await db.get(srcDstKey)
   if (existing.value) {
@@ -134,7 +134,7 @@ export const saveWebmention = async (post: Entry, wm: Webmention) => {
   }
   const iid = [
     'WM',
-    post.iid,
+    entry.iid,
     wm.responseType,
     ulid(),
   ]
@@ -142,8 +142,8 @@ export const saveWebmention = async (post: Entry, wm: Webmention) => {
     .check({ key: srcDstKey, versionstamp: existing.versionstamp })
     .set(srcDstKey, iid)
     .set(iid, wm.serialize())
-    .sum(['WMCount', post.iid], 1n)
-    .sum(['WMCount', post.iid, wm.responseType], 1n)
+    .sum(['WMCount', entry.iid], 1n)
+    .sum(['WMCount', entry.iid, wm.responseType], 1n)
     .commit()
 }
 
@@ -154,22 +154,22 @@ export const deleteWebmention = async (
   const existing = await db.get(srcDstKey)
   if (existing.value === null) return
 
-  const [_wm, postIid, responseType, _wmUlid] = existing.value as Deno.KvKey
+  const [_wm, entryIid, responseType, _wmUlid] = existing.value as Deno.KvKey
 
   return db.atomic()
     .delete(srcDstKey)
     .delete(existing.value as Deno.KvKey)
-    .sum(['WMCount', postIid], 2n ** 64n - 1n)
-    .sum(['WMCount', postIid, responseType], 2n ** 64n - 1n)
+    .sum(['WMCount', entryIid], 2n ** 64n - 1n)
+    .sum(['WMCount', entryIid, responseType], 2n ** 64n - 1n)
     .commit()
 }
 
 export const getWebmentions = async (
-  post: Entry,
+  entry: Entry,
   type: WMResponseType,
   options: PaginationOptions = {},
 ): Promise<Page<Webmention>> => {
-  const list = db.list({ prefix: ['WM', post.iid, type] }, {
+  const list = db.list({ prefix: ['WM', entry.iid, type] }, {
     ...options,
     reverse: true,
   })
@@ -181,9 +181,9 @@ export const getWebmentions = async (
 }
 
 export const getWebmentionCount = async (
-  post: Entry,
+  entry: Entry,
   type: WMResponseType,
-) => (await db.get(['WMCount', post.iid, type])).value ?? 0
+) => (await db.get(['WMCount', entry.iid, type])).value ?? 0
 
 // #endregion
 
@@ -255,15 +255,15 @@ export const saveBlogImportJob = async (job: BlogImportJobParams) => {
     .set(key, job)
     .set(
       ['ImportJob.EntryCount', job.id],
-      new Deno.KvU64(BigInt(job.totalPosts ?? 0n)),
+      new Deno.KvU64(BigInt(job.entriesTotal ?? 0n)),
     )
     .set(
       ['ImportJob.ImportedEntryCount', job.id],
-      new Deno.KvU64(BigInt(job.importedPosts ?? 0n)),
+      new Deno.KvU64(BigInt(job.entriesImported ?? 0n)),
     )
     .set(
       ['ImportJob.FailedEntryCount', job.id],
-      new Deno.KvU64(BigInt(job.failedPosts ?? 0n)),
+      new Deno.KvU64(BigInt(job.entriesFailed ?? 0n)),
     )
     .set(['ImportJob.MediaCount', job.id], new Deno.KvU64(0n))
     .set(['ImportJob.ImportedMediaCount', job.id], new Deno.KvU64(0n))
@@ -281,9 +281,9 @@ export const getBlogImportJob = async (id: string) => {
   ])
   console.log(job_, entries, imported, failed)
   const job = job_.value as BlogImportJob
-  job.totalPosts = Number((entries.value as Deno.KvU64)?.value ?? 0)
-  job.importedPosts = Number((imported.value as Deno.KvU64)?.value ?? 0)
-  job.failedPosts = Number((failed.value as Deno.KvU64)?.value ?? 0)
+  job.entriesTotal = Number((entries.value as Deno.KvU64)?.value ?? 0)
+  job.entriesImported = Number((imported.value as Deno.KvU64)?.value ?? 0)
+  job.entriesFailed = Number((failed.value as Deno.KvU64)?.value ?? 0)
   return job
 }
 

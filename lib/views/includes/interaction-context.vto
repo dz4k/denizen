@@ -1,24 +1,24 @@
-{{ for index, cite of post.inReplyTo }}
+{{ for index, cite of entry.inReplyTo }}
   <!-- TODO: better reply context -->
   <p
     class="reply-context p-in-reply-to h-cite"
-    style="view-transition-name: post-{{ post.iid }}-reply-context-{{ index }}"
+    style="view-transition-name: entry-{{ entry.iid }}-reply-context-{{ index }}"
   >
     <strong class="tiny-header">↪ In reply to</strong>
     {{ include "includes/cite.vto" { cite } }}
   </p>
 {{ /for }}
-{{ for index, cite of post.repostOf }}
+{{ for index, cite of entry.repostOf }}
   <p class="repost-context p-repost-of h-cite"
-    style="view-transition-name: post-{{ post.iid }}-repost-context-{{ index }}"
+    style="view-transition-name: entry-{{ entry.iid }}-repost-context-{{ index }}"
   >
     <strong class="tiny-header">🔁 Reposted from</strong>
     {{ include "includes/cite.vto" { cite } }}
   </p>
 {{ /for }}
-{{ for index, cite of post.likeOf }}
+{{ for index, cite of entry.likeOf }}
   <p class="like-context p-like-of h-cite"
-    style="view-transition-name: post-{{ post.iid }}-like-context-{{ index }}"
+    style="view-transition-name: entry-{{ entry.iid }}-like-context-{{ index }}"
   >
     <strong class="tiny-header">👍 Like</strong>
     {{ include "includes/cite.vto" { cite } }}

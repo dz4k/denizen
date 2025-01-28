@@ -1,24 +1,24 @@
 {{ layout "includes/layout.vto" }}
 
 <!-- Metadata -->
-<meta property="og:url" content="{{ post.uid.href }}">
+<meta property="og:url" content="{{ entry.uid.href }}">
 <meta property="og:site_name" content="{{ siteOwner.profile.name }}">
-{{ if post.name }}<meta property="og:title" content="{{ post.name }}">{{ /if }}
-{{ if post.summary }}
+{{ if entry.name }}<meta property="og:title" content="{{ entry.name }}">{{ /if }}
+{{ if entry.summary }}
   <meta
     name="description"
     property="og:description"
-    content="{{ post.summary }}"
+    content="{{ entry.summary }}"
   >
 {{ /if }}
-{{ for photo of post.photo }}
+{{ for photo of entry.photo }}
     <meta property="og:image" content="{{ c.var.href(photo.url) }}">
     <meta property="og:image:alt" content="{{ photo.alt }}">
 {{ /for }}
-{{ for video of post.video }}
+{{ for video of entry.video }}
     <meta property="og:video" content="{{ video.href }}">
 {{ /for }}
-{{ for audio of post.audio }}
+{{ for audio of entry.audio }}
     <meta property="og:audio" content="{{ audio.href }}">
 {{ /for }}
 
@@ -39,58 +39,58 @@
         <span>{{ c.var.baseUrl }}</span>
       </a>
     </nav>
-    {{ if post.name }}
-      <h1 class="p-name" style="view-transition-name: post-{{ post.iid }}-name">
-        {{ post.name }}
+    {{ if entry.name }}
+      <h1 class="p-name" style="view-transition-name: entry-{{ entry.iid }}-name">
+        {{ entry.name }}
       </h1>
     {{ /if }}
-    {{ if post.summary }}
-      <p class="lede" style="view-transition-name: post-{{ post.iid }}-summary">
-        {{ post.summary }}
+    {{ if entry.summary }}
+      <p class="lede" style="view-transition-name: entry-{{ entry.iid }}-summary">
+        {{ entry.summary }}
       </p>
     {{ /if }}
   </header>
   <main>
-    {{ include "includes/interaction-context.vto" { post } }}
-    {{ for index, photo of post.photo }}
+    {{ include "includes/interaction-context.vto" { entry } }}
+    {{ for index, photo of entry.photo }}
       <figure
-        style="view-transition-name: post-{{ post.iid }}-photo-{{ index }}"
+        style="view-transition-name: entry-{{ entry.iid }}-photo-{{ index }}"
       >
         <img class="u-photo" src="{{ c.var.href(photo.url) }}" alt="{{ photo.alt }}">
       </figure>
     {{ /for }}
     <div
       class="e-content"
-      style="view-transition-name: post-{{ post.iid }}-content"
+      style="view-transition-name: entry-{{ entry.iid }}-content"
     >
-      {{- post.content?.html |> safe -}}
+      {{- entry.content?.html |> safe -}}
     </div>
   </main>
   <footer
-    style="view-transition-name: post-{{ post.iid }}-footer"
+    style="view-transition-name: entry-{{ entry.iid }}-footer"
   >
     <div class="<small>">
       <p>
-        <a href="{{ c.var.href(post.uid) }}" class="u-url u-uid">
-          <time class="dt-published" datetime="{{ post.published |> toISOString }}">
-            {{ post.published.toLocaleString([
-              ...(post.language ? [post.language] : []),
+        <a href="{{ c.var.href(entry.uid) }}" class="u-url u-uid">
+          <time class="dt-published" datetime="{{ entry.published |> toISOString }}">
+            {{ entry.published.toLocaleString([
+              ...(entry.language ? [entry.language] : []),
               ...c.var.locales,
             ]) }}
           </time>
         </a>
-        {{- if post.updated -}}
+        {{- if entry.updated -}}
           , last updated on
-          <time class="dt-updated" datetime="{{ post.updated |> toISOString }}">
-            {{ post.updated.toLocaleString([
-              ...(post.language ? [post.language] : []),
+          <time class="dt-updated" datetime="{{ entry.updated |> toISOString }}">
+            {{ entry.updated.toLocaleString([
+              ...(entry.language ? [entry.language] : []),
               ...c.var.locales,
             ]) }}
           </time>
         {{ /if }}
       </p>
       <p>
-        {{ for category of post.category }}
+        {{ for category of entry.category }}
           #<span class="p-category">{{ category }}</span>
         {{ /for }}
       </p>
@@ -101,18 +101,18 @@
         <button>Reply</button>
       </denizen-webaction>
       {{ if admin }}
-        <form action="/.denizen/post/edit" class="contents">
+        <form action="/.denizen/entry/edit" class="contents">
           <input
             type="hidden"
-            name="post"
-            value="{{ post.uid?.pathname }}"
+            name="entry"
+            value="{{ entry.uid?.pathname }}"
           />
           <button>Edit</button>
         </form>
         <form
           rel="swap-after"
           method="DELETE"
-          action="{{ post.uid?.pathname }}"
+          action="{{ entry.uid?.pathname }}"
           class="contents"
         >
           <button>Delete</button>

@@ -6,16 +6,16 @@
     <td>{{ job.feedUrl }}</td>
   </tr>
   <tr>
-    <th scope="row">Posts to import</th>
-    <td>{{ job.totalPosts }}</td>
+    <th scope="row">Entries to import</th>
+    <td>{{ job.entriesTotal }}</td>
   </tr>
   <tr>
-    <th scope="row">Posts imported</th>
-    <td>{{ job.importedPosts }}</td>
+    <th scope="row">Entries imported</th>
+    <td>{{ job.entriesImported }}</td>
   </tr>
   <tr>
-    <th scope="row">Posts failed</th>
-    <td>{{ job.failedPosts }}</td>
+    <th scope="row">Entries failed</th>
+    <td>{{ job.entriesFailed }}</td>
   </tr>
 </table>
 {{ if job.errors }}
