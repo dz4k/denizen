@@ -1,0 +1,74 @@
+<div className="entry-list">
+  {{ for entry of entries.data }}
+    <article
+      class="h-entry link-card"
+      lang="{{ entry.language ?? c.var.lang }}"
+    >
+      <h2
+        style="view-transition-name: entry-{{ entry.iid }}-name"
+      >
+        <a class="p-name u-url u-uid" href="{{ c.var.href(entry.uid) }}">
+          {{ entry.name }}
+        </a>
+      </h2>
+      {{ include "includes/interaction-context.vto" { entry } }}
+      {{ for index, photo of entry.photo }}
+        <figure
+          style="view-transition-name: entry-{{ entry.iid }}-photo-{{ index }}"
+        >
+          <img class="u-photo" src="{{ c.var.href(photo.url.href) }}" alt="{{ photo.alt }}" />
+        </figure>
+      {{ /for }}
+      {{ if entry.summary }}
+        <p
+          class="italic"
+          style="view-transition-name: entry-{{ entry.iid }}-summary"
+        >
+          {{- entry.summary |> safe -}}
+        </p>
+      {{ else if entry.name }}
+        {{# -- #}}
+      {{ else if entry.content }}
+        <div
+          class="e-content"
+          style="view-transition-name: entry-{{ entry.iid }}-content"
+        />
+          {{- entry.content.html |> safe -}}
+        </div>
+      {{ /if }}
+      <p
+        class="<small>"
+        style="view-transition-name: entry-{{ entry.iid }}-footer"
+      >
+        <a href="{{ c.var.href(entry.uid) }}" class="card-link">
+          <time className="dt-published" datetime="{{ entry.published |> toISOString }}">
+            {{ entry.published.toLocaleString([
+              ...(entry.language ? [entry.language] : []),
+              ...c.var.locales,
+            ]) }}
+          </time>
+        </a>
+        {{ if entry.updated }}
+          &middot; Updated on
+          <time className="dt-updated" datetime="{{ entry.updated |> toISOString }}">
+            {{ entry.updated.toLocaleString([
+              ...(entry.language ? [entry.language] : []),
+              ...c.var.locales,
+            ]) }}
+          </time>
+        {{ /if }}
+      </p>
+    </article>
+  {{ /for }}
+</div>
+{{ if entries.cursor }}
+  {{ set targetUrl = new URL(it.url) }}
+  {{> targetUrl.searchParams.set("cursor", entries.cursor)
+      targetUrl.hash = '#:~:selector=main :is(.h-entry,[rel=next])' }}
+  <a
+    rel="next swap-replaceWith"
+    href="/?cursor={{ entries.cursor |> encodeURIComponent }}#:~:selector=main :is(.h-entry,[rel=next])"
+  >
+    Load more
+  </a>
+{{ /if }}

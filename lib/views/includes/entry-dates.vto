@@ -1,0 +1,17 @@
+<a href="{{ c.var.href(entry.uid) }}" class="u-url u-uid">
+  <time class="dt-published" datetime="{{ entry.published |> toISOString }}">
+    {{ entry.published.toLocaleString([
+      ...(entry.language ? [entry.language] : []),
+      ...c.var.locales,
+    ]) }}
+  </time>
+</a>
+{{- if entry.updated -}}
+  , last updated on
+  <time class="dt-updated" datetime="{{ entry.updated |> toISOString }}">
+    {{ entry.updated.toLocaleString([
+      ...(entry.language ? [entry.language] : []),
+      ...c.var.locales,
+    ]) }}
+  </time>
+{{ /if }}

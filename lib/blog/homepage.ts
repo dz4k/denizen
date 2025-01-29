@@ -23,7 +23,7 @@ export const get = async (c: hono.Context<Env>) => {
 
   const { cursor } = c.req.query()
   const siteOwner = await getUser('admin')
-  const entries = await getEntries({ cursor })
+  const entries = await getEntries({ cursor, limit: 1 })
   entries.data = entries.data.filter((entry) => !entry.hidden)
   const admin = isAdmin(c)
 

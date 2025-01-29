@@ -1,28 +1,11 @@
 {{ layout "includes/layout.vto" }}
 
-<!-- Metadata -->
-<meta property="og:url" content="{{ entry.uid.href }}">
-<meta property="og:site_name" content="{{ siteOwner.profile.name }}">
-{{ if entry.name }}<meta property="og:title" content="{{ entry.name }}">{{ /if }}
-{{ if entry.summary }}
-  <meta
-    name="description"
-    property="og:description"
-    content="{{ entry.summary }}"
-  >
-{{ /if }}
-{{ for photo of entry.photo }}
-    <meta property="og:image" content="{{ c.var.href(photo.url) }}">
-    <meta property="og:image:alt" content="{{ photo.alt }}">
-{{ /for }}
-{{ for video of entry.video }}
-    <meta property="og:video" content="{{ video.href }}">
-{{ /for }}
-{{ for audio of entry.audio }}
-    <meta property="og:audio" content="{{ audio.href }}">
-{{ /for }}
+{{# Metadata #}}
+{{ include 'includes/entry-meta.vto' { entry } }}
 
 <article class="h-entry">
+
+  {{# Author #}}
   <header class="container padding-block-start">
     <nav>
       <a href="/" class="p-author h-card author-card unlink">
@@ -39,19 +22,27 @@
         <span>{{ c.var.baseUrl }}</span>
       </a>
     </nav>
+  </header>
+
+  <main>
+    {{# Title #}}
     {{ if entry.name }}
       <h1 class="p-name" style="view-transition-name: entry-{{ entry.iid }}-name">
         {{ entry.name }}
       </h1>
     {{ /if }}
+
+    {{# Summary #}}
     {{ if entry.summary }}
       <p class="lede" style="view-transition-name: entry-{{ entry.iid }}-summary">
         {{ entry.summary }}
       </p>
     {{ /if }}
-  </header>
-  <main>
+
+    {{# Interaction #}}
     {{ include "includes/interaction-context.vto" { entry } }}
+
+    {{# Photo #}}
     {{ for index, photo of entry.photo }}
       <figure
         style="view-transition-name: entry-{{ entry.iid }}-photo-{{ index }}"
@@ -59,36 +50,25 @@
         <img class="u-photo" src="{{ c.var.href(photo.url) }}" alt="{{ photo.alt }}">
       </figure>
     {{ /for }}
+
+    {{# Content #}}
     <div
       class="e-content"
       style="view-transition-name: entry-{{ entry.iid }}-content"
     >
       {{- entry.content?.html |> safe -}}
     </div>
+
   </main>
+
   <footer
     style="view-transition-name: entry-{{ entry.iid }}-footer"
   >
     <div class="<small>">
-      <p>
-        <a href="{{ c.var.href(entry.uid) }}" class="u-url u-uid">
-          <time class="dt-published" datetime="{{ entry.published |> toISOString }}">
-            {{ entry.published.toLocaleString([
-              ...(entry.language ? [entry.language] : []),
-              ...c.var.locales,
-            ]) }}
-          </time>
-        </a>
-        {{- if entry.updated -}}
-          , last updated on
-          <time class="dt-updated" datetime="{{ entry.updated |> toISOString }}">
-            {{ entry.updated.toLocaleString([
-              ...(entry.language ? [entry.language] : []),
-              ...c.var.locales,
-            ]) }}
-          </time>
-        {{ /if }}
-      </p>
+      {{# Dates #}}
+      <p>{{ include "includes/entry-dates.vto" { entry } }}</p>
+
+      {{# Tags #}}
       <p>
         {{ for category of entry.category }}
           #<span class="p-category">{{ category }}</span>
@@ -96,6 +76,7 @@
       </p>
     </div>
 
+    {{# Actions #}}
     <div style="display: flex; flex-flow: row wrap; gap: 1em">
       <denizen-webaction action="reply">
         <button>Reply</button>

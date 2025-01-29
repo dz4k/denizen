@@ -1,0 +1,20 @@
+<meta property="og:url" content="{{ entry.uid.href }}">
+<meta property="og:site_name" content="{{ siteOwner.profile.name }}">
+{{ if entry.name }}<meta property="og:title" content="{{ entry.name }}">{{ /if }}
+{{ if entry.summary }}
+  <meta
+    name="description"
+    property="og:description"
+    content="{{ entry.summary }}"
+  >
+{{ /if }}
+{{ for photo of entry.photo }}
+    <meta property="og:image" content="{{ c.var.href(photo.url) }}">
+    <meta property="og:image:alt" content="{{ photo.alt }}">
+{{ /for }}
+{{ for video of entry.video }}
+    <meta property="og:video" content="{{ video.href }}">
+{{ /for }}
+{{ for audio of entry.audio }}
+    <meta property="og:audio" content="{{ audio.href }}">
+{{ /for }}
