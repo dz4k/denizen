@@ -16,7 +16,11 @@
         <figure
           style="view-transition-name: entry-{{ entry.iid }}-photo-{{ index }}"
         >
-          <img class="u-photo" src="{{ c.var.href(photo.url.href) }}" alt="{{ photo.alt }}" />
+          <img class="u-photo"
+            src="{{ c.var.href(photo.url.href) }}"
+            alt="{{ photo.alt }}"
+            loading="lazy"
+          >
         </figure>
       {{ /for }}
       {{ if entry.summary }}
