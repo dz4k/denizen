@@ -3,6 +3,7 @@
 <script type="module" src="/.denizen/public/textarea-autoexpand.js"></script>
 <script type="module" src="/.denizen/public/dependent-input.js"></script>
 <script type="module" src="/.denizen/public/image-drop-zone.js"></script>
+<script type="module" src="/.denizen/public/image-upload.js"></script>
 
 <header>
   <h1>{{ c.var.title }}</h1>
@@ -178,6 +179,17 @@
                >Rich text</option>
             </select>
            </dependent-input>
+        </p>
+      </div>
+      <div class="media">
+        <p>
+          <label for="edit-photo">Image</label>
+          <image-upload name="photo" multiple>
+            {{ for photo of entry.photo }}
+              <input type="hidden" name="photo" value="{{ photo.url }}">
+              <input type="hidden" name="photo[alt]" value="{{ photo.alt ?? '' }}">
+            {{ /for }}
+          </image-upload>
         </p>
       </div>
     </div>
