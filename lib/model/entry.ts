@@ -265,9 +265,14 @@ export class Entry {
     if (form.has('syndication')) {
       props.syndication = getUrls('syndication')
     }
-    // TODO: alt text in form data
     if (form.has('photo')) {
       props.photo = getUrls('photo').map((url) => ({ url }))
+    }
+    if (form.has('photo[alt]')) {
+      getAll('photo[alt]').forEach((alt, i) => {
+        console.log("adding alt text", alt)
+        if (props.photo?.[i]) props.photo[i].alt = alt
+      })
     }
     if (form.has('video')) props.video = getUrls('video')
     if (form.has('audio')) props.audio = getUrls('audio')
