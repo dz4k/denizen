@@ -2,6 +2,7 @@
 
 <script type="module" src="/.denizen/public/list-input.js"></script>
 <script type="module" src="/.denizen/public/textarea-autoexpand.js"></script>
+<script type="module" src="/.denizen/public/image-upload.js"></script>
 <header>
   <h1>Console</h1>
   <p>
@@ -20,21 +21,21 @@
     >
       <p class="grid-row">
         <label for="profile.photo">Avatar</label>
-        <span>
-          {{ include "includes/face.vto" { card: user.profile, link: undefined } }}
-          <input type="file" id="profile.photo" name="photo" />
-        </span>
+        <image-upload id="profile.photo" name="photo">
+          {{ if user.profile.photo[0] }}
+            <input type="hidden" name="photo" value="{{ user.profile.photo[0].url }}">
+            <input type="hidden" name="photo[alt]" value="{{ user.profile.photo[0].alt }}">
+          {{ /if }}
+        </image-upload>
       </p>
       <p class="grid-row">
         <label for="profile.featured">Banner image</label>
-        <span>
-          <img
-            src="{{ user.profile.featured[0]?.url }}"
-            alt="{{ user.profile.featured[0]?.alt }}"
-            class="face"
-          >
-          <input type="file" id="profile.featured" name="featured" />
-        </span>
+        <image-upload id="profile.featured" name="featured">
+          {{ if user.profile.featured[0] }}
+            <input type="hidden" name="featured" value="{{ user.profile.featured[0].url }}">
+            <input type="hidden" name="featured[alt]" value="{{ user.profile.featured[0].alt }}">
+          {{ /if }}
+        </image-upload>
       </p>
       <p class="grid-row">
         <label for="profile.name">Name</label>
