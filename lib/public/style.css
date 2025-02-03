@@ -111,7 +111,7 @@ textarea {
 }
 
 label {
-  padding: 0.4em 0.4em 0 0;
+  padding: 0.4em 0.4em 0.4em 0;
   min-width: 7em;
 }
 
@@ -176,6 +176,58 @@ list-input {
 
   button {
     display: block;
+  }
+}
+
+:host(image-upload) {
+  display: grid;
+  grid-auto-columns: 6em;
+  grid-auto-flow: column;
+  gap: .5rem;
+
+  margin-block: .25rem;
+
+  .uploader-label {
+    text-align: center;
+    align-content: center;
+  }
+
+  .thumbs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: contents;
+  }
+
+  .thumb {
+    display: grid;
+    aspect-ratio: 1 / 1;
+
+    .img {
+      grid-area: 1/1/1/1;
+      min-width: none;
+      align-self: stretch;
+      object-fit: cover;
+    }
+    .thumb-actions {
+      grid-area: 1/1/1/1;
+      display: grid;
+
+      .thumb-action {
+        grid-area: 1/1/1/1;
+
+        &.-removeimage {
+          align-self: start;
+          justify-self: end;
+        }
+
+        &.-alttext {
+          align-self: end;
+          justify-self: end;
+          text-transform: uppercase;
+        }
+      }
+    }
   }
 }
 

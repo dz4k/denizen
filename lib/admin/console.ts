@@ -40,6 +40,13 @@ export const updateProfile = async (c: hono.Context<Env>) => {
       user.profile[prop] = [{
         url: new URL(`/.denizen/storage/${filename}`, c.var.baseUrl),
       }]
+    } else if (img) {
+      user.profile[prop] = [{
+        url: new URL(img),
+        alt: formdata.get(prop + '[alt]') as string ?? undefined,
+      }]
+    } else {
+      user.profile[prop] = []
     }
   }
 

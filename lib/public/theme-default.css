@@ -64,6 +64,11 @@ input[type='reset'],
     background-color: var(--accent);
     color: var(--bg2);
   }
+
+  &:where(.osd) {
+    background: lch(from var(--accent-color) 6 20 h / .6);
+    color: lch(from var(--accent-color) 92 10 h);
+  }
 }
 
 textarea {
@@ -121,5 +126,17 @@ header.h-card {
       margin-block-start: -6rem;
       border: .5rem solid var(--bg1);
     }
+  }
+}
+
+:host(image-upload) {
+  .thumb {
+    border-radius: 0.6rem;
+    overflow: clip;
+  }
+
+  .thumb-action {
+    margin: .25rem;
+    border-radius: calc(0.6rem - .25rem);
   }
 }

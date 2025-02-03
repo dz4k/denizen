@@ -148,6 +148,14 @@ input[type='reset'],
     background-color: var(--accent2);
     color: var(--bg2);
   }
+
+  &:where(.osd) {
+    margin: .2rem;
+    background: lch(from var(--accent-color) 6 20 h / .6);
+    color: lch(from var(--accent-color) 92 10 h);
+    font-stretch: normal;
+    padding-inline: .2em;
+  }
 }
 
 a,
