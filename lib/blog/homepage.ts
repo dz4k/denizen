@@ -23,7 +23,7 @@ export const get = async (c: hono.Context<Env>) => {
 
   const { cursor } = c.req.query()
   const siteOwner = await getUser('admin')
-  const entries = await getEntries({ cursor, limit: 1 })
+  const entries = await getEntries({ cursor })
   entries.data = entries.data.filter((entry) => !entry.hidden)
   const admin = isAdmin(c)
 
@@ -33,5 +33,6 @@ export const get = async (c: hono.Context<Env>) => {
   c.set('title', siteOwner.profile.name)
   c.set('theme', c.var.theme)
 
-  return c.var.render('index.vto', { admin, siteOwner, entries, socials, badges })
+  const template = c.req.header('soiree') ? 'index.vto#entries' : 'index.vto'
+  return c.var.render(template, { admin, siteOwner, entries, socials, badges })
 }

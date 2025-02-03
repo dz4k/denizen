@@ -11,7 +11,7 @@
 <script src="/.denizen/public/webaction-button.js"></script>
 <script>
 // https://codeberg.org/dz4k/js4k/src/commit/4c80b8f8ec78f347559a4f21be8262dcf0d8e67d/lib/soiree.js
-const e=(e,t,r)=>{if(!t)return;let a=[...t.relList].find(e=>e.startsWith("swap"));if(!a)return;e.preventDefault();let n=t.target?t.getRootNode().querySelector(t.target):t,s=a.slice(5)||"replaceChildren",i=r(t);i.headers.set("soiree","1"),fetch(i).then(e=>e.text()).then(e=>n?.[s](document.createRange().createContextualFragment(e)))};addEventListener("click",t=>e(t,t.target.closest("a"),e=>e.href)),addEventListener("submit",t=>e(t,t.target,e=>new Request(e.action,{method:e.getAttribute("method")||"GET",body:new FormData(e)})));
+const e=(e,t,r)=>{if(!t)return;let a=[...t.relList].find(e=>e.startsWith("swap"));if(!a)return;e.preventDefault();let n=t.target?t.getRootNode().querySelector(t.target):t,s=a.slice(5)||"replaceChildren",i=new Request(r(t));i.headers.set("soiree","1"),fetch(i).then(e=>e.text()).then(e=>n?.[s](document.createRange().createContextualFragment(e)))};addEventListener("click",t=>e(t,t.target.closest("a"),e=>e.href)),addEventListener("submit",t=>e(t,t.target,e=>new Request(e.action,{method:e.getAttribute("method")||"GET",body:new FormData(e)})));
 </script>
 
 <link rel=alternate type=application/feed+json href=/feed.json>

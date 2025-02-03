@@ -85,7 +85,9 @@
     </form>
   {{ /if }}
 
-  {{ include 'includes/entry-feed.vto' { entries, url: c.var.baseUrl } }}
+  {{ fragment entries }}
+    {{ include 'includes/entry-feed.vto' { entries, url: c.var.baseUrl } }}
+  {{ /fragment }}
 </main>
 <footer>
   {{ if admin }}
