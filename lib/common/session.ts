@@ -43,7 +43,7 @@ export const sessionMiddleware = (
   const deleteSessionData = (sessionId: string) =>
     db.delete([...namespace, sessionId])
 
-  return async (c: hono.Context, next: () => void) => {
+  return hono.createMiddleware(async (c, next) => {
     let sessionId = hono.getCookie(c, 'sesh')
     const sessionData = sessionId ? await getSessionData(sessionId) : {}
     const session = new Session(sessionData as Record<string, unknown>)
@@ -64,5 +64,5 @@ export const sessionMiddleware = (
       }
       await saveSessionData(sessionId, session.data)
     }
-  }
+  })
 }
