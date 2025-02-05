@@ -129,7 +129,18 @@ label {
 }
 
 .hue-slider {
+  -webkit-appearance: none;
   background: none;
+  &::-webkit-slider-runnable-track {
+    height: 1em;
+    border-radius: .5em;
+    border: 1px solid black;
+    box-shadow: 0 0 0 1px white;
+    background: linear-gradient(
+      to right in lch longer hue,
+      lch(50 100 0) 0 0
+    )
+  }
   &::-moz-range-track {
     height: 1em;
     border-radius: .5em;
@@ -139,6 +150,16 @@ label {
       to right in lch longer hue,
       lch(50 100 0) 0 0
     )
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: 1px solid white;
+    box-shadow: 0 0 0 1px black;
+    background: none;
+    height: .5em;
+    width: .5em;
+    border-radius: .5em;
+    margin-block-start: calc(.25em - 1px);
   }
   &::-moz-range-thumb {
     border: 1px solid white;
