@@ -2,7 +2,13 @@ import * as hono from '../../deps/hono.ts'
 import type { Env } from '../denizen.ts'
 
 export const cache: hono.MiddlewareHandler<Env> = async (c, next) => {
-  const cache = await caches.open('denizen-request-cache')
+  let cache: Cache
+  try {
+    cache = await caches.open('denizen-request-cache')
+  } catch {
+    await next()
+    return
+  }
 
   if (!c.req.header('Cache-Control')?.includes('no-cache')) {
     const cachedRes = await cache.match(c.req.raw)
