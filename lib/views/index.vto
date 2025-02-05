@@ -104,7 +104,7 @@
   <script>
     navigator.registerProtocolHandler(
       "web+action",
-      {{ new URL("/.denizen/webaction?handler=%s", c.var.baseUrl).href |> JSON.stringify }},
+      {{ new URL("/.denizen/webaction?handler=%s", c.var.baseUrl).href |> JSON.stringify |> safe }},
       "Denizen on " + location.hostname
     )
   </script>
