@@ -1,6 +1,6 @@
 cat <<EOF | xargs -t -I% -P$(nproc) \
   deno compile \
-    -o "denizen-$RELEASE-%" \
+    -o "build/denizen-$RELEASE-%" \
     --target=% \
     --include lib/public/ --include lib/views/ \
     --unstable-kv -A --no-check \
