@@ -15,8 +15,8 @@ RUN deno compile \
 
 FROM frolvlad/alpine-glibc:alpine-3.18
 RUN apk --no-cache add ca-certificates
-RUN addgroup --gid 1000 deno \
-  && adduser --uid 1000 --disabled-password deno --ingroup deno
+RUN addgroup --gid 1000 denizen && adduser --uid 1000 --disabled-password denizen --ingroup denizen
+USER denizen
 COPY --from=build /usr/local/bin/denizen /usr/bin/denizen
 ENV DENIZEN_KV=/var/denizen/kv.sqlite
 ENV DENIZEN_BLOBS=/var/denizen/blobs
