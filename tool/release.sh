@@ -8,21 +8,25 @@ command -v fj >/dev/null || die "forgejo-cli (fj) not installed"
 RELEASE=${RELEASE#v}
 
 # Compile
+rm -rf build/
 sh tool/compile.sh
 
 # Create commit
 jj new -m "v$RELEASE"
 jj bookmark move main --to @
+jj new
 
 # Create release
 fj release --repo codeberg.org/dz4k/denizen create \
   --create-tag "v$RELEASE" \
   --draft \
-  $([[ "$RELEASE" =~ "-devel" ]] && echo --prerelease) \
-  $(find build -name 'denizen-*' -exec echo --attach {} \;) \
+  $(case $RELEASE in *-devel.*) echo --prerelease; esac) \
+  $(find build -name 'denizen-*' | xargs -n1 echo --attach) \
   "Release v$RELEASE"
 
 # Build container
-podman build . -t denizen:$RELEASE
-podman push denizen:$RELEASE codeberg.org/dz4k/denizen:$RELEASE
-podman push denizen:$RELEASE codeberg.org/dz4k/denizen:latest
+cat <<end | xargs -L1 podman
+  build . -t "denizen:$RELEASE"
+  push "denizen:$RELEASE" "codeberg.org/dz4k/denizen:$RELEASE"
+  push "denizen:$RELEASE" "codeberg.org/dz4k/denizen:latest"
+end
