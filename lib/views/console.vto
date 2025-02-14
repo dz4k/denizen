@@ -1,6 +1,6 @@
 {{ layout "includes/layout.vto" }}
 
-<script type="module" src="/.denizen/public/list-input.js"></script>
+<script type="module" src="/.denizen/public/mutable-list.js"></script>
 <script type="module" src="/.denizen/public/textarea-autoexpand.js"></script>
 <script type="module" src="/.denizen/public/image-upload.js"></script>
 <header>
@@ -52,15 +52,47 @@
           {{- user.profile.note -}}
         </textarea>
       </p>
-      <p class="grid-row">
-        <label for="profile.socials">Social links</label>
-        <list-input
-          id="profile.socials"
-          name="me"
-          fields="key=text;Link text&value=url;URL"
-          value="{{ user.profile.me |> Object.entries |> JSON.stringify }}"
-        />
-      </p>
+      <div class="grid-row">
+        <label id="profile.socials:label" for="profile.socials">Social links</label>
+        <label hidden id="link-text:label">Link text</label>
+        <label hidden id="url:label">URL</label>
+        <mutable-list id="socials-list" class="socials-list">
+          {{ function socialItem(me) }}
+            <div
+              oninput="
+                if (!this.nextElementSibling)
+                  this.closest('mutable-list').addItem()"
+            >
+              <input
+                type="text" name="me[key]" placeholder="Link text"
+                value="{{ me.key }}"
+                aria-labelledby="profile.socials:label link-text:label"
+              >
+              <input
+                type="text" name="me[value]" placeholder="URL"
+                value="{{ me.value }}"
+                aria-labelledby="profile.socials:label url:label"
+              >
+              <button
+                type="button"
+                class="<a> unlink"
+                title="Remove"
+                aria-label="Remove"
+                onclick="
+                  if (this.parentElement.children.length > 1)
+                    this.closest('li').remove()"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+          {{ /function }}
+          <template slot="item-template">{{ socialItem({}) |> safe }}</template>
+          {{ for key, value of user.profile.me }}
+            {{ socialItem({ key, value }) |> safe }}
+          {{ /for }}
+          {{ socialItem({}) |> safe }}
+        </mutable-list>
+      </div>
       <p class="grid-row">
         <span />
         <span>
