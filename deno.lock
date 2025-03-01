@@ -9,6 +9,7 @@
     "jsr:@std/encoding@1.0.6": "1.0.6",
     "jsr:@std/html@1.0.0": "1.0.0",
     "jsr:@std/html@1.0.3": "1.0.3",
+    "jsr:@std/internal@^1.0.5": "1.0.5",
     "jsr:@std/media-types@1.1.0": "1.1.0",
     "jsr:@std/path@1.0.0": "1.0.0",
     "jsr:@std/path@1.0.8": "1.0.8",
@@ -29,7 +30,10 @@
       "integrity": "b540c6b1352d73142895f7bb6bfd0b6cc514ede61c12940338c4ae5dd06cb326"
     },
     "@std/assert@1.0.10": {
-      "integrity": "59b5cbac5bd55459a19045d95cc7c2ff787b4f8527c0dd195078ff6f9481fbb3"
+      "integrity": "59b5cbac5bd55459a19045d95cc7c2ff787b4f8527c0dd195078ff6f9481fbb3",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
     },
     "@std/crypto@1.0.3": {
       "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
@@ -42,6 +46,9 @@
     },
     "@std/html@1.0.3": {
       "integrity": "7a0ac35e050431fb49d44e61c8b8aac1ebd55937e0dc9ec6409aa4bab39a7988"
+    },
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
     },
     "@std/media-types@1.1.0": {
       "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"

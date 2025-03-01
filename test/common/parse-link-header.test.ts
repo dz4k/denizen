@@ -4,13 +4,13 @@ import { parseLinkHeader } from '../../lib/common/parse-link-header.ts'
 Deno.test('parses a single, simple link', () => {
   const header = '<https://example.com>'
   const parsed = parseLinkHeader(header)
-  assertEquals(parsed, [{ uri: 'https://example.com' }])
+  assertEquals(parsed, [{ href: 'https://example.com' }])
 })
 
 Deno.test('parses a single, simple link with whitespace', () => {
   const header = '  <https://example.com>  '
   const parsed = parseLinkHeader(header)
-  assertEquals(parsed, [{ uri: 'https://example.com' }])
+  assertEquals(parsed, [{ href: 'https://example.com' }])
 })
 
 Deno.test('parses a single link with a rel attribute', () => {
@@ -74,7 +74,6 @@ Deno.test('parses multiple links with whitespace', () => {
 Deno.test('parses a link with a quoted title', () => {
   const header = String.raw`<https://example.com>; title="Test \"Title\""`
   const parsed = parseLinkHeader(header)
-  console.log(parsed)
   assertEquals(parsed, [{ href: 'https://example.com', title: 'Test "Title"' }])
 })
 
